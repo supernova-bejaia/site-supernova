@@ -1,9 +1,9 @@
 import Link from "next/link";
 import Logo from "./Logo";
+import MenuNavigation from "./MenuNavigation";
 import styles from "./Header.module.css";
 
-// En-tête volontairement minimal : le logo, qui ramène à l'accueil.
-// Les accès « Rejoindre » et « Événements » sont portés par la page d'accueil.
+// En-tête : le logo, qui ramène à l'accueil, et le menu des pages.
 export default function Header() {
   return (
     <header className={styles.entete}>
@@ -11,6 +11,7 @@ export default function Header() {
         <Link href="/" className={styles.lienLogo} aria-label="Supernova — accueil">
           <Logo />
         </Link>
+        <MenuNavigation />
       </div>
     </header>
   );

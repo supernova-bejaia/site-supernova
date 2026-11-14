@@ -1,0 +1,208 @@
+/* ---------------------------------------------------------------------
+   Bouton : « Menu » + trois traits, qui deviennent une croix.
+   --------------------------------------------------------------------- */
+
+.bouton {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 0 4px 0 12px;
+  border: 0;
+  background: none;
+  color: var(--blanc);
+  cursor: pointer;
+}
+
+.libelleBouton {
+  font-family: var(--police-annotation), system-ui, sans-serif;
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.icone {
+  position: relative;
+  display: block;
+  width: 26px;
+  height: 18px;
+}
+
+.icone span {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--blanc);
+  transition:
+    transform var(--duree-moyenne) var(--courbe),
+    opacity var(--duree-courte) ease,
+    background var(--duree-courte) ease;
+}
+
+.icone span:nth-child(1) {
+  top: 0;
+}
+
+.icone span:nth-child(2) {
+  top: 8px;
+  width: 70%;
+  background: var(--rouge);
+}
+
+.icone span:nth-child(3) {
+  top: 16px;
+}
+
+.icone[data-ouvert="true"] span:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.icone[data-ouvert="true"] span:nth-child(2) {
+  opacity: 0;
+}
+
+.icone[data-ouvert="true"] span:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+/* ---------------------------------------------------------------------
+   Panneau : il recouvre la page sous l'en-tête.
+   --------------------------------------------------------------------- */
+
+.panneau {
+  position: fixed;
+  top: 64px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 9;
+  overflow-y: auto;
+  background:
+    radial-gradient(90% 60% at 100% 0%, rgba(183, 1, 11, 0.28), transparent 70%),
+    var(--fond);
+  animation: apparitionPanneau var(--duree-moyenne) var(--courbe);
+}
+
+.panneau[hidden] {
+  display: none;
+}
+
+@keyframes apparitionPanneau {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.contenu {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding-top: 24px;
+  padding-bottom: 40px;
+}
+
+/* ---------- Liste des pages ---------- */
+
+.liste {
+  list-style: none;
+  border-top: 1px solid var(--trait);
+}
+
+.liste li {
+  border-bottom: 1px solid var(--trait);
+  animation: apparitionLien var(--duree-longue) var(--courbe) both;
+  animation-delay: calc(var(--rang) * 60ms);
+}
+
+@keyframes apparitionLien {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.lien {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 16px;
+  padding: 20px 0;
+}
+
+.numero {
+  font-family: var(--police-titre), system-ui, sans-serif;
+  font-weight: 900;
+  font-stretch: 112%;
+  font-size: 0.9rem;
+  color: var(--rouge);
+}
+
+.texteLien {
+  font-family: var(--police-titre), system-ui, sans-serif;
+  font-weight: 900;
+  font-stretch: 112%;
+  font-size: clamp(1.6rem, 7vw, 2.6rem);
+  line-height: 1;
+  text-transform: uppercase;
+  transition: color var(--duree-courte) ease;
+}
+
+.fleche {
+  font-family: var(--police-annotation), system-ui, sans-serif;
+  font-size: 1.3rem;
+  color: var(--rouge);
+  transition: transform var(--duree-courte) var(--courbe);
+}
+
+.lien:hover .fleche {
+  transform: translateX(4px);
+}
+
+/* Page en cours : en rouge, sans flèche. */
+.lien[aria-current="page"] .texteLien {
+  color: var(--rouge);
+}
+
+.lien[aria-current="page"] .fleche {
+  visibility: hidden;
+}
+
+/* ---------- Réseaux ---------- */
+
+.reseaux {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.lienReseau {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--texte-doux);
+  transition: color var(--duree-courte) ease;
+}
+
+.lienReseau:hover {
+  color: var(--blanc);
+}
+
+/* Sur grand écran, le panneau reste une colonne de lecture confortable. */
+@media (min-width: 900px) {
+  .contenu {
+    max-width: 760px;
+    margin-left: auto;
+    padding-top: 48px;
+  }
+}

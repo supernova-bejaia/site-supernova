@@ -13,3 +13,12 @@ export const RESEAUX = [
     url: "https://www.instagram.com/supernova.bejaia",
   },
 ];
+
+// Pages du site, dans l'ordre d'affichage. Utilisée par le menu de
+// navigation et par le pied de page : ajouter une page ici l'ajoute aux deux.
+export const NAVIGATION = [
+  { href: "/", libelle: "Accueil" },
+  { href: "/rejoindre", libelle: "Rejoindre" },
+  { href: "/evenements", libelle: "Événements" },
+  { href: "/vos-donnees", libelle: "Vos données" },
+];

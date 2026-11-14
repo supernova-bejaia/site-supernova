@@ -54,8 +54,7 @@ export default function PageAccueil() {
         </Apparition>
         <Apparition delai={160} className={styles.texteManifeste}>
           <p className="texte">
-            Supernova est un collectif étudiant indépendant, né à Béjaïa. Pas un club
-            universitaire de plus : un lieu pour se rencontrer, construire ensemble et accéder
+            Supernova est un collectif étudiant indépendant, né à Béjaïa. Un lieu pour se rencontrer, construire ensemble et accéder
             aux opportunités de l&apos;écosystème entrepreneurial algérien.
           </p>
         </Apparition>
