@@ -1,0 +1,125 @@
+/* =====================================================================
+   Page « Événements » — pensée d'abord pour le téléphone.
+   Les composants des événements ont leurs propres styles dans
+   components/evenements/Evenements.module.css.
+   ===================================================================== */
+
+/* ---------- Ouverture ---------- */
+
+.ouverture {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  padding-top: 48px;
+  padding-bottom: 48px;
+}
+
+/* Entrée en scène au chargement */
+.entree {
+  animation: entree var(--duree-longue) var(--courbe) both;
+}
+
+.entree:nth-child(2) {
+  animation-delay: 100ms;
+}
+
+.entree:nth-child(3) {
+  animation-delay: 220ms;
+}
+
+.entree:nth-child(4) {
+  animation-delay: 340ms;
+}
+
+@keyframes entree {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Sections ---------- */
+
+.section {
+  padding-bottom: 64px;
+}
+
+/* Le repère de section est un vrai titre (h2) pour les lecteurs d'écran,
+   présenté comme les repères des autres pages. */
+.repere {
+  margin-bottom: 24px;
+}
+
+.agenda {
+  border-top: 1px solid var(--trait);
+}
+
+/* Agenda vide */
+.vide {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.titreVide {
+  font-family: var(--police-titre), system-ui, sans-serif;
+  font-weight: 900;
+  font-stretch: 112%;
+  font-size: clamp(1.45rem, 6vw, 2rem);
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+/* ---------- Archives : une bande « nuit profonde » ---------- */
+
+.archives {
+  padding-top: 56px;
+  padding-bottom: 24px;
+  background:
+    radial-gradient(60% 40% at 15% 0%, rgba(58, 5, 8, 0.9), transparent 70%),
+    var(--fond-profond);
+  border-top: 1px solid var(--trait);
+  border-bottom: 1px solid var(--trait);
+}
+
+.enteteArchives .repere {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.declarationArchives {
+  max-width: 18ch;
+}
+
+/* ---------- Ordinateur ---------- */
+
+@media (min-width: 900px) {
+  .ouverture {
+    gap: 26px;
+    padding-top: 72px;
+    padding-bottom: 72px;
+  }
+
+  .section {
+    padding-bottom: 104px;
+  }
+
+  .repere {
+    margin-bottom: 40px;
+  }
+
+  .archives {
+    padding-top: 104px;
+    padding-bottom: 48px;
+  }
+
+  .enteteArchives {
+    margin-bottom: 8px;
+  }
+}

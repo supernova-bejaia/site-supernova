@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Icône du site : la comète rouge de Supernova sur fond noir. -->
+  <rect width="64" height="64" rx="14" fill="#000000"/>
+  <g transform="translate(8 16) scale(0.4)" fill="#e70e17">
+    <circle cx="30" cy="50" r="28"/>
+    <path d="M18 25 L119 1 L50 46 Z"/>
+    <path d="M44 38 L114 18 L57 60 Z"/>
+    <path d="M50 58 L100 42 L46 76 Z"/>
+  </g>
+</svg>

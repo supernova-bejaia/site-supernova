@@ -1,0 +1,381 @@
+/* =====================================================================
+   Styles globaux de Supernova
+
+   Les couleurs, les polices et les réglages communs sont définis ici une
+   seule fois, puis réutilisés partout avec var(--nom) ou avec les classes
+   utilitaires du bas du fichier.
+
+   Principe : le site est pensé d'abord pour le téléphone. Les règles de
+   base visent un petit écran ; les « @media (min-width: …) » ajoutent
+   ensuite ce qui change sur un écran plus large.
+   ===================================================================== */
+
+:root {
+  /* ---------- Couleurs de l'identité ---------- */
+  --noir: #000000;
+  --rouge: #e70e17; /* « plasma » : action, cœur des illustrations, mots clés */
+  --rouge-sombre: #b7010b; /* « braise » : survols, dégradés */
+  --blanc: #f3f3f3;
+
+  /* ---------- Profondeur : des noirs légèrement rougeâtres ---------- */
+  --fond: #080203; /* « nuit » : fond principal */
+  --fond-profond: #12060a; /* « nuit profonde » : sections en alternance */
+  --lueur: #3a0508; /* halos et lueurs diffuses */
+
+  /* ---------- Nuances dérivées ---------- */
+  --texte-doux: rgba(243, 243, 243, 0.74);
+  --texte-discret: rgba(243, 243, 243, 0.55);
+  --trait: rgba(243, 243, 243, 0.14);
+  --trait-rouge: rgba(231, 14, 23, 0.4);
+  --surface: #100607;
+  --surface-champ: #160a0b;
+  --erreur: #ff6b70;
+
+  /* ---------- Mise en page ---------- */
+  --largeur-max: 1280px;
+  --marge: 20px;
+  --rayon: 14px;
+
+  /* ---------- Mouvement : peu de durées, une seule courbe ---------- */
+  --duree-courte: 200ms;
+  --duree-moyenne: 500ms;
+  --duree-longue: 900ms;
+  --courbe: cubic-bezier(0.2, 0.7, 0.1, 1);
+
+  color-scheme: dark;
+}
+
+@media (min-width: 900px) {
+  :root {
+    --marge: 40px;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  height: 100%;
+  scroll-behavior: smooth;
+  background: var(--fond);
+}
+
+/* « clip » empêche tout débordement horizontal sans créer de zone de
+   défilement : l'en-tête fixé en haut de l'écran continue de fonctionner. */
+html,
+body {
+  max-width: 100vw;
+  overflow-x: clip;
+}
+
+body {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  /* Noir rougeâtre, avec une lueur rouge sombre diffuse venue du haut. */
+  background:
+    radial-gradient(1100px 760px at 50% -160px, rgba(183, 1, 11, 0.3), transparent 72%),
+    var(--fond);
+  background-repeat: no-repeat;
+  color: var(--blanc);
+  font-family: var(--police-texte), system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+main {
+  flex: 1;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ---------------------------------------------------------------------
+   Typographie — une seule échelle pour tout le site.
+
+   Taille maximale sur ordinateur (elle diminue sur téléphone) :
+     .titre-ouverture   70 px   titre de page (h1)
+     .titre-section     46 px   titre de section (h2), et .declaration
+     .titre-element     32 px   titre d'un élément : parcours, événement (h3)
+     .chapeau           20 px   texte d'introduction
+     texte courant      17 px
+     .annotation        12 px   étiquettes techniques (Space Grotesk)
+
+   Toutes les pages utilisent ces classes : un même niveau a partout la
+   même taille, et les écarts entre niveaux restent nets.
+   --------------------------------------------------------------------- */
+
+/* Titres : même famille visuelle que le logo (capitales grasses et larges) */
+h1,
+h2,
+h3 {
+  font-family: var(--police-titre), system-ui, sans-serif;
+  font-weight: 900;
+  font-stretch: 125%;
+  text-transform: uppercase;
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+/* Grande déclaration éditoriale. Sur téléphone, elle reste lisible en
+   quelques lignes ; elle ne prend son ampleur que sur grand écran. */
+.declaration {
+  font-family: var(--police-titre), system-ui, sans-serif;
+  font-weight: 900;
+  font-stretch: 112%;
+  font-size: clamp(1.7rem, 7.2vw, 2.9rem);
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+/* Mot mis en valeur dans un titre ou une déclaration */
+.accent {
+  color: var(--rouge);
+}
+
+/* Titre de section */
+/* Titre de page. Sur téléphone, il suit la largeur de l'écran pour que
+   les mots longs (« événements ») tiennent sur une ligne. */
+.titre-ouverture {
+  font-size: clamp(1.7rem, 8.4vw, 4.4rem);
+  line-height: 0.98;
+}
+
+.titre-section {
+  font-size: clamp(1.75rem, 6.4vw, 2.9rem);
+}
+
+.titre-element {
+  font-size: clamp(1.45rem, 6vw, 2rem);
+  line-height: 1.05;
+}
+
+/* Texte courant d'un bloc éditorial */
+.texte {
+  max-width: 58ch;
+  color: var(--texte-doux);
+  font-size: 1.0625rem;
+}
+
+/* Chapeau : un cran au-dessus du texte courant */
+.chapeau {
+  max-width: 44ch;
+  color: var(--texte-doux);
+  font-size: clamp(1.06rem, 0.9vw + 0.8rem, 1.25rem);
+  line-height: 1.55;
+}
+
+/* Annotation : petites capitales techniques, comme sur un relevé
+   astronomique. Un numéro rouge peut la précéder. */
+.annotation {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 12px;
+  font-family: var(--police-annotation), system-ui, sans-serif;
+  font-size: 0.74rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--texte-doux);
+}
+
+.annotation .numero {
+  color: var(--rouge);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+/* Repère de section (« 01 Le collectif ») : une annotation plus présente,
+   dont le numéro prend l'allure d'un grand chiffre. Elle grandit sur
+   ordinateur pour rester à l'échelle des grands titres. */
+.annotation-section {
+  gap: 14px;
+  font-size: 0.8rem;
+  color: var(--blanc);
+}
+
+/* Le repère de section ouvre chaque section de la même façon sur toutes
+   les pages : un filet sur toute la largeur, puis le numéro et le libellé. */
+.annotation-section {
+  display: flex;
+  width: 100%;
+  padding-top: 20px;
+  border-top: 1px solid var(--trait);
+}
+
+.annotation-section .numero {
+  font-family: var(--police-titre), system-ui, sans-serif;
+  font-weight: 900;
+  font-stretch: 112%;
+  font-size: 1.9em;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+@media (min-width: 900px) {
+  .annotation-section {
+    gap: 18px;
+    font-size: 1rem;
+  }
+
+  .annotation-section .numero {
+    font-size: 2.2em;
+  }
+}
+
+/* ---------------------------------------------------------------------
+   Mise en page
+   --------------------------------------------------------------------- */
+
+/* Conteneur centré, réutilisable sur toutes les pages */
+.conteneur {
+  width: 100%;
+  max-width: var(--largeur-max);
+  margin: 0 auto;
+  padding: 0 var(--marge);
+}
+
+/* ---------------------------------------------------------------------
+   Boutons
+   <a class="bouton">Texte <span class="fleche" aria-hidden="true">→</span></a>
+   La flèche est facultative ; elle avance légèrement au survol.
+   --------------------------------------------------------------------- */
+
+.bouton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 54px;
+  padding: 0 28px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--rouge);
+  color: #ffffff;
+  font-family: var(--police-titre), system-ui, sans-serif;
+  font-weight: 800;
+  font-stretch: 112%;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition:
+    background var(--duree-courte) ease,
+    box-shadow var(--duree-courte) ease,
+    transform var(--duree-courte) ease;
+  box-shadow: 0 0 28px rgba(231, 14, 23, 0.35);
+}
+
+.bouton .fleche {
+  font-family: var(--police-annotation), system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 1.1em;
+  transition: transform var(--duree-courte) var(--courbe);
+}
+
+.bouton:hover {
+  background: #ff1c26;
+  box-shadow: 0 0 40px rgba(231, 14, 23, 0.55);
+}
+
+.bouton:hover .fleche {
+  transform: translateX(4px);
+}
+
+.bouton:active {
+  transform: scale(0.98);
+}
+
+.bouton:disabled {
+  background: var(--rouge-sombre);
+  box-shadow: none;
+  cursor: progress;
+  opacity: 0.75;
+}
+
+/* Bouton secondaire : même forme, simple contour rouge */
+.bouton-secondaire {
+  background: transparent;
+  border: 1px solid var(--rouge);
+  box-shadow: none;
+  color: var(--blanc);
+}
+
+.bouton-secondaire:hover {
+  background: rgba(231, 14, 23, 0.18);
+  box-shadow: none;
+}
+
+/* ---------------------------------------------------------------------
+   Apparition au défilement (voir components/mouvement/Apparition.js)
+
+   Le masquage initial ne s'applique que si JavaScript fonctionne et si
+   le visiteur n'a pas demandé à réduire les animations : sans cela, le
+   contenu reste simplement visible.
+   --------------------------------------------------------------------- */
+
+.apparition {
+  transition:
+    opacity var(--duree-longue) var(--courbe),
+    transform var(--duree-longue) var(--courbe);
+  transition-delay: var(--delai, 0ms);
+}
+
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .apparition:not([data-visible="true"]) {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+}
+
+/* Tant qu'un élément n'est pas encore apparu, ses animations internes
+   (emblèmes Noyau et Orbite…) restent en pause : le téléphone ne
+   travaille pas pour ce qui n'est pas à l'écran, en particulier pendant
+   l'ouverture de la page. */
+.apparition:not([data-visible="true"]) * {
+  animation-play-state: paused;
+}
+
+/* ---------------------------------------------------------------------
+   Accessibilité
+   --------------------------------------------------------------------- */
+
+/* Contour visible au clavier, sur tous les éléments interactifs */
+:focus-visible {
+  outline: 2px solid var(--rouge);
+  outline-offset: 3px;
+}
+
+/* Texte réservé aux lecteurs d'écran */
+.lecteur-ecran {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Mouvement réduit : plus rien ne bouge, tout reste visible. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}

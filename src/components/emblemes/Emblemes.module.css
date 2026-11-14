@@ -1,0 +1,184 @@
+/* Styles communs aux emblèmes Noyau et Orbite.
+
+   Règle du mouvement : lent, rare, jamais plus de deux choses qui bougent
+   en même temps dans un emblème. Les durées sont longues (de 8 secondes à
+   plusieurs minutes) pour que l'œil perçoive une vie, pas une animation. */
+
+.embleme {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* ---------- Traits ---------- */
+
+.anneauPointille {
+  fill: none;
+  stroke: rgba(243, 243, 243, 0.24);
+  stroke-width: 1;
+  stroke-dasharray: 1.5 7;
+  stroke-linecap: round;
+}
+
+.anneauFin {
+  fill: none;
+  stroke: rgba(243, 243, 243, 0.1);
+  stroke-width: 1;
+}
+
+.ligneFine {
+  stroke: rgba(243, 243, 243, 0.16);
+  stroke-width: 1;
+}
+
+.facette {
+  fill: none;
+  stroke: rgba(231, 14, 23, 0.38);
+  stroke-width: 1;
+}
+
+.trajectoire {
+  fill: none;
+  stroke: rgba(243, 243, 243, 0.2);
+  stroke-width: 1;
+}
+
+.segmentRouge {
+  fill: none;
+  stroke: var(--rouge);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+
+.segmentRougeFin {
+  fill: none;
+  stroke: var(--rouge-sombre);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+.contourCoeur {
+  fill: none;
+  stroke: rgba(255, 120, 125, 0.45);
+  stroke-width: 1;
+}
+
+.repere {
+  fill: var(--rouge);
+}
+
+/* ---------- Corps ---------- */
+
+.corps {
+  fill: var(--rouge);
+}
+
+.corpsClair {
+  fill: var(--blanc);
+  fill-opacity: 0.85;
+}
+
+.comete {
+  fill: var(--rouge);
+}
+
+.liens line {
+  stroke: rgba(231, 14, 23, 0.7);
+  stroke-width: 1;
+  stroke-dasharray: 3 5;
+}
+
+/* ---------- Mouvements ---------- */
+
+/* Les rotations se font autour du centre du dessin (200, 200). */
+.rotationLente,
+.rotationTresLente,
+.respiration {
+  transform-box: view-box;
+  transform-origin: 200px 200px;
+}
+
+.rotationLente {
+  animation: rotation 140s linear infinite;
+}
+
+.rotationTresLente {
+  animation: rotation 220s linear infinite;
+}
+
+@keyframes rotation {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Le cœur respire : un halo qui grandit et s'estompe, très lentement. */
+.respiration {
+  animation: respiration 8s ease-in-out infinite;
+}
+
+@keyframes respiration {
+  0%,
+  100% {
+    transform: scale(0.92);
+    opacity: 0.75;
+  }
+  50% {
+    transform: scale(1.06);
+    opacity: 1;
+  }
+}
+
+/* Une impulsion descend vers le cœur, puis un long silence. */
+.impulsion {
+  fill: #ffffff;
+  opacity: 0;
+  animation: impulsion 11s var(--courbe) infinite;
+  animation-delay: 2s;
+}
+
+@keyframes impulsion {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  4% {
+    opacity: 1;
+  }
+  20% {
+    transform: translateY(118px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(118px);
+    opacity: 0;
+  }
+}
+
+/* Les liens de la constellation s'allument et s'estompent lentement. */
+.liens {
+  animation: liens 14s ease-in-out infinite;
+}
+
+@keyframes liens {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Mouvement réduit : l'impulsion reste invisible, le reste est figé
+   (la règle générale de globals.css coupe toutes les animations). */
+@media (prefers-reduced-motion: reduce) {
+  .impulsion {
+    opacity: 0;
+  }
+
+  .liens {
+    opacity: 0.6;
+  }
+}

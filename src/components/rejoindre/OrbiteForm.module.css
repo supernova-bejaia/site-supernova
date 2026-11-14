@@ -1,0 +1,263 @@
+.formulaire {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Une étape du formulaire : sa légende numérotée, puis ses champs.
+   Les étapes sont séparées par un filet, pas enfermées dans des cartes. */
+.etape {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+  padding: 26px 0 8px;
+  border: 0;
+  border-top: 1px solid var(--trait);
+}
+
+.etape:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+/* « float » sort la légende de son placement spécial dans le cadre du
+   fieldset : elle s'aligne alors comme n'importe quel autre élément. */
+.legende {
+  float: left;
+  width: 100%;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font-family: var(--police-annotation), system-ui, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--texte-doux);
+}
+
+.numeroEtape {
+  font-family: var(--police-titre), system-ui, sans-serif;
+  font-weight: 900;
+  font-stretch: 112%;
+  font-size: 1.5em;
+  letter-spacing: 0;
+  color: var(--rouge);
+}
+
+/* Deux champs côte à côte sur grand écran, l'un sous l'autre sur téléphone. */
+.rangee {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
+@media (min-width: 560px) {
+  .rangee {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.champ {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.champ label,
+.groupe legend {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--blanc);
+}
+
+.facultatif {
+  font-weight: 400;
+  color: var(--texte-discret);
+}
+
+/* Taille de texte de 16px minimum : en dessous, iOS zoome sur le champ. */
+.champ input,
+.champ select,
+.champ textarea {
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 14px;
+  border: 1px solid var(--trait);
+  border-radius: 12px;
+  background: var(--surface-champ);
+  color: var(--blanc);
+  font: inherit;
+  font-size: 1rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.champ textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.champ input::placeholder {
+  color: var(--texte-discret);
+}
+
+.champ input:focus,
+.champ select:focus,
+.champ textarea:focus {
+  outline: none;
+  border-color: var(--rouge);
+  box-shadow: 0 0 0 3px rgba(231, 14, 23, 0.25);
+}
+
+.champ [aria-invalid="true"] {
+  border-color: var(--erreur);
+}
+
+.erreur {
+  font-size: 0.85rem;
+  color: var(--erreur);
+}
+
+/* Centres d'intérêt : des « puces » à cocher. */
+.groupe {
+  border: 0;
+  min-width: 0;
+}
+
+.groupe legend {
+  margin-bottom: 10px;
+}
+
+.puces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.puce {
+  position: relative;
+  cursor: pointer;
+}
+
+.puce input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.puce span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--trait);
+  border-radius: 999px;
+  background: var(--surface-champ);
+  font-size: 0.92rem;
+  color: var(--texte-doux);
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.puce input:checked + span {
+  border-color: var(--rouge);
+  background: rgba(231, 14, 23, 0.18);
+  color: var(--blanc);
+}
+
+.puce input:focus-visible + span {
+  outline: 2px solid var(--rouge);
+  outline-offset: 3px;
+}
+
+/* Case newsletter */
+.case {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 0.92rem;
+  color: var(--texte-doux);
+  cursor: pointer;
+}
+
+.case input {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+  accent-color: var(--rouge);
+}
+
+/* Champ piège : sorti de l'écran plutôt que masqué, pour tromper les robots. */
+.piege {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Rappel sur l'usage des données, juste avant le bouton d'envoi */
+.information {
+  font-size: 0.88rem;
+  color: var(--texte-discret);
+}
+
+.information a {
+  color: var(--texte-doux);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.information a:hover {
+  color: var(--blanc);
+}
+
+.message {
+  font-size: 0.92rem;
+  color: var(--erreur);
+}
+
+.message:empty {
+  display: none;
+}
+
+.envoi {
+  width: 100%;
+  min-height: 58px;
+}
+
+/* Confirmation après inscription */
+.confirmation {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 28px 24px;
+  border: 1px solid var(--rouge);
+  border-radius: var(--rayon);
+  background: rgba(231, 14, 23, 0.1);
+  outline: none;
+}
+
+.confirmation h3 {
+  font-size: 1.3rem;
+}
+
+.confirmation p {
+  color: var(--texte-doux);
+}
+
+.pastille {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--rouge);
+  color: #ffffff;
+  font-size: 1.3rem;
+  font-weight: 700;
+}

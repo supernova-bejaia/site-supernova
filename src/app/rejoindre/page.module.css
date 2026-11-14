@@ -1,0 +1,276 @@
+/* =====================================================================
+   Page « Rejoindre » — pensée d'abord pour le téléphone.
+   Priorité : arriver vite au formulaire, sans perdre l'identité.
+   ===================================================================== */
+
+/* ---------------------------------------------------------------------
+   Ouverture
+   Téléphone : l'emblème de l'Orbite se devine en haut à droite, en
+   partie hors de l'écran, derrière le titre.
+   Ordinateur : il prend sa place à droite du titre.
+   --------------------------------------------------------------------- */
+
+.ouverture {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  padding-top: 48px;
+  padding-bottom: 40px;
+}
+
+.emblemeOuverture {
+  position: absolute;
+  top: -12px;
+  right: -110px;
+  width: 280px;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.texteOuverture {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+/* Raccourci vers le formulaire, utile sur téléphone */
+.raccourci {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  font-family: var(--police-annotation), system-ui, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--blanc);
+}
+
+.raccourci span {
+  color: var(--rouge);
+  transition: transform var(--duree-courte) var(--courbe);
+}
+
+.raccourci:hover span {
+  transform: translateY(3px);
+}
+
+/* Entrée en scène au chargement */
+.entree {
+  animation: entree var(--duree-longue) var(--courbe) both;
+}
+
+.entree:nth-child(2) {
+  animation-delay: 100ms;
+}
+
+.entree:nth-child(3) {
+  animation-delay: 220ms;
+}
+
+.entree:nth-child(4) {
+  animation-delay: 340ms;
+}
+
+@keyframes entree {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------------------------------------------------------------------
+   01 — L'Orbite : présentation, puis formulaire
+   --------------------------------------------------------------------- */
+
+.section {
+  padding-bottom: 80px;
+}
+
+.grilleOrbite {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 36px;
+}
+
+.presentation {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+/* Liste des avantages : la puce reprend la comète, en petit */
+.avantages {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.avantages li {
+  position: relative;
+  padding-left: 30px;
+  color: var(--blanc);
+}
+
+.avantages li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.42em;
+  width: 18px;
+  height: 12px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 80'%3E%3Cg fill='%23e70e17'%3E%3Ccircle cx='30' cy='50' r='28'/%3E%3Cpath d='M18 25 L119 1 L50 46 Z'/%3E%3Cpath d='M44 38 L114 18 L57 60 Z'/%3E%3Cpath d='M50 58 L100 42 L46 76 Z'/%3E%3C/g%3E%3C/svg%3E")
+    no-repeat center / contain;
+}
+
+.precision {
+  max-width: 46ch;
+  color: var(--texte-discret);
+  font-size: 0.94rem;
+}
+
+/* Le panneau du formulaire : le seul « bloc » de la page, parce qu'il
+   regroupe une action. Un liseré rouge lumineux en haut le signale. */
+.panneauFormulaire {
+  position: relative;
+  /* Laisse la place à l'en-tête fixe quand on arrive par le raccourci. */
+  scroll-margin-top: 80px;
+  padding: 28px 18px 24px;
+  border: 1px solid var(--trait);
+  border-radius: 20px;
+  background:
+    radial-gradient(90% 40% at 50% 0%, rgba(183, 1, 11, 0.22), transparent 70%),
+    var(--surface);
+}
+
+.panneauFormulaire::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 24px;
+  right: 24px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, var(--rouge), transparent);
+}
+
+.titrePanneau {
+  margin-bottom: 22px;
+  color: var(--blanc);
+}
+
+/* ---------------------------------------------------------------------
+   02 — Le Noyau : une bande « nuit profonde »
+   --------------------------------------------------------------------- */
+
+.noyau {
+  padding-top: 56px;
+  padding-bottom: 32px;
+  background:
+    radial-gradient(60% 50% at 80% 30%, rgba(58, 5, 8, 0.9), transparent 70%),
+    var(--fond-profond);
+  border-top: 1px solid var(--trait);
+  border-bottom: 1px solid var(--trait);
+}
+
+.grilleNoyau {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px;
+}
+
+.texteNoyau {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.emblemeNoyau {
+  width: min(70vw, 280px);
+  margin: 0 auto;
+}
+
+/* =====================================================================
+   Tablette et ordinateur
+   ===================================================================== */
+
+@media (min-width: 560px) {
+  .panneauFormulaire {
+    padding: 36px 32px 32px;
+  }
+}
+
+@media (min-width: 900px) {
+  .ouverture {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    align-items: center;
+    gap: 48px;
+    padding-top: 72px;
+    padding-bottom: 88px;
+  }
+
+  .emblemeOuverture {
+    position: static;
+    order: 2;
+    width: 100%;
+    max-width: 440px;
+    justify-self: end;
+    opacity: 1;
+  }
+
+  .texteOuverture {
+    gap: 26px;
+  }
+
+  .raccourci {
+    display: none;
+  }
+
+  /* La présentation reste visible à gauche pendant qu'on remplit le
+     formulaire à droite. */
+  .grilleOrbite {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    align-items: start;
+    gap: 64px;
+  }
+
+  .presentation {
+    position: sticky;
+    top: 104px;
+    gap: 22px;
+  }
+
+  .panneauFormulaire {
+    padding: 44px 44px 40px;
+  }
+
+  .section {
+    padding-bottom: 120px;
+  }
+
+  .noyau {
+    padding-top: 104px;
+    padding-bottom: 88px;
+  }
+
+  .grilleNoyau {
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    align-items: center;
+    gap: 64px;
+  }
+
+  .emblemeNoyau {
+    width: 100%;
+    max-width: 400px;
+  }
+}

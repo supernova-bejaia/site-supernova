@@ -1,0 +1,190 @@
+/* Composants de l'espace équipe. */
+
+/* ---------- Indicateur ---------- */
+
+.indicateur {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px 16px;
+  border: 1px solid var(--trait);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.indicateurAccent {
+  border-color: var(--trait-rouge);
+  background:
+    radial-gradient(100% 80% at 100% 0%, rgba(231, 14, 23, 0.2), transparent 70%),
+    var(--surface);
+}
+
+.valeur {
+  font-family: var(--police-titre), system-ui, sans-serif;
+  font-weight: 900;
+  font-stretch: 112%;
+  font-size: clamp(2rem, 8vw, 3rem);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.precision {
+  font-size: 0.85rem;
+  color: var(--texte-discret);
+}
+
+/* ---------- Tableau des inscriptions ---------- */
+
+.cadreTableau {
+  overflow-x: auto;
+  border: 1px solid var(--trait);
+  border-radius: 16px;
+}
+
+.tableau {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.tableau th {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--trait);
+  background: var(--fond-profond);
+  font-family: var(--police-annotation), system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-align: left;
+  text-transform: uppercase;
+  color: var(--texte-doux);
+}
+
+.tableau td {
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--trait);
+}
+
+.tableau tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.tableau tbody tr:hover {
+  background: rgba(243, 243, 243, 0.03);
+}
+
+.colonneDate {
+  font-variant-numeric: tabular-nums;
+  color: var(--texte-doux);
+  white-space: nowrap;
+}
+
+.vide {
+  color: var(--texte-discret);
+}
+
+/* ---------- Répartition ---------- */
+
+.repartition {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.titreRepartition {
+  font-family: var(--police-texte), system-ui, sans-serif;
+  font-weight: 700;
+  font-stretch: 100%;
+  font-size: 1rem;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.listeRepartition {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.listeRepartition li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px 12px;
+}
+
+.nomRepartition {
+  color: var(--blanc);
+}
+
+.nombreRepartition {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.barre {
+  grid-column: 1 / -1;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(243, 243, 243, 0.08);
+  overflow: hidden;
+}
+
+.barre span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--rouge);
+}
+
+/* ---------- Formulaire de connexion ---------- */
+
+.formulaireConnexion {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.champ {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.champ label {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.champ input {
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 14px;
+  border: 1px solid var(--trait);
+  border-radius: 12px;
+  background: var(--surface-champ);
+  color: var(--blanc);
+  font: inherit;
+  font-size: 1rem;
+}
+
+.champ input:focus {
+  outline: none;
+  border-color: var(--rouge);
+  box-shadow: 0 0 0 3px rgba(231, 14, 23, 0.25);
+}
+
+.message {
+  font-size: 0.92rem;
+  color: var(--erreur);
+}
+
+.message:empty {
+  display: none;
+}
+
+.boutonPlein {
+  width: 100%;
+}

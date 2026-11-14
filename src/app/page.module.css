@@ -1,0 +1,503 @@
+/* =====================================================================
+   Page d'accueil — pensée d'abord pour le téléphone.
+   Les règles de base visent un petit écran ; les blocs « @media » plus
+   bas réorganisent la page sur tablette et ordinateur.
+   ===================================================================== */
+
+/* ---------------------------------------------------------------------
+   Ouverture
+   --------------------------------------------------------------------- */
+
+.ouverture {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: calc(100svh - 64px);
+  max-height: 900px;
+  overflow: hidden;
+}
+
+/* L'orbite lumineuse derrière le logo : un grand cercle dont un arc
+   s'illumine. Elle tourne très lentement, comme une comète en chemin.
+
+   Performance : ce grand cercle et sa lueur coûtent cher à dessiner. Il
+   est placé sur son propre calque (« will-change ») pour n'être dessiné
+   qu'une fois, puis seulement tourné par la carte graphique. La rotation
+   ne démarre qu'après l'entrée du texte, pour ne pas lui faire concurrence. */
+.orbiteFond {
+  position: absolute;
+  top: 46%;
+  left: 50%;
+  width: min(150vw, 980px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid rgba(231, 14, 23, 0.1);
+  border-top-color: var(--rouge);
+  border-right-color: rgba(231, 14, 23, 0.55);
+  box-shadow:
+    0 -10px 60px -20px rgba(231, 14, 23, 0.6),
+    inset 0 30px 80px -50px rgba(231, 14, 23, 0.55);
+  transform: translate(-50%, -50%) rotate(24deg);
+  will-change: transform;
+  pointer-events: none;
+  animation: orbite 120s linear 1.4s infinite;
+}
+
+@keyframes orbite {
+  from {
+    transform: translate(-50%, -50%) rotate(24deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(384deg);
+  }
+}
+
+.contenuOuverture {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 26px;
+  padding-top: 32px;
+  padding-bottom: 56px;
+  text-align: center;
+}
+
+.titre {
+  /* Le logo gère lui-même sa taille et sa graisse. */
+  line-height: 1;
+}
+
+.accroche {
+  max-width: 24ch;
+  color: var(--texte-doux);
+  font-size: clamp(1.12rem, 4.4vw, 1.5rem);
+  line-height: 1.45;
+  text-wrap: balance;
+}
+
+.accrocheForte {
+  color: var(--blanc);
+  font-weight: 700;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 4px;
+}
+
+/* Sur téléphone, le bouton principal occupe toute la largeur : il est
+   plus facile à toucher avec le pouce. */
+.actions :global(.bouton) {
+  width: 100%;
+  max-width: 340px;
+}
+
+/* Entrée en scène au chargement : chaque élément monte légèrement et
+   s'éclaire, l'un après l'autre.
+
+   Performance : seules l'opacité et la position sont animées. Un flou
+   (filter: blur) obligerait le téléphone à redessiner le grand logo et sa
+   lueur à chaque image, ce qui faisait saccader l'ouverture. */
+.entree {
+  animation: entree var(--duree-longue) var(--courbe) both;
+}
+
+.entree:nth-child(2) {
+  animation-delay: 120ms;
+}
+
+.entree:nth-child(3) {
+  animation-delay: 300ms;
+}
+
+.entree:nth-child(4) {
+  animation-delay: 440ms;
+}
+
+@keyframes entree {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------------------------------------------------------------------
+   01 — Le collectif : une déclaration éditoriale, sans carte
+   --------------------------------------------------------------------- */
+
+.manifeste {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding-top: 56px;
+  padding-bottom: 88px;
+}
+
+.declaration {
+  max-width: 22ch;
+}
+
+.texteManifeste p {
+  max-width: 52ch;
+}
+
+/* ---------------------------------------------------------------------
+   02 — Deux parcours : une bande « nuit profonde » sur toute la largeur
+   --------------------------------------------------------------------- */
+
+.parcours {
+  position: relative;
+  padding-top: 56px;
+  padding-bottom: 32px;
+  background:
+    radial-gradient(70% 50% at 20% 0%, rgba(58, 5, 8, 0.9), transparent 70%),
+    var(--fond-profond);
+  border-top: 1px solid var(--trait);
+  border-bottom: 1px solid var(--trait);
+}
+
+.enteteParcours {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 8px;
+}
+
+.grilleParcours {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* Un volet : l'emblème, puis le texte. Pas de carte : un simple filet
+   sépare les deux volets. */
+/* L'emblème et le texte partagent le même bord gauche. */
+.volet {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 32px 0 48px;
+}
+
+.volet + .volet {
+  border-top: 1px solid var(--trait);
+}
+
+.illustration {
+  width: min(78vw, 300px);
+}
+
+.texteVolet {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+}
+
+
+.pastilleFermee {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border: 1px solid var(--texte-doux);
+  border-radius: 50%;
+  align-self: center;
+}
+
+/* Lien de volet : souligné qui se dessine au survol */
+.lienVolet {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  margin-top: 2px;
+  font-family: var(--police-titre), system-ui, sans-serif;
+  font-weight: 800;
+  font-stretch: 112%;
+  font-size: 0.92rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--blanc);
+  background: linear-gradient(var(--rouge), var(--rouge)) no-repeat left bottom 8px / 0% 2px;
+  transition: background-size var(--duree-moyenne) var(--courbe);
+}
+
+.lienVolet span {
+  color: var(--rouge);
+  transition: transform var(--duree-courte) var(--courbe);
+}
+
+.lienVolet:hover {
+  background-size: 100% 2px;
+}
+
+.lienVolet:hover span {
+  transform: translateX(4px);
+}
+
+/* ---------------------------------------------------------------------
+   03 — Sur le terrain
+   --------------------------------------------------------------------- */
+
+.evenements {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 40px;
+  padding-top: 72px;
+  padding-bottom: 16px;
+}
+
+.texteEvenements {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.constellation {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.constellation svg {
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+}
+
+.liensConstellation {
+  fill: none;
+  stroke: rgba(243, 243, 243, 0.28);
+  stroke-width: 1;
+  stroke-dasharray: 2 5;
+}
+
+.etoile {
+  fill: var(--blanc);
+  fill-opacity: 0.8;
+}
+
+.etoileRouge {
+  fill: var(--rouge);
+}
+
+.halo {
+  fill: none;
+  stroke: var(--trait-rouge);
+  stroke-width: 1;
+}
+
+.legende {
+  color: var(--texte-discret);
+}
+
+/* ---------------------------------------------------------------------
+   04 — Nos réseaux
+   --------------------------------------------------------------------- */
+
+.reseaux {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px;
+  padding-top: 72px;
+  padding-bottom: 16px;
+}
+
+.texteReseaux {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.listeReseaux {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--trait);
+}
+
+/* Un réseau = une grande ligne cliquable, séparée par un filet. */
+.lienReseau {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  min-height: 88px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--trait);
+  transition: background var(--duree-moyenne) var(--courbe);
+}
+
+.iconeReseau {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 1px solid var(--trait-rouge);
+  border-radius: 16px;
+  background: radial-gradient(circle at 30% 30%, rgba(231, 14, 23, 0.28), transparent 70%);
+  transition: border-color var(--duree-courte) ease, box-shadow var(--duree-courte) ease;
+}
+
+.iconeReseau svg {
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke: var(--blanc);
+  stroke-width: 1.6;
+}
+
+.iconeReseau svg :global(.plein) {
+  fill: var(--rouge);
+  stroke: none;
+}
+
+.texteLienReseau {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+/* L'identifiant en grand : c'est lui qu'on retient. */
+.identifiantReseau {
+  overflow-wrap: anywhere;
+  font-family: var(--police-titre), system-ui, sans-serif;
+  font-weight: 900;
+  font-stretch: 112%;
+  font-size: clamp(1.15rem, 5.4vw, 2.2rem);
+  line-height: 1.05;
+  color: var(--blanc);
+}
+
+.flecheReseau {
+  font-family: var(--police-annotation), system-ui, sans-serif;
+  font-size: 1.5rem;
+  color: var(--rouge);
+  transition: transform var(--duree-courte) var(--courbe);
+}
+
+.lienReseau:hover .iconeReseau {
+  border-color: var(--rouge);
+  box-shadow: 0 0 28px rgba(231, 14, 23, 0.35);
+}
+
+.lienReseau:hover .flecheReseau {
+  transform: translate(3px, -3px);
+}
+
+/* =====================================================================
+   Tablette et ordinateur
+   ===================================================================== */
+
+@media (min-width: 720px) {
+  .contenuOuverture {
+    gap: 30px;
+  }
+
+  .actions :global(.bouton) {
+    width: auto;
+  }
+
+  /* Les deux volets côte à côte, séparés par un filet vertical */
+  .grilleParcours {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    margin-top: 16px;
+  }
+
+  .volet {
+    padding: 24px 40px 56px 0;
+  }
+
+  .volet + .volet {
+    padding-left: 40px;
+    padding-right: 0;
+    border-top: 0;
+    border-left: 1px solid var(--trait);
+  }
+
+  .illustration {
+    width: min(100%, 340px);
+  }
+}
+
+@media (min-width: 900px) {
+  .accroche {
+    max-width: 30ch;
+  }
+
+  /* Le manifeste se compose en asymétrie : la déclaration occupe la
+     largeur, le texte se décale vers la droite. */
+  .manifeste {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: 24px;
+    row-gap: 28px;
+    padding-top: 120px;
+    padding-bottom: 140px;
+  }
+
+  /* Tout le manifeste part du même bord gauche ; la déclaration occupe
+     dix colonnes sur douze, le texte reste dans une largeur de lecture. */
+  .manifeste > :nth-child(1) {
+    grid-column: 1 / -1;
+  }
+
+  .manifeste > :nth-child(2) {
+    grid-column: 1 / span 10;
+  }
+
+  .manifeste > :nth-child(3) {
+    grid-column: 1 / span 7;
+  }
+
+  .parcours {
+    padding-top: 104px;
+    padding-bottom: 56px;
+  }
+
+  .illustration {
+    width: min(100%, 420px);
+  }
+
+  .evenements {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    align-items: center;
+    gap: 64px;
+    padding-top: 120px;
+  }
+
+  .constellation {
+    align-items: flex-end;
+  }
+}
+
+@media (min-width: 900px) {
+  .reseaux {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    align-items: center;
+    gap: 64px;
+    padding-top: 120px;
+  }
+
+  .lienReseau {
+    min-height: 120px;
+    gap: 28px;
+  }
+
+  .iconeReseau {
+    width: 64px;
+    height: 64px;
+  }
+}

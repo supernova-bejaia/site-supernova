@@ -1,0 +1,545 @@
+/* =====================================================================
+   Composants de la page « Événements » — pensés d'abord pour le téléphone.
+   ===================================================================== */
+
+/* ---------------------------------------------------------------------
+   Visuel : cadre de photo ou visuel de remplacement
+   --------------------------------------------------------------------- */
+
+.cadre {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.cadre img {
+  object-fit: cover;
+  transition: transform var(--duree-longue) var(--courbe);
+}
+
+/* Au survol (souris uniquement), la photo avance très légèrement. */
+@media (hover: hover) {
+  .cadre:hover img {
+    transform: scale(1.035);
+  }
+}
+
+.remplacement {
+  display: flex;
+  align-items: flex-end;
+  background:
+    radial-gradient(80% 70% at 30% 40%, rgba(183, 1, 11, 0.45), transparent 70%),
+    var(--fond-profond);
+  border: 1px solid var(--trait);
+}
+
+.remplacement svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.remplacementOrbite {
+  fill: none;
+  stroke: rgba(243, 243, 243, 0.2);
+  stroke-width: 1;
+}
+
+.remplacementCoeur {
+  fill: var(--rouge);
+}
+
+.remplacementTexte {
+  position: relative;
+  margin: 16px;
+  font-family: var(--police-annotation), system-ui, sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--texte-doux);
+}
+
+/* ---------------------------------------------------------------------
+   Bloc date : le jour en grand chiffre
+   --------------------------------------------------------------------- */
+
+.blocDate {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  line-height: 1;
+}
+
+.jour {
+  font-family: var(--police-titre), system-ui, sans-serif;
+  font-weight: 900;
+  font-stretch: 112%;
+  font-size: 2.6rem;
+  letter-spacing: -0.02em;
+  color: var(--blanc);
+}
+
+.moisAnnee {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 3px;
+  font-family: var(--police-annotation), system-ui, sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.moisAnnee span:first-child {
+  color: var(--rouge);
+  font-weight: 700;
+}
+
+.moisAnnee span:last-child {
+  color: var(--texte-discret);
+}
+
+.blocDateGrand .jour {
+  font-size: clamp(3.6rem, 16vw, 6rem);
+}
+
+.blocDateGrand .moisAnnee {
+  font-size: 0.82rem;
+  padding-bottom: 8px;
+}
+
+/* ---------------------------------------------------------------------
+   Étiquettes : catégorie
+   --------------------------------------------------------------------- */
+
+.etiquettes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ---------------------------------------------------------------------
+   À la une
+   --------------------------------------------------------------------- */
+
+.aLaUne {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 28px;
+}
+
+.visuelUne {
+  aspect-ratio: 4 / 3;
+  border-radius: 20px;
+  box-shadow: 0 30px 80px -40px rgba(231, 14, 23, 0.55);
+}
+
+.texteUne {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.enteteUne {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--trait);
+}
+
+/* Les titres d'événements suivent l'échelle commune : niveau
+   « titre d'élément » (32 px au plus) sous les titres de section. */
+.titreUne {
+  font-size: clamp(1.4rem, 6.4vw, 2.2rem);
+}
+
+.infos {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.infos div {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  gap: 12px;
+  align-items: baseline;
+}
+
+.infos dt {
+  font-family: var(--police-annotation), system-ui, sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--texte-discret);
+}
+
+.infos dd {
+  color: var(--blanc);
+}
+
+.infos dd::first-letter {
+  text-transform: uppercase;
+}
+
+.description {
+  max-width: 58ch;
+  color: var(--texte-doux);
+}
+
+/* Lien éditorial : souligné qui se dessine au survol */
+.lienEvenement {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  font-family: var(--police-titre), system-ui, sans-serif;
+  font-weight: 800;
+  font-stretch: 112%;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: linear-gradient(var(--rouge), var(--rouge)) no-repeat left bottom 8px / 0% 2px;
+  transition: background-size var(--duree-moyenne) var(--courbe);
+}
+
+.lienEvenement span {
+  color: var(--rouge);
+  transition: transform var(--duree-courte) var(--courbe);
+}
+
+.lienEvenement:hover {
+  background-size: 100% 2px;
+}
+
+.lienEvenement:hover span {
+  transform: translateX(4px);
+}
+
+/* ---------------------------------------------------------------------
+   À venir : lignes d'agenda
+   --------------------------------------------------------------------- */
+
+.ligneAgenda {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+  padding: 26px 0;
+  border-bottom: 1px solid var(--trait);
+}
+
+.ligneAgenda .blocDate {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.ligneAgenda .moisAnnee {
+  padding-bottom: 0;
+}
+
+.texteAgenda {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.titreAgenda {
+  font-size: clamp(1.2rem, 5vw, 1.5rem);
+}
+
+.lieuAgenda {
+  font-size: 0.94rem;
+  color: var(--blanc);
+}
+
+.resume {
+  max-width: 54ch;
+  color: var(--texte-doux);
+}
+
+/* Sur téléphone, la ligne reste compacte : pas de vignette. */
+.vignetteAgenda {
+  display: none;
+}
+
+/* ---------------------------------------------------------------------
+   Archives : événements passés
+   --------------------------------------------------------------------- */
+
+.archive {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 40px 0 48px;
+  border-bottom: 1px solid var(--trait);
+}
+
+.enteteArchive {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 18px;
+}
+
+.reperesArchive {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.moisArchive {
+  font-family: var(--police-titre), system-ui, sans-serif;
+  font-weight: 900;
+  font-stretch: 112%;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  color: var(--rouge);
+}
+
+.lieuArchive {
+  font-size: 0.94rem;
+  color: var(--texte-doux);
+}
+
+.recitArchive {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.titreArchive {
+  font-size: clamp(1.4rem, 6.4vw, 2rem);
+}
+
+/* Filet de sécurité : un mot très long dans un titre (saisi plus tard
+   dans les données) passe à la ligne au lieu de déborder. */
+.titreUne,
+.titreAgenda,
+.titreArchive {
+  overflow-wrap: break-word;
+}
+
+/* ---------------------------------------------------------------------
+   Galerie : la composition s'adapte au nombre de photos
+   --------------------------------------------------------------------- */
+
+.galerie {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.grilleGalerie {
+  display: grid;
+  gap: 8px;
+}
+
+.tuile {
+  position: relative;
+  min-width: 0;
+}
+
+.tuile .cadre {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+}
+
+.tuile figcaption {
+  margin-top: 10px;
+  font-size: 0.88rem;
+  color: var(--texte-discret);
+}
+
+/* Une photo : un grand format */
+.grilleGalerie[data-disposition="une"] .cadre {
+  aspect-ratio: 16 / 10;
+}
+
+/* Deux photos : côte à côte */
+.grilleGalerie[data-disposition="deux"] {
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 200px;
+}
+
+/* Trois photos : une grande, deux petites */
+.grilleGalerie[data-disposition="trois"] {
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 150px;
+}
+
+.grilleGalerie[data-disposition="trois"] .tuile:first-child {
+  grid-column: 1 / -1;
+  grid-row: span 2;
+}
+
+/* Quatre photos : une grille régulière */
+.grilleGalerie[data-disposition="quatre"] {
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 150px;
+}
+
+/* Cinq photos et plus : une grande photo, puis quatre petites */
+.grilleGalerie[data-disposition="mosaique"] {
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 130px;
+}
+
+.grilleGalerie[data-disposition="mosaique"] .tuile:first-child {
+  grid-column: 1 / -1;
+  grid-row: span 2;
+}
+
+/* « +3 » sur la dernière photo de la mosaïque */
+.compteurPhotos {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: rgba(8, 2, 3, 0.62);
+  font-family: var(--police-titre), system-ui, sans-serif;
+  font-weight: 900;
+  font-stretch: 112%;
+  font-size: 1.8rem;
+  color: var(--blanc);
+  pointer-events: none;
+}
+
+/* Photos supplémentaires, dépliables */
+.suite summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  cursor: pointer;
+  list-style: none;
+  font-family: var(--police-annotation), system-ui, sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--blanc);
+}
+
+.suite summary::-webkit-details-marker {
+  display: none;
+}
+
+.suite summary span {
+  color: var(--rouge);
+  transition: transform var(--duree-courte) var(--courbe);
+}
+
+.suite[open] summary span {
+  transform: rotate(180deg);
+}
+
+.grilleSuite {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 150px;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* =====================================================================
+   Tablette et ordinateur
+   ===================================================================== */
+
+@media (min-width: 720px) {
+  .grilleGalerie[data-disposition="deux"] {
+    grid-auto-rows: 320px;
+  }
+
+  .grilleGalerie[data-disposition="trois"] {
+    grid-template-columns: 2fr 1fr;
+    grid-auto-rows: 210px;
+  }
+
+  .grilleGalerie[data-disposition="trois"] .tuile:first-child {
+    grid-column: 1;
+  }
+
+  .grilleGalerie[data-disposition="quatre"] {
+    grid-auto-rows: 240px;
+  }
+
+  .grilleGalerie[data-disposition="mosaique"] {
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 200px;
+  }
+
+  .grilleGalerie[data-disposition="mosaique"] .tuile:first-child {
+    grid-column: span 2;
+  }
+
+  .grilleSuite {
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 180px;
+  }
+}
+
+@media (min-width: 900px) {
+  /* À la une : la photo à gauche, le texte à droite */
+  .aLaUne {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: 56px;
+    align-items: center;
+  }
+
+  .visuelUne {
+    aspect-ratio: 5 / 4;
+  }
+
+  /* Agenda : date, texte, vignette */
+  .ligneAgenda {
+    grid-template-columns: 120px minmax(0, 1fr) 260px;
+    gap: 40px;
+    padding: 36px 0;
+  }
+
+  .ligneAgenda .blocDate {
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 10px;
+  }
+
+  .ligneAgenda .jour {
+    font-size: 3.2rem;
+  }
+
+  .ligneAgenda .moisAnnee {
+    padding-bottom: 4px;
+  }
+
+  .vignetteAgenda {
+    display: flex;
+    aspect-ratio: 16 / 10;
+    border-radius: 12px;
+  }
+
+  /* Archives : les repères à gauche, le récit à droite */
+  .archive {
+    gap: 36px;
+    padding: 64px 0 72px;
+  }
+
+  .enteteArchive {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: 48px;
+  }
+
+  .moisArchive {
+    font-size: 1.3rem;
+  }
+}

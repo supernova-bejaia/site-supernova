@@ -1,0 +1,137 @@
+/* =====================================================================
+   Page « Vos données » — pensée d'abord pour le téléphone.
+   Une page de lecture : des rubriques séparées par des filets, sans
+   cartes, dans une largeur de ligne confortable.
+   ===================================================================== */
+
+.page {
+  padding-bottom: 24px;
+}
+
+/* ---------- Ouverture ---------- */
+
+.ouverture {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  padding-top: 48px;
+  padding-bottom: 48px;
+}
+
+.entree {
+  animation: entree var(--duree-longue) var(--courbe) both;
+}
+
+.entree:nth-child(2) {
+  animation-delay: 100ms;
+}
+
+.entree:nth-child(3) {
+  animation-delay: 220ms;
+}
+
+@keyframes entree {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Rubriques ---------- */
+
+.rubrique {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  padding: 28px 0 32px;
+  border-top: 1px solid var(--trait);
+}
+
+.enteteRubrique {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+
+.enteteRubrique :global(.annotation .numero) {
+  font-family: var(--police-titre), system-ui, sans-serif;
+  font-weight: 900;
+  font-stretch: 112%;
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.titreRubrique {
+  font-size: clamp(1.15rem, 4.6vw, 1.5rem);
+  line-height: 1.1;
+}
+
+.texteRubrique {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 62ch;
+  color: var(--texte-doux);
+  font-size: 1.0625rem;
+}
+
+.texteRubrique ul {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-left: 1.1em;
+}
+
+.texteRubrique li::marker {
+  color: var(--rouge);
+}
+
+.texteRubrique a {
+  color: var(--blanc);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Emplacement à compléter : volontairement très visible. */
+.aCompleter {
+  padding: 2px 8px;
+  border: 1px dashed var(--erreur);
+  border-radius: 6px;
+  color: var(--erreur);
+  font-weight: 600;
+}
+
+.retour {
+  padding-top: 32px;
+  border-top: 1px solid var(--trait);
+}
+
+/* ---------- Ordinateur : le titre à gauche, le texte à droite ---------- */
+
+@media (min-width: 900px) {
+  .ouverture {
+    gap: 26px;
+    padding-top: 72px;
+    padding-bottom: 72px;
+  }
+
+  .rubrique {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: 48px;
+    padding: 40px 0 48px;
+  }
+
+  .enteteRubrique {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .enteteRubrique :global(.annotation .numero) {
+    font-size: 1.9rem;
+  }
+}
