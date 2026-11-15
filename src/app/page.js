@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Logo from "@/components/layout/Logo";
 import Apparition from "@/components/mouvement/Apparition";
+import DecorAnime from "@/components/mouvement/DecorAnime";
 import EmblemeNoyau from "@/components/emblemes/EmblemeNoyau";
 import EmblemeOrbite from "@/components/emblemes/EmblemeOrbite";
 import { RESEAUX } from "@/lib/site";
@@ -17,7 +18,7 @@ export default function PageAccueil() {
     <>
       {/* ---------- Ouverture ---------- */}
       <section className={styles.ouverture} aria-labelledby="titre-accueil">
-        <div className={styles.orbiteFond} aria-hidden="true" />
+        <DecorAnime className={styles.orbiteFond} />
         <div className={`conteneur ${styles.contenuOuverture}`}>
           <p className={`annotation ${styles.entree}`}>Béjaïa · Saison 1</p>
           <h1 id="titre-accueil" className={`${styles.titre} ${styles.entree}`}>

@@ -1,6 +1,7 @@
 import { Archivo, Manrope, Space_Grotesk } from "next/font/google";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import PauseEnArrierePlan from "@/components/mouvement/PauseEnArrierePlan";
 import "./globals.css";
 
 // Système typographique : trois familles, chacune avec un rôle précis.
@@ -52,6 +53,7 @@ export default function RootLayout({ children }) {
         <Header />
         <main>{children}</main>
         <Footer />
+        <PauseEnArrierePlan />
       </body>
     </html>
   );

@@ -34,6 +34,9 @@ export default function MenuNavigation() {
     const racine = document.documentElement;
     const debordementAvant = racine.style.overflow;
     racine.style.overflow = "hidden";
+    // Signale le menu ouvert : globals.css met alors en pause les
+    // animations de la page, invisibles derrière le panneau.
+    racine.dataset.menu = "ouvert";
     if (ouvertAuClavier.current) premierLien.current?.focus();
 
     function surTouche(evenement) {
@@ -46,6 +49,7 @@ export default function MenuNavigation() {
 
     return () => {
       racine.style.overflow = debordementAvant;
+      delete racine.dataset.menu;
       document.removeEventListener("keydown", surTouche);
     };
   }, [ouvert]);
@@ -77,11 +81,14 @@ export default function MenuNavigation() {
         </span>
       </button>
 
+      {/* Le panneau existe dès le chargement, simplement invisible et
+          inerte (ni clic, ni clavier, ni lecteur d'écran) : il n'y a ainsi
+          rien à construire au moment du premier clic. */}
       <div
         id="menu-principal"
         className={styles.panneau}
         data-ouvert={ouvert}
-        hidden={!ouvert}
+        inert={!ouvert}
       >
         <div className="conteneur">
           <nav aria-label="Navigation principale" className={styles.contenu}>

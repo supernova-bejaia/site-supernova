@@ -70,6 +70,10 @@
 
 /* ---------------------------------------------------------------------
    Panneau : il recouvre la page sous l'en-tête.
+
+   Performance : le panneau est toujours présent, mais invisible tant que
+   le menu est fermé. Son ouverture ne fait que changer son opacité, sans
+   rien reconstruire, et les mouvements sont courts.
    --------------------------------------------------------------------- */
 
 .panneau {
@@ -83,20 +87,21 @@
   background:
     radial-gradient(90% 60% at 100% 0%, rgba(183, 1, 11, 0.28), transparent 70%),
     var(--fond);
-  animation: apparitionPanneau var(--duree-moyenne) var(--courbe);
+  /* Fermé : invisible. La fermeture est rapide, puis le panneau est
+     retiré de l'affichage (visibility) une fois le fondu terminé. */
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    opacity var(--duree-courte) ease,
+    visibility 0s linear var(--duree-courte);
 }
 
-.panneau[hidden] {
-  display: none;
-}
-
-@keyframes apparitionPanneau {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+.panneau[data-ouvert="true"] {
+  visibility: visible;
+  opacity: 1;
+  transition:
+    opacity 250ms var(--courbe),
+    visibility 0s;
 }
 
 .contenu {
@@ -116,19 +121,19 @@
 
 .liste li {
   border-bottom: 1px solid var(--trait);
-  animation: apparitionLien var(--duree-longue) var(--courbe) both;
-  animation-delay: calc(var(--rang) * 60ms);
+  /* Position de départ, menu fermé. */
+  opacity: 0;
+  transform: translateY(12px);
 }
 
-@keyframes apparitionLien {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+/* À l'ouverture, les liens montent l'un après l'autre, brièvement. */
+.panneau[data-ouvert="true"] .liste li {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 450ms var(--courbe),
+    transform 450ms var(--courbe);
+  transition-delay: calc(var(--rang) * 40ms);
 }
 
 .lien {

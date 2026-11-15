@@ -339,12 +339,32 @@ h3 {
   }
 }
 
-/* Tant qu'un élément n'est pas encore apparu, ses animations internes
-   (emblèmes Noyau et Orbite…) restent en pause : le téléphone ne
-   travaille pas pour ce qui n'est pas à l'écran, en particulier pendant
-   l'ouverture de la page. */
-.apparition:not([data-visible="true"]) * {
+/* ---------------------------------------------------------------------
+   Animations en pause quand elles ne servent à rien
+
+   Les animations continues (orbite de l'accueil, emblèmes…) coûtent au
+   téléphone même quand on ne les voit pas. Elles sont donc suspendues :
+     - tant que leur bloc n'est pas apparu, ou dès qu'il sort de l'écran
+       (attributs posés par Apparition.js et DecorAnime.js) ;
+     - derrière le menu ouvert (attribut posé par MenuNavigation.js) ;
+     - quand la page passe en arrière-plan (PauseEnArrierePlan.js).
+   Elles reprennent là où elles s'étaient arrêtées.
+   --------------------------------------------------------------------- */
+
+.apparition:not([data-visible="true"]) *,
+.apparition[data-ecran="false"] *,
+html[data-menu="ouvert"] main,
+html[data-menu="ouvert"] main *,
+html[data-arriere-plan="true"] body * {
   animation-play-state: paused;
+}
+
+/* Sans JavaScript, personne ne signalerait que le décor est à l'écran :
+   la pause ne s'applique donc que si les scripts fonctionnent. */
+@media (scripting: enabled) {
+  .decor-anime[data-ecran="false"] {
+    animation-play-state: paused;
+  }
 }
 
 /* ---------------------------------------------------------------------
