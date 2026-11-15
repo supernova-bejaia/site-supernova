@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import Link from "next/link";
 import { seDeconnecter } from "@/actions/authentification";
 import { verifierAccesAdmin } from "@/lib/acces-admin";
 import { obtenirTableauDeBord } from "@/services/tableau-de-bord";
@@ -129,6 +130,12 @@ function Entete({ email, saison }) {
         )}
       </div>
       <form action={seDeconnecter} className={styles.compte}>
+        <Link href="/admin/articles" className="bouton bouton-secondaire">
+          Articles
+        </Link>
+        <Link href="/admin/articles/nouveau" className="bouton">
+          Écrire un article
+        </Link>
         <span className={styles.email}>{email}</span>
         <button type="submit" className="bouton bouton-secondaire">
           Se déconnecter

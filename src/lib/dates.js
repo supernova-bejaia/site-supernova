@@ -56,6 +56,17 @@ export function aujourdhui(maintenant) {
 }
 
 // Date et heure enregistrées par la base (ex. "2026-11-13T10:45:03+00:00")
+// → "13 novembre 2026", à l'heure de Béjaïa.
+export function dateEnLettres(horodatage) {
+  return new Intl.DateTimeFormat("fr-FR", {
+    timeZone: FUSEAU,
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date(horodatage));
+}
+
+// Date et heure enregistrées par la base (ex. "2026-11-13T10:45:03+00:00")
 // → "13/11/2026", à l'heure de Béjaïa.
 export function dateCourte(horodatage) {
   return new Intl.DateTimeFormat("fr-FR", {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NAVIGATION, RESEAUX } from "@/lib/site";
@@ -16,7 +16,6 @@ import styles from "./MenuNavigation.module.css";
 //   - la page derrière ne défile plus tant que le menu est ouvert.
 export default function MenuNavigation() {
   const [ouvert, setOuvert] = useState(false);
-  const cheminActuel = usePathname();
   const bouton = useRef(null);
   const premierLien = useRef(null);
   // Vrai si le menu a été ouvert au clavier : on place alors le focus sur
@@ -92,28 +91,13 @@ export default function MenuNavigation() {
       >
         <div className="conteneur">
           <nav aria-label="Navigation principale" className={styles.contenu}>
-            <ol className={styles.liste}>
-              {NAVIGATION.map((page, index) => {
-                const actuelle = cheminActuel === page.href;
-                return (
-                  <li key={page.href} style={{ "--rang": index }}>
-                    <Link
-                      ref={index === 0 ? premierLien : undefined}
-                      href={page.href}
-                      className={styles.lien}
-                      aria-current={actuelle ? "page" : undefined}
-                      onClick={fermer}
-                    >
-                      <span className={styles.numero}>{String(index + 1).padStart(2, "0")}</span>
-                      <span className={styles.texteLien}>{page.libelle}</span>
-                      <span className={styles.fleche} aria-hidden="true">
-                        →
-                      </span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ol>
+            {/* La liste a besoin de l'adresse de la page en cours. Sur une
+                page dont l'adresse n'est connue qu'à la visite (un
+                article), Next.js demande de l'isoler dans <Suspense> : le
+                bouton du menu, lui, est affiché sans attendre. */}
+            <Suspense fallback={null}>
+              <ListePages premierLien={premierLien} fermer={fermer} />
+            </Suspense>
 
             {RESEAUX.length > 0 && (
               <div className={styles.reseaux}>
@@ -137,5 +121,41 @@ export default function MenuNavigation() {
         </div>
       </div>
     </>
+  );
+}
+
+// La liste des pages, avec la page en cours signalée.
+function ListePages({ premierLien, fermer }) {
+  const cheminActuel = usePathname();
+
+  return (
+    <ol className={styles.liste}>
+      {NAVIGATION.map((page, index) => {
+        // Une page est « en cours » aussi pour ses sous-pages : on reste
+        // dans « Articles » en lisant un article.
+        const actuelle =
+          page.href === "/"
+            ? cheminActuel === "/"
+            : cheminActuel === page.href || cheminActuel.startsWith(`${page.href}/`);
+
+        return (
+          <li key={page.href} style={{ "--rang": index }}>
+            <Link
+              ref={index === 0 ? premierLien : undefined}
+              href={page.href}
+              className={styles.lien}
+              aria-current={actuelle ? "page" : undefined}
+              onClick={fermer}
+            >
+              <span className={styles.numero}>{String(index + 1).padStart(2, "0")}</span>
+              <span className={styles.texteLien}>{page.libelle}</span>
+              <span className={styles.fleche} aria-hidden="true">
+                →
+              </span>
+            </Link>
+          </li>
+        );
+      })}
+    </ol>
   );
 }

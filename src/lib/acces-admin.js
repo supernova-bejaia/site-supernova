@@ -30,6 +30,19 @@ export async function verifierAccesAdmin() {
   return { supabase, email: claims.email ?? "" };
 }
 
+// Même contrôle, mais sans redirection : renvoie le client Supabase de la
+// session si l'accès est autorisé, sinon null. Sert aux actions d'un
+// formulaire en cours de saisie, qui préfèrent afficher un message plutôt
+// que de quitter la page (et perdre le texte).
+export async function obtenirAccesAdmin() {
+  const supabase = await creerClientSession();
+
+  const { data, error } = await supabase.auth.getClaims();
+  if (error || !data?.claims) return null;
+
+  return (await estAutorise(supabase)) ? supabase : null;
+}
+
 // Le compte connecté figure-t-il dans la liste d'accès ?
 export async function estAutorise(supabase) {
   const { data, error } = await supabase.rpc("est_admin");

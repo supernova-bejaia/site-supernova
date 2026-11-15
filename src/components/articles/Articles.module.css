@@ -1,0 +1,352 @@
+/* =====================================================================
+   Articles — liste et page de lecture, pensées d'abord pour le téléphone.
+   ===================================================================== */
+
+/* ---------------------------------------------------------------------
+   Carte d'un article dans la liste
+   --------------------------------------------------------------------- */
+
+.carte {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+  padding: 28px 0 32px;
+  border-top: 1px solid var(--trait);
+}
+
+/* Dans la liste, toutes les images ont le même format : elles sont
+   recadrées pour remplir le cadre. */
+.cadreCarte {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--rayon);
+  background: var(--surface);
+}
+
+.cadreCarte img {
+  object-fit: cover;
+}
+
+.texteCarte {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.titreCarte {
+  transition: color var(--duree-courte) ease;
+}
+
+.lireCarte {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  color: var(--blanc);
+  font-family: var(--police-annotation), system-ui, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.lireCarte span {
+  color: var(--rouge);
+  font-size: 1.3em;
+  transition: transform var(--duree-courte) var(--courbe);
+}
+
+.carte:hover .titreCarte {
+  color: var(--rouge);
+}
+
+.carte:hover .lireCarte span {
+  transform: translateX(4px);
+}
+
+/* ---------------------------------------------------------------------
+   Page de lecture
+
+   Une colonne étroite et centrée, comme dans un magazine : la ligne de
+   texte reste courte, donc confortable à lire. L'image de couverture est
+   un peu plus large que le texte.
+   --------------------------------------------------------------------- */
+
+.colonne {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.entete {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+  padding-top: 32px;
+  padding-bottom: 32px;
+}
+
+.retour {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  color: var(--texte-doux);
+  font-family: var(--police-annotation), system-ui, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transition: color var(--duree-courte) ease;
+}
+
+.retour:hover {
+  color: var(--blanc);
+}
+
+.retour span {
+  color: var(--rouge);
+}
+
+/* Date et temps de lecture, séparés par un point rouge. */
+.meta {
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+
+.separateur {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--rouge);
+}
+
+/* Le titre d'un article peut être long : il est plus petit qu'un titre
+   de page, et ses mots longs peuvent se couper plutôt que déborder. */
+.titreArticle {
+  font-size: clamp(1.75rem, 7.4vw, 3.3rem);
+  line-height: 1.02;
+  overflow-wrap: anywhere;
+}
+
+/* Le résumé, en chapeau : plus grand et plus clair que le texte. */
+.chapeauArticle {
+  padding-left: 16px;
+  border-left: 2px solid var(--rouge);
+  color: var(--blanc);
+  font-size: clamp(1.1rem, 1vw + 0.9rem, 1.35rem);
+  line-height: 1.5;
+}
+
+/* Image de couverture : affichée entière, dans ses proportions. */
+.couverture {
+  max-width: 980px;
+  margin: 0 auto 36px;
+}
+
+/* L'image occupe toute la largeur disponible ; sa hauteur suit ses
+   proportions. Une image en portrait ne dépasse pas la hauteur de
+   l'écran : elle est alors réduite et centrée, jamais rognée. */
+.couverture img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 82vh;
+  object-fit: contain;
+  border-radius: var(--rayon);
+}
+
+.corps {
+  padding-bottom: 48px;
+}
+
+/* Fin d'article : invitation à rejoindre l'Orbite, puis retour à la liste. */
+.fin {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 28px;
+  padding-bottom: 24px;
+}
+
+.invitation {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  width: 100%;
+  padding: 26px 22px;
+  border: 1px solid var(--trait);
+  border-radius: 20px;
+  background:
+    radial-gradient(90% 60% at 100% 0%, rgba(183, 1, 11, 0.24), transparent 70%),
+    var(--surface);
+}
+
+/* ---------- Le texte de l'article (rendu du Markdown) ---------- */
+
+.contenu {
+  color: rgba(243, 243, 243, 0.82);
+  font-size: 1.0625rem;
+  line-height: 1.8;
+  overflow-wrap: break-word;
+}
+
+.contenu > * + * {
+  margin-top: 1.25em;
+}
+
+.contenu h2,
+.contenu h3,
+.contenu h4 {
+  margin-top: 2em;
+  color: var(--blanc);
+  line-height: 1.12;
+  text-wrap: balance;
+}
+
+/* Les intertitres sont plus sobres que les grands titres du site : ils
+   ponctuent la lecture sans la couper. */
+.contenu h2 {
+  font-stretch: 112%;
+  font-size: clamp(1.3rem, 5.2vw, 1.7rem);
+}
+
+.contenu h3 {
+  font-stretch: 105%;
+  font-size: clamp(1.1rem, 4.4vw, 1.3rem);
+}
+
+.contenu h4 {
+  font-family: var(--police-texte), system-ui, sans-serif;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.contenu h2 + *,
+.contenu h3 + *,
+.contenu h4 + * {
+  margin-top: 0.7em;
+}
+
+.contenu strong {
+  color: var(--blanc);
+  font-weight: 700;
+}
+
+.contenu a {
+  color: var(--blanc);
+  text-decoration: underline;
+  text-decoration-color: var(--rouge);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 4px;
+  transition: color var(--duree-courte) ease;
+}
+
+.contenu a:hover {
+  color: var(--rouge);
+}
+
+.contenu ul,
+.contenu ol {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 1.3em;
+}
+
+.contenu li::marker {
+  color: var(--rouge);
+  font-weight: 700;
+}
+
+.contenu blockquote {
+  padding: 4px 0 4px 20px;
+  border-left: 2px solid var(--rouge);
+  color: var(--blanc);
+  font-size: 1.15em;
+  line-height: 1.55;
+}
+
+.contenu hr {
+  width: 64px;
+  margin: 2.4em auto;
+  border: 0;
+  border-top: 2px solid var(--rouge);
+}
+
+.contenu code {
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: var(--surface-champ);
+  font-size: 0.92em;
+}
+
+.contenu pre {
+  overflow-x: auto;
+  padding: 16px;
+  border: 1px solid var(--trait);
+  border-radius: var(--rayon);
+  background: var(--surface-champ);
+  line-height: 1.6;
+}
+
+.contenu pre code {
+  padding: 0;
+  background: none;
+}
+
+/* ---------------------------------------------------------------------
+   Ordinateur
+   --------------------------------------------------------------------- */
+
+@media (min-width: 900px) {
+  /* Dans la liste : l'image à gauche, le texte à droite. */
+  .carte {
+    grid-template-columns: 320px minmax(0, 1fr);
+    align-items: center;
+    gap: 48px;
+    padding: 40px 0 44px;
+  }
+
+  /* Sans image, le texte occupe toute la largeur. */
+  .carte > .texteCarte:only-child {
+    grid-column: 1 / -1;
+  }
+
+  .entete {
+    gap: 24px;
+    padding-top: 56px;
+    padding-bottom: 44px;
+  }
+
+  .chapeauArticle {
+    padding-left: 22px;
+  }
+
+  .couverture {
+    margin-bottom: 56px;
+  }
+
+  .corps {
+    padding-bottom: 72px;
+  }
+
+  .contenu {
+    font-size: 1.125rem;
+  }
+
+  .fin {
+    padding-bottom: 48px;
+  }
+
+  .invitation {
+    padding: 36px 36px;
+  }
+}

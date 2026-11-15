@@ -1,0 +1,48 @@
+/* Page « Articles » — pensée d'abord pour le téléphone.
+   Les cartes et la page de lecture ont leurs styles dans
+   components/articles/Articles.module.css. */
+
+.ouverture {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  padding-top: 48px;
+  padding-bottom: 48px;
+}
+
+/* Entrée en scène au chargement */
+.entree {
+  animation: entree var(--duree-longue) var(--courbe) both;
+}
+
+.entree:nth-child(2) {
+  animation-delay: 100ms;
+}
+
+@keyframes entree {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.liste {
+  padding-bottom: 40px;
+}
+
+@media (min-width: 900px) {
+  .ouverture {
+    gap: 26px;
+    padding-top: 72px;
+    padding-bottom: 72px;
+  }
+
+  .liste {
+    padding-bottom: 80px;
+  }
+}

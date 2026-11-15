@@ -1,0 +1,319 @@
+/* =====================================================================
+   Espace équipe — articles : liste et formulaire d'écriture.
+   Un outil de travail : sobre, lisible, pensé d'abord pour le téléphone.
+   ===================================================================== */
+
+/* ---------- Navigation et messages ---------- */
+
+.retour {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  color: var(--texte-doux);
+  font-family: var(--police-annotation), system-ui, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.retour:hover {
+  color: var(--blanc);
+}
+
+.retour span {
+  color: var(--rouge);
+}
+
+.notification {
+  padding: 14px 16px;
+  border: 1px solid var(--trait-rouge);
+  border-radius: 12px;
+  background: rgba(231, 14, 23, 0.1);
+  color: var(--blanc);
+}
+
+.notification a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.notificationErreur {
+  border-color: var(--erreur);
+  color: var(--erreur);
+}
+
+/* ---------- Liste des articles ---------- */
+
+.liste {
+  list-style: none;
+  border-top: 1px solid var(--trait);
+}
+
+.ligne {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--trait);
+}
+
+.titreLigne {
+  font-family: var(--police-texte), system-ui, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.3;
+  text-transform: none;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
+.infosLigne {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  color: var(--texte-discret);
+  font-size: 0.9rem;
+}
+
+.statut {
+  padding: 3px 10px;
+  border: 1px solid var(--trait);
+  border-radius: 999px;
+  color: var(--texte-doux);
+  font-family: var(--police-annotation), system-ui, sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.statut[data-statut="PUBLIE"] {
+  border-color: var(--rouge);
+  color: var(--blanc);
+  background: rgba(231, 14, 23, 0.18);
+}
+
+.liensLigne {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+}
+
+.liensLigne a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  color: var(--blanc);
+  text-decoration: underline;
+  text-decoration-color: var(--rouge);
+  text-underline-offset: 3px;
+}
+
+/* ---------- Formulaire ---------- */
+
+.formulaire {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  max-width: 820px;
+}
+
+.champ {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.champ label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--blanc);
+}
+
+.facultatif {
+  font-weight: 400;
+  color: var(--texte-discret);
+}
+
+/* Taille de texte de 16px minimum : en dessous, iOS zoome sur le champ. */
+.champ input[type="text"],
+.champ textarea {
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 14px;
+  border: 1px solid var(--trait);
+  border-radius: 12px;
+  background: var(--surface-champ);
+  color: var(--blanc);
+  font: inherit;
+  font-size: 1rem;
+}
+
+.champ textarea {
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.zoneTexte {
+  min-height: 320px;
+}
+
+.champ input[type="file"] {
+  width: 100%;
+  padding: 12px 0;
+  color: var(--texte-doux);
+  font: inherit;
+  font-size: 1rem;
+}
+
+.champ input:focus,
+.champ textarea:focus {
+  outline: none;
+  border-color: var(--rouge);
+  box-shadow: 0 0 0 3px rgba(231, 14, 23, 0.25);
+}
+
+.champ[data-invalide="true"] input,
+.champ[data-invalide="true"] textarea {
+  border-color: var(--erreur);
+}
+
+.aide {
+  color: var(--texte-discret);
+  font-size: 0.86rem;
+}
+
+.erreur {
+  color: var(--erreur);
+  font-size: 0.88rem;
+}
+
+.message {
+  color: var(--erreur);
+  font-size: 0.95rem;
+}
+
+.message:empty {
+  display: none;
+}
+
+/* Aide-mémoire Markdown, replié par défaut */
+.aideMemoire {
+  padding: 12px 16px;
+  border: 1px solid var(--trait);
+  border-radius: 12px;
+  color: var(--texte-doux);
+  font-size: 0.92rem;
+}
+
+.aideMemoire summary {
+  min-height: 28px;
+  cursor: pointer;
+  color: var(--blanc);
+  font-weight: 600;
+}
+
+.aideMemoire ul {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 12px;
+  margin-left: 1.1em;
+}
+
+.aideMemoire code {
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: var(--surface-champ);
+  color: var(--blanc);
+  font-size: 0.92em;
+}
+
+/* Image de couverture actuelle */
+.couvertureActuelle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 20px;
+  margin-bottom: 4px;
+}
+
+.cadreCouverture {
+  position: relative;
+  width: min(100%, 280px);
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.cadreCouverture img {
+  object-fit: cover;
+}
+
+.case {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  font-weight: 400 !important;
+  cursor: pointer;
+}
+
+.case input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--rouge);
+}
+
+/* Boutons d'envoi */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@media (min-width: 620px) {
+  .actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+/* Suppression : à part, et discrète pour éviter le clic par erreur. */
+.zoneSuppression {
+  max-width: 820px;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--trait);
+}
+
+.boutonSupprimer {
+  min-height: 44px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: var(--erreur);
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+/* ---------- Aperçu d'un article ---------- */
+
+.bandeauApercu {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 20px;
+  padding: 12px 16px;
+  border: 1px dashed var(--trait-rouge);
+  border-radius: 12px;
+  color: var(--texte-doux);
+  font-size: 0.92rem;
+}
