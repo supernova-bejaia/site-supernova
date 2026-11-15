@@ -29,3 +29,12 @@
 .liens a:hover {
   color: var(--blanc);
 }
+
+/* Accès de l'équipe : plus discret que les pages publiques. */
+.liens a.lienEquipe {
+  color: var(--texte-discret);
+}
+
+.liens a.lienEquipe:hover {
+  color: var(--blanc);
+}
