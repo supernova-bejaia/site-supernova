@@ -9,8 +9,10 @@ Il présente le collectif et permet à tout étudiant de rejoindre l'**Orbite**,
 | Adresse | Contenu |
 |---|---|
 | `/` | Accueil : le collectif, les deux parcours, les événements |
+| `/notre-histoire` | Notre histoire (page en préparation) |
 | `/rejoindre` | Présentation de l'Orbite et du Noyau, formulaire d'inscription à l'Orbite |
 | `/evenements` | Événements : à la une, agenda, archives et galeries photos |
+| `/articles` | Articles (page en préparation) |
 | `/vos-donnees` | Informations collectées, usage, accès, suppression, contact |
 | `/admin` | Espace équipe, réservé aux comptes autorisés (voir plus bas) |
 | `/admin/connexion` | Connexion de l'équipe par email et mot de passe |

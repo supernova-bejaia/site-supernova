@@ -18,7 +18,9 @@ export const RESEAUX = [
 // navigation et par le pied de page : ajouter une page ici l'ajoute aux deux.
 export const NAVIGATION = [
   { href: "/", libelle: "Accueil" },
+  { href: "/notre-histoire", libelle: "Notre histoire" },
   { href: "/rejoindre", libelle: "Rejoindre" },
   { href: "/evenements", libelle: "Événements" },
+  { href: "/articles", libelle: "Articles" },
   { href: "/vos-donnees", libelle: "Vos données" },
 ];
