@@ -250,6 +250,14 @@
   color: var(--texte-doux);
 }
 
+.confirmation .precision {
+  font-size: 0.92rem;
+}
+
+.boutonModifier {
+  margin-top: 8px;
+}
+
 .pastille {
   display: grid;
   place-items: center;

@@ -52,6 +52,11 @@ export default function PageVosDonnees() {
           Le site n&apos;utilise ni cookie de suivi ni outil de mesure d&apos;audience, et ne
           demande pas de créer un compte.
         </p>
+        <p>
+          Après votre inscription, votre navigateur retient simplement qu&apos;elle a été faite
+          depuis cet appareil, pour vous le rappeler à votre prochaine visite. Ce rappel ne
+          contient aucune information personnelle et n&apos;est pas transmis à Supernova.
+        </p>
       </Rubrique>
 
       <Rubrique numero="02" id="titre-usage" titre="Pourquoi nous les collectons">

@@ -12,6 +12,27 @@ Il présente le collectif et permet à tout étudiant de rejoindre l'**Orbite**,
 | `/rejoindre` | Présentation de l'Orbite et du Noyau, formulaire d'inscription à l'Orbite |
 | `/evenements` | Événements : à la une, agenda, archives et galeries photos |
 | `/vos-donnees` | Informations collectées, usage, accès, suppression, contact |
+| `/admin` | Espace équipe, réservé aux comptes autorisés (voir plus bas) |
+| `/admin/connexion` | Connexion de l'équipe par email et mot de passe |
+
+## Espace équipe (`/admin`)
+
+Un tableau de bord **en lecture seule** pour les membres autorisés du Noyau. Il n'est relié à aucun lien public et n'est pas indexé par les moteurs de recherche.
+
+Il affiche, pour la saison en cours :
+
+- une vue d'ensemble : membres de l'Orbite, membres du Noyau, inscriptions des 7 et 30 derniers jours, abonnés à la newsletter ;
+- les dernières inscriptions ;
+- la répartition par établissement et par centre d'intérêt.
+
+Fonctionnement :
+
+- **Connexion** : par email et mot de passe, avec Supabase Auth. Le site ne propose aucune création de compte : les comptes sont créés par l'équipe dans Supabase.
+- **Autorisation** : avoir un compte ne suffit pas. Le compte doit aussi figurer dans la table `acces_admin`, ce que vérifie la fonction `est_admin()`. Un compte connecté mais non autorisé est déconnecté.
+- **Contrôle côté serveur** : `src/proxy.js` rafraîchit la session sur les adresses `/admin`, et chaque page de l'espace vérifie la session et l'autorisation avant de lire la moindre donnée (`src/lib/acces-admin.js`). Les données sont filtrées par les règles RLS de la base, pas par l'interface.
+- **Session** : stockée dans des cookies `HttpOnly`, inaccessibles au JavaScript de la page.
+
+Donner l'accès à un membre se fait dans Supabase, en deux temps : créer son compte (*Authentication > Users*), puis ajouter son identifiant à la table `acces_admin`.
 
 ## Technologies
 
@@ -71,21 +92,26 @@ La clé secrète de Supabase (`service_role`) n'est pas utilisée par ce projet 
 
 ```
 src/
-  app/                 pages (un dossier par page)
-  actions/             Server Actions (appelées par les formulaires)
+  app/                 pages (un dossier par page, dont admin/)
+  actions/             Server Actions : inscription, connexion de l'équipe
   components/
-    layout/            présent sur toutes les pages : Header, Footer, Logo
+    layout/            présent sur toutes les pages : en-tête, menu, pied de page, logo
     rejoindre/         le formulaire d'inscription
+    evenements/        cartes et galeries d'événements
+    admin/             éléments du tableau de bord et formulaire de connexion
+    emblemes/          illustrations animées de l'Orbite et du Noyau
+    mouvement/         apparition progressive des blocs au défilement
   services/            accès aux données, un fichier par domaine
   content/             contenus statiques (événements)
-  lib/                 outils : client Supabase, validation, dates, réglages
+  lib/                 outils : clients Supabase, accès à l'espace équipe, validation, dates, réglages
+  proxy.js             rafraîchissement de la session sur /admin
 supabase/migrations/   schéma de la base, en fichiers SQL versionnés
 docs/                  documentation du projet
 ```
 
 Le sens des dépendances est toujours : **page ou Server Action → service → lib**. Seuls les services parlent à Supabase.
 
-Les listes du formulaire (établissements, niveaux d'études, filières) se modifient dans `src/lib/formulaire-orbite.js`, l'adresse de contact dans `src/lib/site.js`.
+Les listes du formulaire (établissements, niveaux d'études, filières) se modifient dans `src/lib/formulaire-orbite.js` ; l'adresse de contact, les réseaux et les pages du menu dans `src/lib/site.js`.
 
 ## Base de données
 
@@ -93,9 +119,10 @@ Le schéma est décrit dans [docs/modele-de-donnees.md](docs/modele-de-donnees.m
 
 En résumé :
 
-- cinq tables : `personne`, `saison`, `adhesion`, `centre_interet`, `interet_adhesion` ;
-- la sécurité au niveau des lignes (RLS) est activée partout : un visiteur ne peut lire que la liste des centres d'intérêt ;
-- les inscriptions passent uniquement par la fonction `inscrire_orbite`.
+- cinq tables de données : `personne`, `saison`, `adhesion`, `centre_interet`, `interet_adhesion` ;
+- une table `acces_admin`, la liste des comptes autorisés à l'espace équipe, fermée à toute lecture directe ;
+- la sécurité au niveau des lignes (RLS) est activée partout : un visiteur ne peut lire que la liste des centres d'intérêt, et seuls les comptes autorisés lisent les inscriptions ;
+- les inscriptions passent uniquement par la fonction `inscrire_orbite`, l'autorisation par la fonction `est_admin`.
 
 Toute évolution du schéma s'écrit dans un nouveau fichier de migration.
 
@@ -107,4 +134,3 @@ Le site est déployé sur Vercel à partir de ce dépôt : chaque envoi sur la b
 
 - [docs/modele-de-donnees.md](docs/modele-de-donnees.md) — tables, fonction d'inscription, sécurité, décisions.
 - [docs/evenements.md](docs/evenements.md) — ajouter un événement et ses photos.
-- [CLAUDE.md](CLAUDE.md) — contexte du projet et règles de travail pour Claude Code.

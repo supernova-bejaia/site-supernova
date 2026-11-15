@@ -1,6 +1,14 @@
 "use client";
 
-import { cloneElement, startTransition, useActionState, useEffect, useRef, useState } from "react";
+import {
+  cloneElement,
+  startTransition,
+  useActionState,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import Link from "next/link";
 import { inscrireOrbite } from "@/actions/inscriptions";
 import { AUTRE, ETABLISSEMENTS, FILIERES, NIVEAUX } from "@/lib/formulaire-orbite";
@@ -15,6 +23,35 @@ const MESSAGE_CONNEXION =
   "Connexion impossible. Vérifiez votre accès à Internet, puis réessayez : votre saisie est conservée.";
 const MESSAGE_DELAI =
   "L'envoi prend trop de temps. Vérifiez votre connexion, puis réessayez : votre saisie est conservée.";
+
+// Marqueur « inscrit sur cet appareil », gardé dans le navigateur.
+//
+// L'Orbite s'inscrit sans compte : le site ne peut donc pas reconnaître une
+// personne qui revient. On retient seulement, sur son appareil, qu'une
+// inscription y a été faite — un simple « oui », sans aucune donnée
+// personnelle, et jamais envoyé au serveur.
+const CLE_INSCRIT = "supernova-orbite-inscrit";
+
+// Le stockage peut être indisponible (navigation privée, réglages) :
+// dans ce cas on fait comme si rien n'était mémorisé.
+function lireMarqueurInscrit() {
+  try {
+    return window.localStorage.getItem(CLE_INSCRIT) === "oui";
+  } catch {
+    return false;
+  }
+}
+
+function memoriserInscription() {
+  try {
+    window.localStorage.setItem(CLE_INSCRIT, "oui");
+  } catch {
+    // Sans stockage, la personne reverra simplement le formulaire.
+  }
+}
+
+// Le marqueur ne change pas pendant la visite : rien à écouter.
+const neRienEcouter = () => () => {};
 
 // Appelle la Server Action en se protégeant des pannes de réseau.
 //
@@ -57,6 +94,12 @@ export default function OrbiteForm({ centresInteret }) {
   const formulaire = useRef(null);
   const confirmation = useRef(null);
 
+  // Vrai si une inscription a déjà été faite depuis cet appareil.
+  // (Faux pendant le rendu côté serveur, qui ne connaît pas l'appareil.)
+  const dejaInscrit = useSyncExternalStore(neRienEcouter, lireMarqueurInscrit, () => false);
+  // La personne déjà inscrite a demandé à rouvrir le formulaire.
+  const [modification, setModification] = useState(false);
+
   const erreurs = etat.erreurs ?? {};
 
   function soumettre(evenement) {
@@ -71,6 +114,7 @@ export default function OrbiteForm({ centresInteret }) {
   // Après une réponse du serveur : on amène la personne au bon endroit.
   useEffect(() => {
     if (etat.ok) {
+      memoriserInscription();
       confirmation.current?.focus();
       confirmation.current?.scrollIntoView({ block: "center" });
       return;
@@ -90,6 +134,34 @@ export default function OrbiteForm({ centresInteret }) {
         </span>
         <h3>Bienvenue dans l&apos;Orbite{etat.prenom ? `, ${etat.prenom}` : ""} !</h3>
         <p>Votre inscription est bien enregistrée. Vous n&apos;avez rien d&apos;autre à faire.</p>
+        <p className={styles.precision}>
+          Pour modifier vos informations, il suffit de vous réinscrire avec le même email : votre
+          fiche est mise à jour, sans doublon.
+        </p>
+      </div>
+    );
+  }
+
+  // Retour d'une personne déjà inscrite depuis cet appareil.
+  if (dejaInscrit && !modification) {
+    return (
+      <div className={styles.confirmation}>
+        <span className={styles.pastille} aria-hidden="true">
+          ✓
+        </span>
+        <h3>Vous êtes déjà dans l&apos;Orbite</h3>
+        <p>Une inscription a été enregistrée depuis cet appareil. Vous n&apos;avez rien à refaire.</p>
+        <p className={styles.precision}>
+          Ce rappel n&apos;est mémorisé que sur cet appareil. Pour corriger vos informations,
+          renvoyez le formulaire avec le même email : votre fiche sera mise à jour.
+        </p>
+        <button
+          type="button"
+          className={`bouton bouton-secondaire ${styles.boutonModifier}`}
+          onClick={() => setModification(true)}
+        >
+          Modifier mes informations
+        </button>
       </div>
     );
   }
