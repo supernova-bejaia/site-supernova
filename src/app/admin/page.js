@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { seDeconnecter } from "@/actions/authentification";
 import { verifierAccesAdmin } from "@/lib/acces-admin";
 import { obtenirTableauDeBord } from "@/services/tableau-de-bord";
 import { dateLongue } from "@/lib/dates";
@@ -116,7 +115,8 @@ async function TableauDeBord() {
   );
 }
 
-// En-tête : titre, saison, compte connecté et déconnexion.
+// En-tête : titre, saison, compte connecté et accès à l'écriture.
+// (La déconnexion est dans la barre de navigation de l'espace équipe.)
 function Entete({ email, saison }) {
   return (
     <header className={styles.entete}>
@@ -129,18 +129,12 @@ function Entete({ email, saison }) {
           </p>
         )}
       </div>
-      <form action={seDeconnecter} className={styles.compte}>
-        <Link href="/admin/articles" className="bouton bouton-secondaire">
-          Articles
-        </Link>
-        <Link href="/admin/articles/nouveau" className="bouton">
+      <div className={styles.compte}>
+        <span className={styles.email}>{email}</span>
+        <Link href="/admin/articles/nouveau" prefetch={false} className="bouton">
           Écrire un article
         </Link>
-        <span className={styles.email}>{email}</span>
-        <button type="submit" className="bouton bouton-secondaire">
-          Se déconnecter
-        </button>
-      </form>
+      </div>
     </header>
   );
 }

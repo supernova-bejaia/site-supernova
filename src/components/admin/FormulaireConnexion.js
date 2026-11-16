@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { seConnecter } from "@/actions/authentification";
 import styles from "./Admin.module.css";
@@ -13,7 +13,17 @@ const MESSAGE_REFUS = "Ce compte n'a pas accès à l'espace équipe.";
 export default function FormulaireConnexion() {
   const accesRefuse = useSearchParams().get("acces") === "refuse";
   const [etat, envoyer, enCours] = useActionState(seConnecter, { message: "" });
-  const message = etat?.message || (accesRefuse ? MESSAGE_REFUS : "");
+  const connecte = etat?.ok === true;
+  const message = connecte ? "" : etat?.message || (accesRefuse ? MESSAGE_REFUS : "");
+
+  // Connexion réussie : on charge le tableau de bord par un vrai
+  // rechargement de page. Le navigateur repart ainsi de zéro, sans aucune
+  // ancienne version de l'espace équipe en mémoire.
+  useEffect(() => {
+    if (!connecte) return;
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- rechargement complet voulu
+    window.location.assign("/admin");
+  }, [connecte]);
 
   return (
     <form action={envoyer} className={styles.formulaireConnexion}>
@@ -37,9 +47,20 @@ export default function FormulaireConnexion() {
         {message}
       </p>
 
-      <button type="submit" className={`bouton ${styles.boutonPlein}`} disabled={enCours}>
-        {enCours ? "Connexion…" : "Se connecter"}
+      <button
+        type="submit"
+        className={`bouton ${styles.boutonPlein}`}
+        disabled={enCours || connecte}
+      >
+        {enCours || connecte ? "Connexion…" : "Se connecter"}
       </button>
+
+      {/* Secours si le rechargement automatique ne se fait pas. */}
+      {connecte && (
+        <p className={styles.aide}>
+          Connexion réussie. <a href="/admin">Ouvrir l&apos;espace équipe</a>
+        </p>
+      )}
     </form>
   );
 }

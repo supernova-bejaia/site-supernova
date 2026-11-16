@@ -45,13 +45,13 @@ async function ModifierArticle({ params, searchParams }) {
   const entete = (
     <header className={pageStyles.entete}>
       <div className={pageStyles.titres}>
-        <Link href="/admin/articles" className={styles.retour}>
+        <Link prefetch={false} href="/admin/articles" className={styles.retour}>
           <span aria-hidden="true">←</span> Articles
         </Link>
         <h1 className={pageStyles.titre}>Modifier l&apos;article</h1>
       </div>
       {article && (
-        <Link href={`/admin/articles/${article.id_article}/apercu`} className="bouton bouton-secondaire">
+        <Link prefetch={false} href={`/admin/articles/${article.id_article}/apercu`} className="bouton bouton-secondaire">
           Aperçu
         </Link>
       )}
@@ -78,7 +78,9 @@ async function ModifierArticle({ params, searchParams }) {
       {etat === "publie" && (
         <p className={styles.notification} role="status">
           L&apos;article est en ligne.{" "}
-          <Link href={`/articles/${article.slug}`}>Voir sur le site</Link>
+          <a href={`/articles/${article.slug}`} target="_blank" rel="noopener">
+            Voir sur le site <span aria-hidden="true">↗</span>
+          </a>
         </p>
       )}
       {etat === "brouillon" && (

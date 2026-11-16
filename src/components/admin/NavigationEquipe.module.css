@@ -1,0 +1,65 @@
+/* Barre de navigation de l'espace équipe — sobre, toujours au même endroit. */
+
+.barre {
+  border-bottom: 1px solid var(--trait);
+  background: var(--fond-profond);
+}
+
+.contenu {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 20px;
+  min-height: 52px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.etiquette {
+  color: var(--rouge);
+  font-family: var(--police-annotation), system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.liens {
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1;
+  gap: 0 18px;
+  list-style: none;
+}
+
+.lien,
+.deconnexion {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  border: 0;
+  background: none;
+  color: var(--texte-doux);
+  font: inherit;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: color var(--duree-courte) ease;
+}
+
+.lien:hover,
+.deconnexion:hover {
+  color: var(--blanc);
+}
+
+/* Page en cours : en blanc, soulignée de rouge. */
+.lien[aria-current="page"] {
+  color: var(--blanc);
+  font-weight: 700;
+  box-shadow: inset 0 -2px 0 var(--rouge);
+}
+
+.deconnexion {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

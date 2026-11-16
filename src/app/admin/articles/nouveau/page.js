@@ -28,7 +28,7 @@ async function NouvelArticle() {
     <>
       <header className={pageStyles.entete}>
         <div className={pageStyles.titres}>
-          <Link href="/admin/articles" className={styles.retour}>
+          <Link prefetch={false} href="/admin/articles" className={styles.retour}>
             <span aria-hidden="true">←</span> Articles
           </Link>
           <h1 className={pageStyles.titre}>Écrire un article</h1>

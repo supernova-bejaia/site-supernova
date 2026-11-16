@@ -80,10 +80,12 @@ async function ListeArticles({ searchParams }) {
                 <span>Modifié le {dateCourte(article.updated_at)}</span>
               </p>
               <p className={styles.liensLigne}>
-                <Link href={`/admin/articles/${article.id_article}`}>Modifier</Link>
-                <Link href={`/admin/articles/${article.id_article}/apercu`}>Aperçu</Link>
+                <Link prefetch={false} href={`/admin/articles/${article.id_article}`}>Modifier</Link>
+                <Link prefetch={false} href={`/admin/articles/${article.id_article}/apercu`}>Aperçu</Link>
                 {article.statut === "PUBLIE" && (
-                  <Link href={`/articles/${article.slug}`}>Voir sur le site</Link>
+                  <a href={`/articles/${article.slug}`} target="_blank" rel="noopener">
+                    Voir sur le site <span aria-hidden="true">↗</span>
+                  </a>
                 )}
               </p>
             </li>
@@ -98,12 +100,12 @@ function Entete() {
   return (
     <header className={pageStyles.entete}>
       <div className={pageStyles.titres}>
-        <Link href="/admin" className={styles.retour}>
+        <Link prefetch={false} href="/admin" className={styles.retour}>
           <span aria-hidden="true">←</span> Tableau de bord
         </Link>
         <h1 className={pageStyles.titre}>Articles</h1>
       </div>
-      <Link href="/admin/articles/nouveau" className="bouton">
+      <Link prefetch={false} href="/admin/articles/nouveau" className="bouton">
         Écrire un article
       </Link>
     </header>

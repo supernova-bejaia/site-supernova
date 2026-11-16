@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { creerClientSession } from "@/lib/supabase/session";
 import { estAutorise, PAGE_CONNEXION } from "@/lib/acces-admin";
@@ -15,9 +16,16 @@ const MESSAGE_IDENTIFIANTS = "Email ou mot de passe incorrect.";
 const MESSAGE_REFUS = "Ce compte n'a pas accès à l'espace équipe.";
 const MESSAGE_PANNE = "Connexion impossible pour le moment. Réessayez dans un instant.";
 
+// Les pages de l'espace équipe dépendent de la session. À chaque connexion
+// ou déconnexion, on fait oublier au navigateur les versions qu'il a pu
+// garder en mémoire (par exemple « /admin renvoie vers la connexion »).
+function oublierPagesEquipe() {
+  revalidatePath("/admin", "layout");
+}
+
 // Connexion par email et mot de passe.
-// État renvoyé au formulaire : { message } en cas d'échec ; en cas de
-// succès, redirection vers le tableau de bord.
+// État renvoyé au formulaire : { ok: true } en cas de succès (le formulaire
+// charge alors le tableau de bord), sinon { message }.
 export async function seConnecter(etatPrecedent, formData) {
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const motDePasse = String(formData.get("mot_de_passe") ?? "");
@@ -44,12 +52,16 @@ export async function seConnecter(etatPrecedent, formData) {
     return { message: MESSAGE_REFUS };
   }
 
-  redirect("/admin");
+  // Pas de redirection ici : le formulaire recharge entièrement la page
+  // vers /admin, pour repartir d'un navigateur sans rien en mémoire.
+  oublierPagesEquipe();
+  return { ok: true, message: "" };
 }
 
 // Déconnexion, puis retour à la page de connexion.
 export async function seDeconnecter() {
   const supabase = await creerClientSession();
   await supabase.auth.signOut();
+  oublierPagesEquipe();
   redirect(PAGE_CONNEXION);
 }

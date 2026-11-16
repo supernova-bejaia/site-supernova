@@ -1,6 +1,6 @@
 "use server";
 
-import { updateTag } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { obtenirAccesAdmin, verifierAccesAdmin } from "@/lib/acces-admin";
 import { ETIQUETTE_CACHE_ARTICLES } from "@/lib/articles";
@@ -24,6 +24,14 @@ const MESSAGE_PANNE = "L'enregistrement a échoué. Réessayez dans un instant :
 const MESSAGE_ERREURS = "Certains champs sont à corriger.";
 
 const echec = (message, erreurs = {}) => ({ ok: false, message, erreurs });
+
+// Après une écriture : le site public relira les articles, et le
+// navigateur oublie les pages de l'espace équipe qu'il a en mémoire (la
+// liste afficherait sinon un article supprimé ou un ancien statut).
+function rafraichirApresEcriture() {
+  updateTag(ETIQUETTE_CACHE_ARTICLES);
+  revalidatePath("/admin", "layout");
+}
 
 // Crée ou modifie un article, en brouillon ou publié.
 //
@@ -98,8 +106,7 @@ export async function enregistrerArticle(etatPrecedent, formData) {
       await supprimerCouverture(supabase, ancienneImage);
     }
 
-    // Le site public relira les articles à la prochaine visite.
-    updateTag(ETIQUETTE_CACHE_ARTICLES);
+    rafraichirApresEcriture();
 
     return { ok: true, id: resultat.article.id_article, statut: resultat.article.statut };
   } catch (erreur) {
@@ -121,7 +128,7 @@ export async function supprimerArticle(formData) {
   try {
     const image = await supprimerDansLaBase(supabase, idArticle);
     await supprimerCouverture(supabase, image);
-    updateTag(ETIQUETTE_CACHE_ARTICLES);
+    rafraichirApresEcriture();
   } catch (erreur) {
     console.error("Suppression d'un article en échec :", erreur.message);
     supprime = false;

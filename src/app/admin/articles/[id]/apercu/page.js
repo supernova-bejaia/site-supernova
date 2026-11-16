@@ -36,7 +36,7 @@ async function Apercu({ params }) {
         <p className={pageStyles.erreur} role="alert">
           Cet article n&apos;existe pas ou n&apos;a pas pu être chargé.
         </p>
-        <Link href="/admin/articles" className={adminStyles.retour}>
+        <Link prefetch={false} href="/admin/articles" className={adminStyles.retour}>
           <span aria-hidden="true">←</span> Articles
         </Link>
       </div>
@@ -51,7 +51,7 @@ async function Apercu({ params }) {
             Aperçu réservé à l&apos;équipe —{" "}
             {article.statut === "PUBLIE" ? "article en ligne." : "brouillon, invisible du public."}
           </span>
-          <Link href={`/admin/articles/${article.id_article}`} className={adminStyles.retour}>
+          <Link prefetch={false} href={`/admin/articles/${article.id_article}`} className={adminStyles.retour}>
             <span aria-hidden="true">←</span> Modifier
           </Link>
         </p>

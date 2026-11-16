@@ -12,10 +12,30 @@ const imagesAutorisees = adresseSupabase
     ]
   : [];
 
+// En-têtes de sécurité envoyés avec toutes les pages.
+const entetesSecurite = [
+  // Le site ne peut pas être affiché dans un cadre sur un autre site
+  // (protection contre le « détournement de clic »). Les deux en-têtes
+  // disent la même chose : l'ancien et le nouveau standard.
+  { key: "X-Frame-Options", value: "DENY" },
+  { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
+  // Le navigateur respecte le type annoncé d'un fichier, sans le deviner.
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  // Vers un autre site, seule l'adresse du site est transmise, pas la page.
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  // Le site n'utilise ni caméra, ni micro, ni géolocalisation.
+  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+];
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
+  // N'annonce pas la technologie utilisée (« X-Powered-By: Next.js »).
+  poweredByHeader: false,
+  async headers() {
+    return [{ source: "/:path*", headers: entetesSecurite }];
+  },
   images: {
     remotePatterns: imagesAutorisees,
   },
