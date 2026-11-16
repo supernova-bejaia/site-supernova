@@ -36,6 +36,44 @@ Seule porte d'entrée du formulaire public. En une transaction, elle vérifie le
 - Un visiteur ne peut lire que `centre_interet`. Il ne peut ni lire ni écrire ailleurs.
 - Il peut seulement exécuter `inscrire_orbite`.
 
+## Espace équipe (migration du 13 novembre 2026)
+
+| Élément | Rôle |
+|---|---|
+| `acces_admin` | La liste des comptes de connexion autorisés à l'espace équipe. RLS activée et aucune règle : la table n'est lisible par personne depuis le site, elle se gère dans Supabase. |
+| `est_admin()` | Fonction qui répond si le compte connecté figure dans `acces_admin`. Elle ne renvoie qu'un oui ou un non. |
+
+Les comptes autorisés peuvent **lire** `personne`, `adhesion`, `interet_adhesion` et `saison`. Ils n'y écrivent rien.
+
+## Articles (migration du 15 novembre 2026)
+
+```
+ARTICLE(
+    id_article        uuid, clé primaire
+    titre             texte, 200 caractères au plus
+    slug              texte, unique       -- adresse : /articles/<slug> (minuscules, chiffres, tirets)
+    resume            texte, 500 caractères au plus
+    contenu           texte               -- au format Markdown
+    image_couverture  texte [nullable]    -- chemin du fichier dans le stockage « articles »
+    statut            BROUILLON | PUBLIE
+    id_auteur         → compte de connexion [nullable]   -- non affiché sur le site
+    published_at      date et heure [nullable]           -- obligatoire si PUBLIE
+    created_at, updated_at
+)
+```
+
+- `updated_at` est tenu à jour par un déclencheur (`maj_updated_at`).
+- `published_at` est fixé à la première mise en ligne, et conservé si l'article repasse en brouillon.
+- Les images de couverture sont dans l'espace de stockage `articles` : public en lecture, 2 Mo au plus, JPEG, PNG ou WebP.
+
+Sécurité :
+
+- Tout le monde lit les articles `PUBLIE`, et seulement ceux-là : un brouillon reste invisible, même si l'on devine son adresse.
+- Les comptes autorisés (`est_admin()`) lisent tout, créent, modifient et suppriment. C'est la seule écriture ouverte à l'espace équipe.
+- Seuls les comptes autorisés envoient, remplacent ou suppriment une image. Le stockage étant public, l'image d'un brouillon est lisible par qui connaît son adresse exacte ; les noms de fichiers sont aléatoires.
+
+Par rapport au modèle proposé au départ : noms en `snake_case`, ajout de `created_at` et de `id_auteur`.
+
 ## Décisions prises par rapport au MLD d'origine
 
 | Sujet | MLD d'origine | Décision |
@@ -105,4 +143,4 @@ Décisions associées :
 - Sécurité prévue : un visiteur ne lit que les événements `PUBLIE` et les photos `validee`, et n'écrit rien.
 - Reportées après le MVP : `INSCRIPTION` (une personne, membre ou non, inscrite à un événement : lien vers `PERSONNE`) et `PARTICIPATION` (l'implication d'un membre, avec un rôle : lien vers `ADHESION`).
 
-**Autres entités à proposer le moment venu** : articles, contacts du carnet.
+**Autres entités à proposer le moment venu** : contacts du carnet.
