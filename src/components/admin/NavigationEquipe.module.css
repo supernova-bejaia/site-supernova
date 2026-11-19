@@ -1,4 +1,8 @@
-/* Barre de navigation de l'espace équipe — sobre, toujours au même endroit. */
+/* Barre de navigation de l'espace équipe — sobre, toujours au même endroit.
+
+   Téléphone : deux lignes. En haut, l'étiquette et la déconnexion ; en
+   dessous, les pages, sur une seule ligne (qui défile si elle déborde).
+   Ordinateur : tout sur une ligne. */
 
 .barre {
   border-bottom: 1px solid var(--trait);
@@ -6,30 +10,49 @@
 }
 
 .contenu {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "etiquette deconnexion"
+    "liens liens";
   align-items: center;
-  gap: 4px 20px;
-  min-height: 52px;
-  padding-top: 6px;
-  padding-bottom: 6px;
+  column-gap: 16px;
+  padding-top: 4px;
 }
 
 .etiquette {
+  grid-area: etiquette;
   color: var(--rouge);
   font-family: var(--police-annotation), system-ui, sans-serif;
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.formulaireDeconnexion {
+  grid-area: deconnexion;
 }
 
 .liens {
+  grid-area: liens;
   display: flex;
-  flex-wrap: wrap;
-  flex: 1;
-  gap: 0 18px;
+  gap: 22px;
+  margin: 0 calc(var(--marge) * -1);
+  padding: 0 var(--marge);
+  overflow-x: auto;
   list-style: none;
+  border-top: 1px solid var(--trait);
+  scrollbar-width: none;
+}
+
+.liens::-webkit-scrollbar {
+  display: none;
+}
+
+.liens li {
+  flex-shrink: 0;
 }
 
 .lien,
@@ -37,12 +60,13 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  min-height: 40px;
+  min-height: 44px;
   border: 0;
   background: none;
   color: var(--texte-doux);
   font: inherit;
   font-size: 0.92rem;
+  white-space: nowrap;
   cursor: pointer;
   transition: color var(--duree-courte) ease;
 }
@@ -59,7 +83,31 @@
   box-shadow: inset 0 -2px 0 var(--rouge);
 }
 
+.fleche {
+  color: var(--rouge);
+}
+
 .deconnexion {
+  font-size: 0.86rem;
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+/* ---------- Ordinateur : une seule ligne ---------- */
+
+@media (min-width: 760px) {
+  .contenu {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: "etiquette liens deconnexion";
+    column-gap: 32px;
+    min-height: 56px;
+    padding-top: 0;
+  }
+
+  .liens {
+    margin: 0;
+    padding: 0;
+    border-top: 0;
+    overflow: visible;
+  }
 }

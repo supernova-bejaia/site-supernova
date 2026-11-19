@@ -1,3 +1,9 @@
+/* Pied de page.
+
+   Téléphone : les pages en deux colonnes régulières, puis le bas de page.
+   Ordinateur : les pages sur une ligne, le bas de page en dessous, la
+   mention à gauche et l'accès de l'équipe à droite. */
+
 .pied {
   margin-top: 72px;
   border-top: 1px solid var(--trait);
@@ -6,35 +12,62 @@
 .contenu {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding-top: 28px;
-  padding-bottom: 36px;
+  gap: 20px;
+  padding-top: 24px;
+  padding-bottom: 32px;
   color: var(--texte-discret);
   font-size: 0.88rem;
 }
 
 .liens {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 22px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 24px;
+  list-style: none;
 }
 
 .liens a {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  min-height: 40px;
+  min-height: 44px;
   color: var(--texte-doux);
+  transition: color var(--duree-courte) ease;
 }
 
 .liens a:hover {
   color: var(--blanc);
 }
 
-/* Accès de l'équipe : plus discret que les pages publiques. */
-.liens a.lienEquipe {
-  color: var(--texte-discret);
+.basDePage {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--trait);
 }
 
-.liens a.lienEquipe:hover {
+/* Accès de l'équipe : plus discret que les pages publiques. */
+.lienEquipe {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--texte-discret);
+  text-decoration: underline;
+  text-decoration-color: var(--trait);
+  text-underline-offset: 3px;
+  transition: color var(--duree-courte) ease;
+}
+
+.lienEquipe:hover {
   color: var(--blanc);
+}
+
+@media (min-width: 760px) {
+  .liens {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 28px;
+  }
 }

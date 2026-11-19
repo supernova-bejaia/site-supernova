@@ -49,13 +49,16 @@ export default function NavigationEquipe() {
           })}
           <li>
             <a href="/" target="_blank" rel="noopener" className={styles.lien}>
-              Site public <span aria-hidden="true">↗</span>
+              Site public{" "}
+              <span className={styles.fleche} aria-hidden="true">
+                ↗
+              </span>
               <span className="lecteur-ecran"> (s&apos;ouvre dans un nouvel onglet)</span>
             </a>
           </li>
         </ul>
 
-        <form action={seDeconnecter}>
+        <form action={seDeconnecter} className={styles.formulaireDeconnexion}>
           <button type="submit" className={styles.deconnexion}>
             Se déconnecter
           </button>
