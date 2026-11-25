@@ -11,24 +11,27 @@
    ===================================================================== */
 
 :root {
-  /* ---------- Couleurs de l'identité ---------- */
+  /* ---------- Couleurs de l'identité (Brand Official) ---------- */
   --noir: #000000;
-  --rouge: #e70e17; /* « plasma » : action, cœur des illustrations, mots clés */
-  --rouge-sombre: #b7010b; /* « braise » : survols, dégradés */
-  --blanc: #f3f3f3;
+  --rouge: #e10600; /* Rouge Supernova : action, mots clés, chiffres */
+  --rouge-sombre: #5a0a0a; /* Rouge sombre : pastilles, bandeaux */
+  --blanc: #f5f2f0; /* Blanc cassé : texte */
 
-  /* ---------- Profondeur : des noirs légèrement rougeâtres ---------- */
-  --fond: #080203; /* « nuit » : fond principal */
-  --fond-profond: #12060a; /* « nuit profonde » : sections en alternance */
+  /* ---------- Profondeur ---------- */
+  --fond: #0d0b0b; /* Noir fond */
+  --fond-profond: #141010; /* sections en alternance */
+
+  /* ---------- Polices : Sora (titres, annotations), Inter (texte) ---------- */
+  --police-annotation: var(--police-titre);
   --lueur: #3a0508; /* halos et lueurs diffuses */
 
   /* ---------- Nuances dérivées ---------- */
-  --texte-doux: rgba(243, 243, 243, 0.74);
-  --texte-discret: rgba(243, 243, 243, 0.55);
-  --trait: rgba(243, 243, 243, 0.14);
-  --trait-rouge: rgba(231, 14, 23, 0.4);
-  --surface: #100607;
-  --surface-champ: #160a0b;
+  --texte-doux: rgba(245, 242, 240, 0.76);
+  --texte-discret: rgba(245, 242, 240, 0.55);
+  --trait: rgba(245, 242, 240, 0.13);
+  --trait-rouge: rgba(225, 6, 0, 0.4);
+  --surface: #141010;
+  --surface-champ: #1a1414;
   --erreur: #ff6b70;
 
   /* ---------- Mise en page ---------- */
@@ -77,7 +80,7 @@ body {
   flex-direction: column;
   /* Noir rougeâtre, avec une lueur rouge sombre diffuse venue du haut. */
   background:
-    radial-gradient(1100px 760px at 50% -160px, rgba(183, 1, 11, 0.3), transparent 72%),
+    radial-gradient(1100px 760px at 50% -160px, rgba(225, 6, 0, 0.22), transparent 72%),
     var(--fond);
   background-repeat: no-repeat;
   color: var(--blanc);
@@ -117,11 +120,10 @@ h1,
 h2,
 h3 {
   font-family: var(--police-titre), system-ui, sans-serif;
-  font-weight: 900;
-  font-stretch: 125%;
+  font-weight: 800;
   text-transform: uppercase;
-  line-height: 1.02;
-  letter-spacing: -0.015em;
+  line-height: 1.04;
+  letter-spacing: -0.025em;
   text-wrap: balance;
 }
 
@@ -129,8 +131,7 @@ h3 {
    quelques lignes ; elle ne prend son ampleur que sur grand écran. */
 .declaration {
   font-family: var(--police-titre), system-ui, sans-serif;
-  font-weight: 900;
-  font-stretch: 112%;
+  font-weight: 800;
   font-size: clamp(1.7rem, 7.2vw, 2.9rem);
   line-height: 1.06;
   letter-spacing: -0.02em;

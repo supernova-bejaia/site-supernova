@@ -1,32 +1,21 @@
-import { Archivo, Manrope, Space_Grotesk } from "next/font/google";
+import { Inter, Sora } from "next/font/google";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import PauseEnArrierePlan from "@/components/mouvement/PauseEnArrierePlan";
 import "./globals.css";
 
-// Système typographique : trois familles, chacune avec un rôle précis.
-// Les polices sont hébergées avec le site par next/font (aucune requête
-// vers Google au moment de la visite).
-
-// Titres : Archivo, dont l'axe « largeur » (wdth) donne des capitales
-// grasses et élargies, de la même famille visuelle que le logo.
-const policeTitre = Archivo({
+// Polices de la charte (Brand Official) : Sora (primaire : titres,
+// annotations, boutons) et Inter (secondaire : texte courant).
+// Hébergées avec le site par next/font (aucune requête vers Google au
+// moment de la visite).
+const policeTitre = Sora({
   subsets: ["latin"],
-  axes: ["wdth"],
   variable: "--police-titre",
 });
 
-// Texte courant : Manrope, chaleureuse et très lisible sur téléphone.
-const policeTexte = Manrope({
+const policeTexte = Inter({
   subsets: ["latin"],
   variable: "--police-texte",
-});
-
-// Annotations, numéros, étiquettes et dates : Space Grotesk, pour sa
-// touche technique qui évoque les relevés astronomiques.
-const policeAnnotation = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--police-annotation",
 });
 
 export const metadata = {
@@ -39,7 +28,7 @@ export const metadata = {
 };
 
 export const viewport = {
-  themeColor: "#080203",
+  themeColor: "#0d0b0b",
 };
 
 export default function RootLayout({ children }) {
@@ -47,7 +36,7 @@ export default function RootLayout({ children }) {
     <html
       lang="fr"
       data-scroll-behavior="smooth"
-      className={`${policeTitre.variable} ${policeTexte.variable} ${policeAnnotation.variable}`}
+      className={`${policeTitre.variable} ${policeTexte.variable}`}
     >
       <body>
         <Header />

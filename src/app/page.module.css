@@ -1,126 +1,66 @@
-/* =====================================================================
-   Page d'accueil — pensée d'abord pour le téléphone.
-   Les règles de base visent un petit écran ; les blocs « @media » plus
-   bas réorganisent la page sur tablette et ordinateur.
-   ===================================================================== */
+/* Page d'accueil — pensée d'abord pour le téléphone ; les « @media »
+   ajoutent ce qui change sur grand écran. Couleurs et polices : globals.css. */
+
+/* Les ancres (#ta-place, #concretement) ne passent pas sous l'en-tête fixe. */
+.ancre {
+  scroll-margin-top: 80px;
+}
 
 /* ---------------------------------------------------------------------
-   Ouverture
+   01 — Ouverture
    --------------------------------------------------------------------- */
 
 .ouverture {
   position: relative;
-  display: flex;
-  align-items: center;
-  min-height: calc(100svh - 64px);
-  max-height: 900px;
   overflow: hidden;
+  isolation: isolate;
+  padding: 56px 0 80px;
+  min-height: min(92svh, 860px);
+  display: flex;
+  align-items: flex-end;
 }
 
-/* L'orbite lumineuse derrière le logo : un grand cercle dont un arc
-   s'illumine. Elle tourne très lentement, comme une comète en chemin.
-
-   Performance : ce grand cercle et sa lueur coûtent cher à dessiner. Il
-   est placé sur son propre calque (« will-change ») pour n'être dessiné
-   qu'une fois, puis seulement tourné par la carte graphique. La rotation
-   ne démarre qu'après l'entrée du texte, pour ne pas lui faire concurrence. */
-.orbiteFond {
+/* Texture rouge officielle, très atténuée, et la comète en lumière. */
+.ouverture::before {
+  content: "";
   position: absolute;
-  top: 46%;
-  left: 50%;
-  width: min(150vw, 980px);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  border: 1px solid rgba(231, 14, 23, 0.1);
-  border-top-color: var(--rouge);
-  border-right-color: rgba(231, 14, 23, 0.55);
-  box-shadow:
-    0 -10px 60px -20px rgba(231, 14, 23, 0.6),
-    inset 0 30px 80px -50px rgba(231, 14, 23, 0.55);
-  transform: translate(-50%, -50%) rotate(24deg);
-  will-change: transform;
+  inset: 0;
+  z-index: -2;
+  background:
+    linear-gradient(180deg, rgba(13, 11, 11, 0.55) 0%, var(--fond) 92%),
+    url("/marque/fond-texture-rouge.jpg") center / cover no-repeat;
+  opacity: 0.55;
+}
+
+.decorOuverture {
+  position: absolute;
+  z-index: -1;
+  top: 6%;
+  right: -18%;
+  width: min(92vw, 560px);
   pointer-events: none;
-  animation: orbite 120s linear 1.4s infinite;
 }
 
-@keyframes orbite {
-  from {
-    transform: translate(-50%, -50%) rotate(24deg);
-  }
-  to {
-    transform: translate(-50%, -50%) rotate(384deg);
-  }
-}
-
-.contenuOuverture {
+.cometeOuverture {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 26px;
-  padding-top: 32px;
-  padding-bottom: 56px;
-  text-align: center;
-}
-
-.titre {
-  /* Le logo gère lui-même sa taille et sa graisse. */
-  line-height: 1;
-}
-
-.accroche {
-  max-width: 24ch;
-  color: var(--texte-doux);
-  font-size: clamp(1.12rem, 4.4vw, 1.5rem);
-  line-height: 1.45;
-  text-wrap: balance;
-}
-
-.accrocheForte {
-  color: var(--blanc);
-  font-weight: 700;
-}
-
-.actions {
-  display: flex;
-  justify-content: center;
+  display: block;
   width: 100%;
-  margin-top: 4px;
+  height: auto;
+  filter: drop-shadow(0 0 36px rgba(225, 6, 0, 0.55));
+  animation: arrivee 1.4s var(--courbe) both, flotter 9s ease-in-out 1.4s infinite;
 }
 
-/* Sur téléphone, le bouton principal occupe toute la largeur : il est
-   plus facile à toucher avec le pouce. */
-.actions :global(.bouton) {
-  width: 100%;
-  max-width: 340px;
+.halo {
+  position: absolute;
+  inset: -20% -10% -10% -30%;
+  background: radial-gradient(closest-side, rgba(225, 6, 0, 0.35), transparent 70%);
+  filter: blur(10px);
 }
 
-/* Entrée en scène au chargement : chaque élément monte légèrement et
-   s'éclaire, l'un après l'autre.
-
-   Performance : seules l'opacité et la position sont animées. Un flou
-   (filter: blur) obligerait le téléphone à redessiner le grand logo et sa
-   lueur à chaque image, ce qui faisait saccader l'ouverture. */
-.entree {
-  animation: entree var(--duree-longue) var(--courbe) both;
-}
-
-.entree:nth-child(2) {
-  animation-delay: 120ms;
-}
-
-.entree:nth-child(3) {
-  animation-delay: 300ms;
-}
-
-.entree:nth-child(4) {
-  animation-delay: 440ms;
-}
-
-@keyframes entree {
+@keyframes arrivee {
   from {
     opacity: 0;
-    transform: translateY(18px);
+    transform: translate(18%, -14%) scale(0.92);
   }
   to {
     opacity: 1;
@@ -128,376 +68,861 @@
   }
 }
 
-/* ---------------------------------------------------------------------
-   01 — Le collectif : une déclaration éditoriale, sans carte
-   --------------------------------------------------------------------- */
-
-.manifeste {
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-  padding-top: 56px;
-  padding-bottom: 88px;
+@keyframes flotter {
+  50% {
+    transform: translate(-6px, 6px);
+  }
 }
 
-.declaration {
+.contenuOuverture {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 22px;
+}
+
+.titreOuverture {
+  max-width: 14ch;
+  font-size: clamp(2.3rem, 10.5vw, 5.4rem);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+}
+
+.pastille {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--rouge);
+  box-shadow: 0 0 12px var(--rouge);
+  align-self: center;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 26px;
+  margin-top: 8px;
+}
+
+.lienDiscret {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--blanc);
+  font-family: var(--police-titre), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: underline;
+  text-decoration-color: var(--trait-rouge);
+  text-underline-offset: 6px;
+  transition: text-decoration-color var(--duree-courte) ease;
+}
+
+.lienDiscret:hover {
+  text-decoration-color: var(--rouge);
+}
+
+/* Entrée en cascade du texte d'ouverture */
+.entree {
+  animation: monter var(--duree-longue) var(--courbe) both;
+}
+
+.entree:nth-child(2) {
+  animation-delay: 90ms;
+}
+.entree:nth-child(3) {
+  animation-delay: 180ms;
+}
+.entree:nth-child(4) {
+  animation-delay: 270ms;
+}
+
+@keyframes monter {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+}
+
+@media (min-width: 900px) {
+  .ouverture {
+    align-items: center;
+    padding: 96px 0 120px;
+  }
+
+  .decorOuverture {
+    top: 50%;
+    right: -4%;
+    width: min(46vw, 640px);
+    transform: translateY(-58%);
+  }
+}
+
+/* ---------------------------------------------------------------------
+   02 — Deux étudiants
+   --------------------------------------------------------------------- */
+
+.recit {
+  display: grid;
+  gap: 40px;
+  padding-top: 72px;
+  padding-bottom: 96px;
+}
+
+.texteRecit {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.titreRecit {
+  max-width: 20ch;
+  font-size: clamp(1.6rem, 6vw, 2.5rem);
+  text-transform: none;
+  letter-spacing: -0.03em;
+  margin-bottom: 6px;
+}
+
+.chuteRecit {
+  margin-top: 6px;
+  font-family: var(--police-titre), system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--blanc);
+}
+
+/* Le bilan : deux colonnes, l'une maigre, l'autre pleine. */
+.bilan {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--trait);
+  border-radius: var(--rayon);
+  overflow: hidden;
+  align-self: start;
+}
+
+.colonneBilan {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 22px 18px 26px;
+}
+
+.colonneBilan > p {
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+}
+
+.colonneBilan ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-family: var(--police-titre), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--texte-discret);
+}
+
+.colonneBilanForte {
+  background: linear-gradient(160deg, rgba(225, 6, 0, 0.2), rgba(90, 10, 10, 0.25));
+  border-left: 1px solid var(--trait-rouge);
+}
+
+.colonneBilanForte ul {
+  color: var(--blanc);
+}
+
+.colonneBilanForte li:not(:first-child)::before {
+  content: "+ ";
+  color: var(--rouge);
+}
+
+.morale {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 32px;
+  border-top: 1px solid var(--trait);
+}
+
+@media (min-width: 900px) {
+  .recit {
+    grid-template-columns: 1.2fr 1fr;
+    column-gap: 72px;
+    row-gap: 64px;
+    padding-top: 112px;
+    padding-bottom: 128px;
+  }
+
+  .bilan {
+    position: sticky;
+    top: 110px;
+    margin-top: 48px;
+  }
+
+  .colonneBilan {
+    padding: 30px 28px 34px;
+  }
+
+  .colonneBilan ul {
+    font-size: 1.2rem;
+  }
+
+  .morale {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ---------------------------------------------------------------------
+   03 — Concrètement : Vivre, Construire, Grandir
+   --------------------------------------------------------------------- */
+
+.piliers {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-bottom: 96px;
+}
+
+.piliers h2 {
+  margin: 18px 0 12px;
+}
+
+.listePiliers {
+  list-style: none;
+  margin-top: 20px;
+  counter-reset: pilier;
+}
+
+.pilier {
+  counter-increment: pilier;
+  display: grid;
+  gap: 10px;
+  padding: 26px 0;
+  border-top: 1px solid var(--trait);
+}
+
+.pilier:last-child {
+  border-bottom: 1px solid var(--trait);
+}
+
+.motPilier {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  font-family: var(--police-titre), system-ui, sans-serif;
+  font-weight: 800;
+  font-size: clamp(2rem, 10vw, 6rem);
+  line-height: 1;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+}
+
+.motPilier::before {
+  content: "0" counter(pilier);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--rouge);
+  transform: translateY(-1.6em);
+}
+
+.pilier:hover .motPilier {
+  color: var(--rouge);
+}
+
+.motPilier {
+  transition: color var(--duree-moyenne) var(--courbe);
+}
+
+@media (min-width: 900px) {
+  .piliers {
+    padding-bottom: 128px;
+  }
+
+  .pilier {
+    grid-template-columns: 1.2fr 1fr;
+    align-items: center;
+    gap: 48px;
+    padding: 34px 0;
+  }
+}
+
+/* ---------------------------------------------------------------------
+   04 — Des actions
+   --------------------------------------------------------------------- */
+
+.actionsSaison {
+  padding: 80px 0 88px;
+  background: var(--fond-profond);
+  border-top: 1px solid var(--trait);
+  border-bottom: 1px solid var(--trait);
+}
+
+.enteteActions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.listeProjets {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 40px;
+}
+
+.projet {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 18px;
+  padding: 24px 20px 26px;
+  border-radius: var(--rayon);
+  border: 1px solid var(--trait);
+  background: var(--fond);
+  overflow: hidden;
+}
+
+/* Le premier projet est mis en avant : texture rouge officielle. */
+.projet:first-child {
+  border-color: var(--trait-rouge);
+  background:
+    linear-gradient(120deg, rgba(13, 11, 11, 0.92) 30%, rgba(13, 11, 11, 0.6)),
+    url("/marque/fond-texture-rouge.jpg") center / cover no-repeat;
+}
+
+.indexProjet {
+  font-family: var(--police-titre), system-ui, sans-serif;
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: var(--rouge);
+  letter-spacing: 0.08em;
+  padding-top: 4px;
+}
+
+.corpsProjet {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.statutProjet {
+  align-self: flex-start;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--rouge-sombre);
+  color: var(--blanc);
+  font-family: var(--police-titre), system-ui, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.etiquettes {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.etiquettes li {
+  padding: 5px 12px;
+  border: 1px solid var(--trait);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  color: var(--texte-doux);
+}
+
+.suiteActions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+  margin-top: 36px;
+}
+
+@media (min-width: 900px) {
+  .actionsSaison {
+    padding: 112px 0 120px;
+  }
+
+  .listeProjets {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 56px;
+  }
+
+  /* Mise en avant : le premier projet occupe toute la ligne. */
+  .projet:first-child {
+    grid-column: 1 / -1;
+    padding: 48px 48px 52px;
+  }
+
+  .projet:first-child h3 {
+    font-size: clamp(2rem, 3.6vw, 3.2rem);
+  }
+
+  .projet {
+    padding: 32px 30px 34px;
+  }
+
+  .suiteActions {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+/* ---------------------------------------------------------------------
+   05 — La communauté
+   --------------------------------------------------------------------- */
+
+.communaute {
+  display: grid;
+  gap: 36px;
+  padding-top: 96px;
+  padding-bottom: 96px;
+}
+
+.communaute h2 {
+  margin-top: 20px;
   max-width: 22ch;
 }
 
-.texteManifeste p {
-  max-width: 52ch;
+.profils {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.nuageProfils {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.nuageProfils li {
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--trait);
+  background: var(--surface);
+  font-family: var(--police-titre), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.nuageProfils li:nth-child(3n + 1) {
+  border-color: var(--trait-rouge);
+}
+
+.nuageProfils li:last-child {
+  background: var(--rouge);
+  border-color: var(--rouge);
+  color: #fff;
+}
+
+.lienInstagram {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  font-family: var(--police-titre), system-ui, sans-serif;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--trait-rouge);
+  text-underline-offset: 6px;
+}
+
+.lienInstagram:hover {
+  text-decoration-color: var(--rouge);
+}
+
+@media (min-width: 900px) {
+  .communaute {
+    grid-template-columns: 1.1fr 1fr;
+    gap: 72px;
+    align-items: end;
+    padding-top: 128px;
+    padding-bottom: 128px;
+  }
+
+  .nuageProfils li {
+    font-size: 1.05rem;
+    padding: 12px 20px;
+  }
 }
 
 /* ---------------------------------------------------------------------
-   02 — Deux parcours : une bande « nuit profonde » sur toute la largeur
+   06 — Pas le temps ?
    --------------------------------------------------------------------- */
 
-.parcours {
-  position: relative;
-  padding-top: 56px;
-  padding-bottom: 32px;
+.objection {
+  padding: 88px 0;
   background:
-    radial-gradient(70% 50% at 20% 0%, rgba(58, 5, 8, 0.9), transparent 70%),
+    radial-gradient(700px 500px at 85% 50%, rgba(225, 6, 0, 0.16), transparent 70%),
     var(--fond-profond);
   border-top: 1px solid var(--trait);
   border-bottom: 1px solid var(--trait);
 }
 
-.enteteParcours {
+.grilleObjection {
+  display: grid;
+  gap: 32px;
+}
+
+.texteObjection {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.phraseCle {
+  margin: 10px 0;
+  padding-left: 18px;
+  border-left: 3px solid var(--rouge);
+  font-family: var(--police-titre), system-ui, sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.35rem, 5vw, 2rem);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.emblemeObjection {
+  width: min(78vw, 360px);
+  justify-self: center;
+}
+
+@media (min-width: 900px) {
+  .objection {
+    padding: 128px 0;
+  }
+
+  .grilleObjection {
+    grid-template-columns: 1.3fr 1fr;
+    align-items: center;
+    gap: 72px;
+  }
+
+  .emblemeObjection {
+    width: 100%;
+    max-width: 440px;
+  }
+}
+
+/* ---------------------------------------------------------------------
+   07 — Ta place : Noyau, Orbite, Spectateur
+   --------------------------------------------------------------------- */
+
+.places {
+  padding-top: 96px;
+  padding-bottom: 72px;
+}
+
+.entetePlaces {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.grillePlaces {
+  display: grid;
+  gap: 18px;
+  margin-top: 44px;
+}
+
+.carte {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 14px;
-  margin-bottom: 8px;
+  padding: 28px 24px;
+  border-radius: 18px;
+  border: 1px solid var(--trait);
+  background: var(--surface);
 }
 
-.grilleParcours {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-}
-
-/* Un volet : l'emblème, puis le texte. Pas de carte : un simple filet
-   sépare les deux volets. */
-/* L'emblème et le texte partagent le même bord gauche. */
-.volet {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
-  padding: 32px 0 48px;
-}
-
-.volet + .volet {
-  border-top: 1px solid var(--trait);
-}
-
-.illustration {
-  width: min(78vw, 300px);
-}
-
-.texteVolet {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
-  width: 100%;
-}
-
-
-.pastilleFermee {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border: 1px solid var(--texte-doux);
-  border-radius: 50%;
-  align-self: center;
-}
-
-/* Lien de volet : souligné qui se dessine au survol */
-.lienVolet {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 44px;
-  margin-top: 2px;
+.repereCarte {
+  align-self: flex-start;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--trait);
   font-family: var(--police-titre), system-ui, sans-serif;
-  font-weight: 800;
-  font-stretch: 112%;
-  font-size: 0.92rem;
-  letter-spacing: 0.04em;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--blanc);
-  background: linear-gradient(var(--rouge), var(--rouge)) no-repeat left bottom 8px / 0% 2px;
-  transition: background-size var(--duree-moyenne) var(--courbe);
+  color: var(--texte-doux);
 }
 
-.lienVolet span {
+.nomCarte {
+  font-size: clamp(2rem, 8vw, 2.6rem);
+  margin-top: 6px;
+}
+
+.roleCarte {
+  font-family: var(--police-titre), system-ui, sans-serif;
+  font-weight: 600;
   color: var(--rouge);
-  transition: transform var(--duree-courte) var(--courbe);
 }
 
-.lienVolet:hover {
-  background-size: 100% 2px;
-}
-
-.lienVolet:hover span {
-  transform: translateX(4px);
-}
-
-/* ---------------------------------------------------------------------
-   03 — Sur le terrain
-   --------------------------------------------------------------------- */
-
-.evenements {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 40px;
-  padding-top: 72px;
-  padding-bottom: 16px;
-}
-
-.texteEvenements {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 18px;
-}
-
-.constellation {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
-}
-
-.constellation svg {
-  width: 100%;
-  max-width: 420px;
-  height: auto;
-}
-
-.liensConstellation {
-  fill: none;
-  stroke: rgba(243, 243, 243, 0.28);
-  stroke-width: 1;
-  stroke-dasharray: 2 5;
-}
-
-.etoile {
-  fill: var(--blanc);
-  fill-opacity: 0.8;
-}
-
-.etoileRouge {
-  fill: var(--rouge);
-}
-
-.halo {
-  fill: none;
-  stroke: var(--trait-rouge);
-  stroke-width: 1;
-}
-
-.legende {
-  color: var(--texte-discret);
-}
-
-/* ---------------------------------------------------------------------
-   04 — Nos réseaux
-   --------------------------------------------------------------------- */
-
-.reseaux {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 32px;
-  padding-top: 72px;
-  padding-bottom: 16px;
-}
-
-.texteReseaux {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 18px;
-}
-
-.listeReseaux {
+.pointsCarte {
   list-style: none;
   display: flex;
   flex-direction: column;
-  border-top: 1px solid var(--trait);
-}
-
-/* Un réseau = une grande ligne cliquable, séparée par un filet. */
-.lienReseau {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 18px;
-  min-height: 88px;
+  gap: 10px;
   padding: 18px 0;
-  border-bottom: 1px solid var(--trait);
-  transition: background var(--duree-moyenne) var(--courbe);
+  border-top: 1px solid var(--trait);
+  color: var(--texte-doux);
 }
 
-.iconeReseau {
-  display: grid;
-  place-items: center;
-  width: 52px;
-  height: 52px;
-  border: 1px solid var(--trait-rouge);
-  border-radius: 16px;
-  background: radial-gradient(circle at 30% 30%, rgba(231, 14, 23, 0.28), transparent 70%);
-  transition: border-color var(--duree-courte) ease, box-shadow var(--duree-courte) ease;
+.pointsCarte li {
+  position: relative;
+  padding-left: 22px;
 }
 
-.iconeReseau svg {
-  width: 26px;
-  height: 26px;
-  fill: none;
-  stroke: var(--blanc);
-  stroke-width: 1.6;
+.pointsCarte li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 2px solid var(--rouge);
 }
 
-.iconeReseau svg :global(.plein) {
-  fill: var(--rouge);
-  stroke: none;
-}
-
-.texteLienReseau {
+.conditions {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  min-width: 0;
+  gap: 10px;
+  margin-top: auto;
+  padding: 16px;
+  border-radius: 12px;
+  background: rgba(245, 242, 240, 0.04);
+  font-size: 0.92rem;
 }
 
-/* L'identifiant en grand : c'est lui qu'on retient. */
-.identifiantReseau {
-  overflow-wrap: anywhere;
+.conditions dt {
   font-family: var(--police-titre), system-ui, sans-serif;
-  font-weight: 900;
-  font-stretch: 112%;
-  font-size: clamp(1.15rem, 5.4vw, 2.2rem);
-  line-height: 1.05;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--texte-discret);
+}
+
+.conditions dd {
   color: var(--blanc);
 }
 
-.flecheReseau {
-  font-family: var(--police-annotation), system-ui, sans-serif;
-  font-size: 1.5rem;
+.boutonCarte {
+  width: 100%;
+  margin-top: 6px;
+}
+
+/* Noyau : le plus haut niveau, mis en valeur sans écraser les autres. */
+.carte_noyau {
+  border-color: var(--trait-rouge);
+  background:
+    linear-gradient(180deg, rgba(225, 6, 0, 0.16), transparent 55%),
+    var(--surface);
+  box-shadow: 0 0 60px rgba(225, 6, 0, 0.14);
+}
+
+.carte_noyau .repereCarte {
+  background: var(--rouge);
+  border-color: var(--rouge);
+  color: #fff;
+}
+
+/* Orbite : ouverte, chaleureuse. */
+.carte_orbite .repereCarte {
+  border-color: var(--trait-rouge);
+  color: var(--blanc);
+}
+
+/* Spectateur : le plus léger, volontairement plus sobre. */
+.carte_spectateur {
+  background: transparent;
+}
+
+.carte_spectateur .roleCarte {
+  color: var(--texte-doux);
+}
+
+.notePlaces {
+  margin-top: 26px;
+  max-width: 62ch;
+  color: var(--texte-discret);
+  font-size: 0.92rem;
+}
+
+@media (min-width: 960px) {
+  .places {
+    padding-top: 128px;
+  }
+
+  .grillePlaces {
+    grid-template-columns: repeat(3, 1fr);
+    align-items: stretch;
+    gap: 20px;
+  }
+
+  .carte {
+    padding: 34px 28px;
+  }
+
+  .carte_noyau {
+    transform: translateY(-14px);
+  }
+}
+
+/* ---------------------------------------------------------------------
+   08 — FAQ
+   --------------------------------------------------------------------- */
+
+.faq {
+  display: grid;
+  gap: 32px;
+  padding-top: 72px;
+  padding-bottom: 96px;
+}
+
+.enteteFaq {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.listeFaq {
+  border-top: 1px solid var(--trait);
+}
+
+.question {
+  border-bottom: 1px solid var(--trait);
+}
+
+.question summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 64px;
+  padding: 14px 0;
+  cursor: pointer;
+  list-style: none;
+  font-family: var(--police-titre), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.question summary::-webkit-details-marker {
+  display: none;
+}
+
+.question summary:hover {
   color: var(--rouge);
+}
+
+/* Signe « + » qui devient « − » à l'ouverture */
+.signe {
+  position: relative;
+  flex: none;
+  width: 14px;
+  height: 14px;
+}
+
+.signe::before,
+.signe::after {
+  content: "";
+  position: absolute;
+  inset: 6px 0 auto;
+  height: 2px;
+  background: var(--rouge);
   transition: transform var(--duree-courte) var(--courbe);
 }
 
-.lienReseau:hover .iconeReseau {
-  border-color: var(--rouge);
-  box-shadow: 0 0 28px rgba(231, 14, 23, 0.35);
+.signe::after {
+  transform: rotate(90deg);
 }
 
-.lienReseau:hover .flecheReseau {
-  transform: translate(3px, -3px);
+.question[open] .signe::after {
+  transform: rotate(0deg);
 }
 
-/* =====================================================================
-   Tablette et ordinateur
-   ===================================================================== */
-
-@media (min-width: 720px) {
-  .contenuOuverture {
-    gap: 30px;
-  }
-
-  .actions :global(.bouton) {
-    width: auto;
-  }
-
-  /* Les deux volets côte à côte, séparés par un filet vertical */
-  .grilleParcours {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    margin-top: 16px;
-  }
-
-  .volet {
-    padding: 24px 40px 56px 0;
-  }
-
-  .volet + .volet {
-    padding-left: 40px;
-    padding-right: 0;
-    border-top: 0;
-    border-left: 1px solid var(--trait);
-  }
-
-  .illustration {
-    width: min(100%, 340px);
-  }
+.question p {
+  padding-bottom: 22px;
 }
 
 @media (min-width: 900px) {
-  .accroche {
-    max-width: 30ch;
+  .faq {
+    grid-template-columns: 1fr 1.6fr;
+    gap: 72px;
+    padding-bottom: 128px;
   }
 
-  /* Le manifeste se compose en asymétrie : la déclaration occupe la
-     largeur, le texte se décale vers la droite. */
-  .manifeste {
-    display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    column-gap: 24px;
-    row-gap: 28px;
-    padding-top: 120px;
-    padding-bottom: 140px;
+  .enteteFaq {
+    position: sticky;
+    top: 110px;
+    align-self: start;
   }
 
-  /* Tout le manifeste part du même bord gauche ; la déclaration occupe
-     dix colonnes sur douze, le texte reste dans une largeur de lecture. */
-  .manifeste > :nth-child(1) {
-    grid-column: 1 / -1;
-  }
-
-  .manifeste > :nth-child(2) {
-    grid-column: 1 / span 10;
-  }
-
-  .manifeste > :nth-child(3) {
-    grid-column: 1 / span 7;
-  }
-
-  .parcours {
-    padding-top: 104px;
-    padding-bottom: 56px;
-  }
-
-  .illustration {
-    width: min(100%, 420px);
-  }
-
-  .evenements {
-    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    align-items: center;
-    gap: 64px;
-    padding-top: 120px;
-  }
-
-  .constellation {
-    align-items: flex-end;
+  .question summary {
+    font-size: 1.15rem;
   }
 }
 
+/* ---------------------------------------------------------------------
+   09 — Appel final
+   --------------------------------------------------------------------- */
+
+.final {
+  position: relative;
+  padding: 104px 0;
+  text-align: center;
+  background:
+    radial-gradient(ellipse at center, rgba(13, 11, 11, 0.2), rgba(13, 11, 11, 0.85) 80%),
+    url("/marque/fond-texture-rouge.jpg") center / cover no-repeat;
+  border-top: 1px solid var(--trait-rouge);
+  /* ponytail: annule la marge haute du pied de page (Footer.module.css,
+     72px) pour que l'appel final le touche ; à garder en phase. */
+  margin-bottom: -72px;
+}
+
+.contenuFinal > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.titreFinal {
+  max-width: 16ch;
+  font-size: clamp(2rem, 8.4vw, 4.4rem);
+  letter-spacing: -0.035em;
+}
+
+.contenuFinal p {
+  color: var(--blanc);
+}
+
+.contenuFinal .actions {
+  justify-content: center;
+}
+
 @media (min-width: 900px) {
-  .reseaux {
-    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    align-items: center;
-    gap: 64px;
-    padding-top: 120px;
-  }
-
-  .lienReseau {
-    min-height: 120px;
-    gap: 28px;
-  }
-
-  .iconeReseau {
-    width: 64px;
-    height: 64px;
+  .final {
+    padding: 150px 0;
   }
 }

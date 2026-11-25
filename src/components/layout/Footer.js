@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { NAVIGATION } from "@/lib/site";
+import { EMAIL_CONTACT, NAVIGATION, RESEAUX } from "@/lib/site";
+import Logo from "./Logo";
 import styles from "./Footer.module.css";
 
 // Pied de page : les mêmes pages que le menu (lib/site.js), en grille
@@ -9,6 +10,25 @@ export default function Footer() {
   return (
     <footer className={styles.pied}>
       <div className={`conteneur ${styles.contenu}`}>
+        <div className={styles.marque}>
+          <Logo />
+          <ul className={styles.contacts}>
+            {RESEAUX.map((reseau) => (
+              <li key={reseau.url}>
+                <a href={reseau.url} target="_blank" rel="noopener noreferrer">
+                  {reseau.nom} · {reseau.identifiant}
+                  <span className="lecteur-ecran"> (s&apos;ouvre dans un nouvel onglet)</span>
+                </a>
+              </li>
+            ))}
+            {EMAIL_CONTACT && (
+              <li>
+                <a href={`mailto:${EMAIL_CONTACT}`}>{EMAIL_CONTACT}</a>
+              </li>
+            )}
+          </ul>
+        </div>
+
         <nav aria-label="Pied de page">
           <ul className={styles.liens}>
             {NAVIGATION.map((page) => (

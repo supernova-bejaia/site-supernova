@@ -1,30 +1,18 @@
 .logo {
-  display: inline-flex;
-  align-items: center;
-  font-family: var(--police-titre), system-ui, sans-serif;
-  font-weight: 900;
-  font-stretch: 125%;
-  font-size: 1.25rem;
-  line-height: 1;
-  letter-spacing: -0.02em;
-  color: var(--blanc);
-  white-space: nowrap;
-}
-
-/* La comète remplace la lettre O : sa hauteur suit la taille du texte. */
-.comete {
-  height: 0.78em;
+  display: block;
+  height: 18px;
   width: auto;
-  margin: 0 0.02em 0 0.03em;
-  fill: var(--rouge);
-  overflow: visible;
 }
 
-/* Version « grande », pour l'ouverture de la page d'accueil. */
+@media (min-width: 900px) {
+  .logo {
+    height: 22px;
+  }
+}
+
+/* Version « grande », pour les grands formats. */
 .grande {
-  font-size: clamp(2.1rem, 11vw, 6.5rem);
-}
-
-.grande .comete {
-  filter: drop-shadow(0 0 0.25em rgba(231, 14, 23, 0.55));
+  height: auto;
+  width: min(100%, 640px);
+  filter: drop-shadow(0 0 0.6em rgba(225, 6, 0, 0.35));
 }

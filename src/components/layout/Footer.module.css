@@ -19,6 +19,41 @@
   font-size: 0.88rem;
 }
 
+/* Logo, réseaux et contact */
+.marque {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 8px;
+}
+
+.contacts {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 24px;
+}
+
+.contacts a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--blanc);
+  transition: color var(--duree-courte) ease;
+}
+
+.contacts a:hover {
+  color: var(--rouge);
+}
+
+@media (min-width: 760px) {
+  .marque {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
 .liens {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

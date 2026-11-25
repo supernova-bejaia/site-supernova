@@ -1,3 +1,4 @@
+import { COMETE } from "@/lib/marque";
 import styles from "./Emblemes.module.css";
 
 // Emblème de l'Orbite : des trajectoires inclinées autour d'un petit centre,
@@ -74,10 +75,8 @@ export default function EmblemeOrbite({ className = "" }) {
         {/* La comète de Supernova, en tête de l'orbite */}
         <circle cx="360.5" cy="158" r="20" fill="url(#orbite-halo)" />
         <g transform="translate(360.5 158) rotate(-61) scale(0.25) translate(-30 -50)" className={styles.comete}>
-          <circle cx="30" cy="50" r="28" />
-          <path d="M18 25 L119 1 L50 46 Z" />
-          <path d="M44 38 L114 18 L57 60 Z" />
-          <path d="M50 58 L100 42 L46 76 Z" />
+          {/* Comète officielle (Brand Official), ramenée au repère d'origine */}
+          <path transform="translate(-3.5 -16.7) scale(0.215)" fillRule="evenodd" d={COMETE} />
         </g>
       </g>
 

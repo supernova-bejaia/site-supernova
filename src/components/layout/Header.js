@@ -9,7 +9,7 @@ export default function Header() {
     <header className={styles.entete}>
       <div className={`conteneur ${styles.barre}`}>
         <Link href="/" className={styles.lienLogo} aria-label="Supernova — accueil">
-          <Logo />
+          <Logo prioritaire />
         </Link>
         <MenuNavigation />
       </div>

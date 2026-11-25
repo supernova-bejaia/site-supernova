@@ -1,10 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- Icône du site : la comète rouge de Supernova sur fond noir. -->
-  <rect width="64" height="64" rx="14" fill="#000000"/>
-  <g transform="translate(8 16) scale(0.4)" fill="#e70e17">
-    <circle cx="30" cy="50" r="28"/>
-    <path d="M18 25 L119 1 L50 46 Z"/>
-    <path d="M44 38 L114 18 L57 60 Z"/>
-    <path d="M50 58 L100 42 L46 76 Z"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -60 640 640">
+  <!-- Icone du site : la comete officielle de Supernova, rouge sur fond noir. -->
+  <rect y="-60" width="640" height="640" rx="140" fill="#0d0b0b"/>
+  <path transform="translate(65 75) scale(0.8)" fill="#e10600" fill-rule="evenodd" d="M612 22 132 178C64 200 26 252 26 310c0 72 58 130 130 130 39 0 74-18 101-48l178-168-152 92c-11 7-23 7-30-1-8-10-4-22 6-30L595 76 207 234c-11 5-20 0-23-8-4-10 2-19 12-24L612 22Z"/>
 </svg>
