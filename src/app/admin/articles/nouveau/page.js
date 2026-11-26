@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { verifierAccesAdmin } from "@/lib/acces-admin";
+import { droitsArticle } from "@/lib/droits";
 import FormulaireArticle from "@/components/admin/FormulaireArticle";
 import pageStyles from "../../admin.module.css";
 import styles from "@/components/admin/Articles.module.css";
@@ -22,7 +23,7 @@ export default function PageNouvelArticle() {
 
 async function NouvelArticle() {
   // Contrôle d'accès avant d'afficher le formulaire (redirige si refusé).
-  await verifierAccesAdmin();
+  const { niveau } = await verifierAccesAdmin();
 
   return (
     <>
@@ -35,7 +36,7 @@ async function NouvelArticle() {
         </div>
       </header>
 
-      <FormulaireArticle />
+      <FormulaireArticle droits={droitsArticle(null, niveau, true)} />
     </>
   );
 }

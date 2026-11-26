@@ -647,6 +647,31 @@
   border-style: dashed;
 }
 
+.statut[data-statut="ARCHIVE"] {
+  color: var(--texte-discret);
+  border-style: dotted;
+}
+
+/* Archivage : une explication, puis le bouton. */
+.zoneArchivage {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+/* Article que le compte connecté ne peut pas modifier. */
+.lectureSeule {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid var(--trait);
+  border-radius: 14px;
+  color: var(--texte-doux);
+}
+
 /* Suppression : à part, et discrète pour éviter le clic par erreur. */
 .zoneSuppression {
   margin-top: 32px;

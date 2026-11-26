@@ -49,10 +49,14 @@ async function Apercu({ params }) {
         <p className={adminStyles.bandeauApercu}>
           <span>
             Aperçu réservé à l&apos;équipe —{" "}
-            {article.statut === "PUBLIE" ? "article en ligne." : "brouillon, invisible du public."}
+            {article.statut === "PUBLIE"
+              ? "article en ligne."
+              : article.statut === "ARCHIVE"
+                ? "article archivé, invisible du public."
+                : "brouillon, invisible du public."}
           </span>
           <Link prefetch={false} href={`/admin/articles/${article.id_article}`} className={adminStyles.retour}>
-            <span aria-hidden="true">←</span> Modifier
+            <span aria-hidden="true">←</span> Retour à l&apos;article
           </Link>
         </p>
       </div>

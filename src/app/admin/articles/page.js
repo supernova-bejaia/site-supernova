@@ -2,7 +2,8 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { verifierAccesAdmin } from "@/lib/acces-admin";
 import { dateCourte } from "@/lib/dates";
-import { listerArticles } from "@/services/articles-admin";
+import { droitsArticle, LIBELLES_STATUT_ARTICLE } from "@/lib/droits";
+import { listerArticles, listerMesArticles } from "@/services/articles-admin";
 import pageStyles from "../admin.module.css";
 import styles from "@/components/admin/Articles.module.css";
 
@@ -13,6 +14,10 @@ export const metadata = {
 const NOTIFICATIONS = {
   supprime: { texte: "L'article a été supprimé." },
   echec: { texte: "La suppression a échoué. Réessayez dans un instant.", erreur: true },
+  archive: { texte: "L'article est archivé : il n'est plus visible sur le site." },
+  restaure: { texte: "L'article est restauré en brouillon." },
+  "echec-archive": { texte: "L'archivage a échoué. Réessayez dans un instant.", erreur: true },
+  refuse: { texte: "Vos droits ne permettent pas cette action.", erreur: true },
 };
 
 // Liste de tous les articles (brouillons compris), pour l'équipe.
@@ -30,14 +35,18 @@ export default function PageArticlesAdmin({ searchParams }) {
 
 async function ListeArticles({ searchParams }) {
   // 1. Contrôle d'accès, avant toute lecture (redirige si refusé).
-  const { supabase } = await verifierAccesAdmin();
+  const { supabase, niveau } = await verifierAccesAdmin();
 
   const notification = NOTIFICATIONS[(await searchParams).etat];
 
-  // 2. Lecture des articles.
+  // 2. Lecture des articles, et de ceux que le compte connecté a écrits.
   let articles;
+  let mesArticles;
   try {
-    articles = await listerArticles(supabase);
+    [articles, mesArticles] = await Promise.all([
+      listerArticles(supabase),
+      listerMesArticles(supabase),
+    ]);
   } catch (erreur) {
     console.error("Liste des articles indisponible :", erreur.message);
     return (
@@ -72,15 +81,22 @@ async function ListeArticles({ searchParams }) {
               <h2 className={styles.titreLigne}>{article.titre}</h2>
               <p className={styles.infosLigne}>
                 <span className={styles.statut} data-statut={article.statut}>
-                  {article.statut === "PUBLIE" ? "Publié" : "Brouillon"}
+                  {LIBELLES_STATUT_ARTICLE[article.statut] ?? article.statut}
                 </span>
+                {mesArticles.has(article.id_article) && <span>Écrit par vous</span>}
                 {article.statut === "PUBLIE" && article.published_at && (
                   <span>Publié le {dateCourte(article.published_at)}</span>
                 )}
                 <span>Modifié le {dateCourte(article.updated_at)}</span>
               </p>
               <p className={styles.liensLigne}>
-                <Link prefetch={false} href={`/admin/articles/${article.id_article}`}>Modifier</Link>
+                {/* La page de l'article propose les actions permises (modifier,
+                    publier, archiver, supprimer) ; sinon, elle explique. */}
+                <Link prefetch={false} href={`/admin/articles/${article.id_article}`}>
+                  {droitsArticle(article, niveau, mesArticles.has(article.id_article)).modifier
+                    ? "Modifier"
+                    : "Ouvrir"}
+                </Link>
                 <Link prefetch={false} href={`/admin/articles/${article.id_article}/apercu`}>Aperçu</Link>
                 {article.statut === "PUBLIE" && (
                   <a href={`/articles/${article.slug}`} target="_blank" rel="noopener">

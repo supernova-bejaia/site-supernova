@@ -9,7 +9,7 @@ import {
   useState,
 } from "react";
 import Image from "next/image";
-import { enregistrerArticle, supprimerArticle } from "@/actions/articles";
+import { archiverArticle, enregistrerArticle, supprimerArticle } from "@/actions/articles";
 import ContenuMarkdown from "@/components/articles/ContenuMarkdown";
 import { adresseCouverture, tempsDeLecture } from "@/lib/articles";
 import { dateEnLettres } from "@/lib/dates";
@@ -47,8 +47,11 @@ const compterMots = (texte) => texte.trim().split(/\s+/).filter(Boolean).length;
 // du site. Sur téléphone, les deux côtés deviennent deux onglets.
 //
 // Deux boutons d'envoi : enregistrer en brouillon (invisible du public) ou
-// publier. La suppression est un formulaire à part, en bas de page.
-export default function FormulaireArticle({ article = null }) {
+// publier. L'archivage et la suppression sont des formulaires à part, en
+// bas de page. « droits » (lib/droits.js) dit lesquels afficher : un
+// membre enregistre des brouillons, un Head of publie et archive, la
+// direction supprime. La base vérifie de toute façon chaque opération.
+export default function FormulaireArticle({ article = null, droits }) {
   const [etat, soumettreAction, enCours] = useActionState(envoyer, ETAT_INITIAL);
 
   // Ce que la personne écrit, suivi en direct pour l'aperçu et les compteurs.
@@ -73,6 +76,7 @@ export default function FormulaireArticle({ article = null }) {
 
   const erreurs = { ...(etat.erreurs ?? {}), ...(erreurImage ? { image: erreurImage } : {}) };
   const publie = article?.statut === "PUBLIE";
+  const archive = article?.statut === "ARCHIVE";
   const couvertureActuelle = adresseCouverture(article?.image_couverture);
   const mots = compterMots(contenu);
 
@@ -502,27 +506,52 @@ export default function FormulaireArticle({ article = null }) {
           <p className={styles.message} role="alert">
             {etat.ok ? "" : etat.message}
           </p>
+          {!droits.publier && !etat.message && (
+            <p className={styles.aide}>Un Head of ou la direction relira et publiera votre article.</p>
+          )}
           <div className={styles.actions}>
             <span className={styles.statut} data-statut={article?.statut ?? "NOUVEAU"}>
-              {publie ? "Publié" : article ? "Brouillon" : "Nouvel article"}
+              {publie ? "Publié" : archive ? "Archivé" : article ? "Brouillon" : "Nouvel article"}
             </span>
-            <button
-              type="submit"
-              name="intention"
-              value="brouillon"
-              className="bouton bouton-secondaire"
-              disabled={enCours}
-            >
-              {publie ? "Dépublier" : "Enregistrer le brouillon"}
-            </button>
-            <button type="submit" name="intention" value="publier" className="bouton" disabled={enCours}>
-              {enCours ? "Enregistrement…" : publie ? "Mettre à jour" : "Publier"}
-            </button>
+            {droits.publier ? (
+              <>
+                <button
+                  type="submit"
+                  name="intention"
+                  value="brouillon"
+                  className="bouton bouton-secondaire"
+                  disabled={enCours}
+                >
+                  {publie ? "Dépublier" : "Enregistrer le brouillon"}
+                </button>
+                <button type="submit" name="intention" value="publier" className="bouton" disabled={enCours}>
+                  {enCours ? "Enregistrement…" : publie ? "Mettre à jour" : "Publier"}
+                </button>
+              </>
+            ) : (
+              <button type="submit" name="intention" value="brouillon" className="bouton" disabled={enCours}>
+                {enCours ? "Enregistrement…" : "Enregistrer le brouillon"}
+              </button>
+            )}
           </div>
         </div>
       </form>
 
-      {article && (
+      {article && droits.archiver && (
+        <form action={archiverArticle} className={`${styles.zoneSuppression} ${styles.zoneArchivage}`}>
+          <input type="hidden" name="id" value={article.id_article} />
+          <p className={styles.aide}>
+            {archive
+              ? "Archivé : invisible sur le site. Restaurer le remet en brouillon."
+              : "Archiver retire l'article du site sans le supprimer : il reste récupérable."}
+          </p>
+          <button type="submit" className="bouton bouton-secondaire">
+            {archive ? "Restaurer en brouillon" : "Archiver l'article"}
+          </button>
+        </form>
+      )}
+
+      {article && droits.supprimer && (
         <form
           action={supprimerArticle}
           className={styles.zoneSuppression}

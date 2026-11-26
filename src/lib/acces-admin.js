@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { creerClientSession } from "@/lib/supabase/session";
+import { NIVEAUX } from "@/lib/droits";
 
 export const PAGE_CONNEXION = "/admin/connexion";
 
@@ -7,12 +8,13 @@ export const PAGE_CONNEXION = "/admin/connexion";
 // chaque page protégée, AVANT toute lecture de données.
 //
 //   1. Une session valide existe-t-elle ? (jeton vérifié, pas seulement lu)
-//   2. Le compte figure-t-il dans la liste d'accès (fonction est_admin) ?
+//   2. Quel est le niveau du compte (fonction mon_niveau) ? Il faut au
+//      moins le niveau « membre du Noyau ».
 //
 // Sinon, la personne est renvoyée vers la page de connexion. Même si ce
 // contrôle était contourné, la base refuserait de livrer les données.
 //
-// Renvoie le client Supabase de la session et l'email du compte.
+// Renvoie le client Supabase de la session, l'email du compte et son niveau.
 export async function verifierAccesAdmin() {
   const supabase = await creerClientSession();
 
@@ -22,33 +24,39 @@ export async function verifierAccesAdmin() {
     redirect(PAGE_CONNEXION);
   }
 
-  const autorise = await estAutorise(supabase);
-  if (!autorise) {
+  const niveau = await lireNiveau(supabase);
+  if (niveau < NIVEAUX.MEMBRE) {
     redirect(`${PAGE_CONNEXION}?acces=refuse`);
   }
 
-  return { supabase, email: claims.email ?? "" };
+  return { supabase, email: claims.email ?? "", niveau };
 }
 
-// Même contrôle, mais sans redirection : renvoie le client Supabase de la
-// session si l'accès est autorisé, sinon null. Sert aux actions d'un
-// formulaire en cours de saisie, qui préfèrent afficher un message plutôt
-// que de quitter la page (et perdre le texte).
+// Même contrôle, mais sans redirection : renvoie { supabase, niveau } si
+// l'accès est autorisé, sinon null. Sert aux actions d'un formulaire en
+// cours de saisie, qui préfèrent afficher un message plutôt que de
+// quitter la page (et perdre le texte).
 export async function obtenirAccesAdmin() {
   const supabase = await creerClientSession();
 
   const { data, error } = await supabase.auth.getClaims();
   if (error || !data?.claims) return null;
 
-  return (await estAutorise(supabase)) ? supabase : null;
+  const niveau = await lireNiveau(supabase);
+  return niveau >= NIVEAUX.MEMBRE ? { supabase, niveau } : null;
 }
 
-// Le compte connecté figure-t-il dans la liste d'accès ?
+// Le compte connecté a-t-il accès à l'espace équipe ?
 export async function estAutorise(supabase) {
-  const { data, error } = await supabase.rpc("est_admin");
+  return (await lireNiveau(supabase)) >= NIVEAUX.MEMBRE;
+}
+
+// Niveau du compte connecté (0 en cas d'erreur : l'accès est refusé).
+async function lireNiveau(supabase) {
+  const { data, error } = await supabase.rpc("mon_niveau");
   if (error) {
-    console.error("Vérification de l'accès admin impossible :", error.message);
-    return false;
+    console.error("Lecture du niveau d'accès impossible :", error.message);
+    return 0;
   }
-  return data === true;
+  return Number(data) || 0;
 }

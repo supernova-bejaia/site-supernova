@@ -1,7 +1,8 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { verifierAccesAdmin } from "@/lib/acces-admin";
-import { lireArticle } from "@/services/articles-admin";
+import { droitsArticle } from "@/lib/droits";
+import { lireArticle, listerMesArticles } from "@/services/articles-admin";
 import FormulaireArticle from "@/components/admin/FormulaireArticle";
 import pageStyles from "../../admin.module.css";
 import styles from "@/components/admin/Articles.module.css";
@@ -25,17 +26,23 @@ export default function PageModifierArticle({ params, searchParams }) {
 
 async function ModifierArticle({ params, searchParams }) {
   // 1. Contrôle d'accès, avant toute lecture (redirige si refusé).
-  const { supabase } = await verifierAccesAdmin();
+  const { supabase, niveau } = await verifierAccesAdmin();
 
   const { id } = await params;
   const { etat } = await searchParams;
 
-  // 2. Lecture de l'article.
+  // 2. Lecture de l'article, et de ce que le compte connecté peut en faire.
   let article = null;
+  let droits = null;
   let panne = false;
   if (FORMAT_UUID.test(id)) {
     try {
-      article = await lireArticle(supabase, id);
+      const [lu, mesArticles] = await Promise.all([
+        lireArticle(supabase, id),
+        listerMesArticles(supabase),
+      ]);
+      article = lu;
+      if (article) droits = droitsArticle(article, niveau, mesArticles.has(article.id_article));
     } catch (erreur) {
       console.error("Lecture d'un article impossible :", erreur.message);
       panne = true;
@@ -48,7 +55,9 @@ async function ModifierArticle({ params, searchParams }) {
         <Link prefetch={false} href="/admin/articles" className={styles.retour}>
           <span aria-hidden="true">←</span> Articles
         </Link>
-        <h1 className={pageStyles.titre}>Modifier l&apos;article</h1>
+        <h1 className={pageStyles.titre}>
+          {droits && !droits.modifier ? "Article" : "Modifier l'article"}
+        </h1>
       </div>
       {article && (
         <Link prefetch={false} href={`/admin/articles/${article.id_article}/apercu`} className="bouton bouton-secondaire">
@@ -89,9 +98,27 @@ async function ModifierArticle({ params, searchParams }) {
         </p>
       )}
 
-      {/* « key » : après un enregistrement, le formulaire repart des
-          données à jour (nouvelle image, adresse nettoyée…). */}
-      <FormulaireArticle key={article.updated_at} article={article} />
+      {droits.modifier ? (
+        // « key » : après un enregistrement, le formulaire repart des
+        // données à jour (nouvelle image, adresse nettoyée…).
+        <FormulaireArticle key={article.updated_at} article={article} droits={droits} />
+      ) : (
+        <div className={styles.lectureSeule}>
+          <h2 className={styles.titreLigne}>{article.titre}</h2>
+          <p>
+            {article.statut === "PUBLIE"
+              ? "Cet article est en ligne : seuls les Head of et la direction peuvent le modifier."
+              : "Seuls son auteur (tant qu'il est en brouillon), les Head of et la direction peuvent modifier cet article."}
+          </p>
+          <Link
+            prefetch={false}
+            href={`/admin/articles/${article.id_article}/apercu`}
+            className="bouton bouton-secondaire"
+          >
+            Lire l&apos;aperçu
+          </Link>
+        </div>
+      )}
     </>
   );
 }

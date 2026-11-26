@@ -6,7 +6,7 @@ import { FORMATS_IMAGE } from "@/lib/validation-article";
 //
 // Toutes les fonctions reçoivent le client Supabase de la session du
 // membre connecté (lib/supabase/session.js). C'est la base qui autorise
-// ou refuse chaque opération (règles RLS, fonction est_admin) : la clé
+// ou refuse chaque opération (règles RLS, fonction mon_niveau) : la clé
 // secrète de Supabase n'est jamais utilisée.
 
 const COLONNES =
@@ -32,6 +32,28 @@ export async function lireArticle(supabase, idArticle) {
     .from("article")
     .select(COLONNES)
     .eq("id_article", idArticle)
+    .maybeSingle();
+
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+// Identifiants des articles créés par le compte connecté (la colonne de
+// l'auteur n'est pas lisible depuis le site : la base répond elle-même).
+export async function listerMesArticles(supabase) {
+  const { data, error } = await supabase.rpc("mes_articles");
+  if (error) throw new Error(error.message);
+  return new Set(data ?? []);
+}
+
+// Change seulement le statut d'un article (archiver, restaurer).
+// Renvoie l'article mis à jour, ou null si la base a refusé.
+export async function changerStatutArticle(supabase, idArticle, statut) {
+  const { data, error } = await supabase
+    .from("article")
+    .update({ statut })
+    .eq("id_article", idArticle)
+    .select("id_article, statut")
     .maybeSingle();
 
   if (error) throw new Error(error.message);
@@ -68,7 +90,10 @@ export async function supprimerArticle(supabase, idArticle) {
     .maybeSingle();
 
   if (error) throw new Error(error.message);
-  return data?.image_couverture ?? null;
+  // Aucune ligne supprimée : la base a refusé (droits) ou l'article
+  // n'existe plus.
+  if (!data) throw new Error("Article introuvable ou suppression refusée.");
+  return data.image_couverture ?? null;
 }
 
 // Envoie une image de couverture (déjà validée) dans le stockage.
