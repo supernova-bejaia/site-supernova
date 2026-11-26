@@ -20,9 +20,12 @@
 }
 
 /* Logo, réseaux et contact */
+/* align-items: flex-start : sans lui, en colonne, le logo serait étiré
+   sur toute la largeur (et déformé) sur téléphone. */
 .marque {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 14px;
   padding-bottom: 8px;
 }

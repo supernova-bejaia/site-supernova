@@ -3,6 +3,7 @@
 import { useActionState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { seConnecter } from "@/actions/authentification";
+import { adresseDeRetour } from "@/lib/adresse-retour";
 import styles from "./Admin.module.css";
 
 const MESSAGE_REFUS = "Ce compte n'a pas accès à l'espace équipe.";
@@ -11,19 +12,21 @@ const MESSAGE_REFUS = "Ce compte n'a pas accès à l'espace équipe.";
 // L'adresse « /admin/connexion?acces=refuse » (envoyée par le contrôle
 // d'accès) affiche d'emblée le message de refus.
 export default function FormulaireConnexion() {
-  const accesRefuse = useSearchParams().get("acces") === "refuse";
+  const parametres = useSearchParams();
+  const accesRefuse = parametres.get("acces") === "refuse";
+  // Page demandée avant la connexion (ex. le carnet), sinon le tableau de bord.
+  const destination = adresseDeRetour(parametres.get("suite")) ?? "/admin";
   const [etat, envoyer, enCours] = useActionState(seConnecter, { message: "" });
   const connecte = etat?.ok === true;
   const message = connecte ? "" : etat?.message || (accesRefuse ? MESSAGE_REFUS : "");
 
-  // Connexion réussie : on charge le tableau de bord par un vrai
-  // rechargement de page. Le navigateur repart ainsi de zéro, sans aucune
-  // ancienne version de l'espace équipe en mémoire.
+  // Connexion réussie : on charge la page voulue par un vrai rechargement.
+  // Le navigateur repart ainsi de zéro, sans aucune ancienne version de
+  // l'espace équipe en mémoire.
   useEffect(() => {
     if (!connecte) return;
-    // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- rechargement complet voulu
-    window.location.assign("/admin");
-  }, [connecte]);
+    window.location.assign(destination);
+  }, [connecte, destination]);
 
   return (
     <form action={envoyer} className={styles.formulaireConnexion}>
@@ -58,7 +61,7 @@ export default function FormulaireConnexion() {
       {/* Secours si le rechargement automatique ne se fait pas. */}
       {connecte && (
         <p className={styles.aide}>
-          Connexion réussie. <a href="/admin">Ouvrir l&apos;espace équipe</a>
+          Connexion réussie. <a href={destination}>Ouvrir l&apos;espace équipe</a>
         </p>
       )}
     </form>

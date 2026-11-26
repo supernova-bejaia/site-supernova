@@ -1050,3 +1050,32 @@
     padding: 150px 0;
   }
 }
+
+/* ---------- Téléphone : titres ramenés à une échelle raisonnable ----------
+   Sur un écran de 360 à 430 px, la police des titres (très grasse et
+   élargie) occupait trop de place : 37 à 39 px pour de simples titres de
+   section, face à un texte courant de 17 px. On garde la hiérarchie, avec
+   des titres d'environ 28 à 32 px. L'affichage sur ordinateur et tablette
+   ne change pas. */
+@media (max-width: 599px) {
+  .titreOuverture {
+    font-size: clamp(1.85rem, 8.6vw, 2.4rem);
+  }
+
+  .titreMajeur,
+  .titreFinal {
+    font-size: clamp(1.6rem, 7.4vw, 2.1rem);
+  }
+
+  .motPilier {
+    font-size: clamp(1.7rem, 8vw, 2.2rem);
+  }
+
+  .nomCarte {
+    font-size: clamp(1.5rem, 6.6vw, 1.9rem);
+  }
+
+  .phraseCle {
+    font-size: clamp(1.2rem, 4.8vw, 1.4rem);
+  }
+}

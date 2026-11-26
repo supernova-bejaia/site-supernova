@@ -1,6 +1,8 @@
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { creerClientSession } from "@/lib/supabase/session";
 import { NIVEAUX } from "@/lib/droits";
+import { adresseDeRetour } from "@/lib/adresse-retour";
 
 export const PAGE_CONNEXION = "/admin/connexion";
 
@@ -21,7 +23,9 @@ export async function verifierAccesAdmin() {
   const { data, error } = await supabase.auth.getClaims();
   const claims = data?.claims;
   if (error || !claims) {
-    redirect(PAGE_CONNEXION);
+    // Après la connexion, on reviendra à la page demandée.
+    const suite = adresseDeRetour((await headers()).get("x-chemin-admin"));
+    redirect(suite ? `${PAGE_CONNEXION}?suite=${encodeURIComponent(suite)}` : PAGE_CONNEXION);
   }
 
   const niveau = await lireNiveau(supabase);

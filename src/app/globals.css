@@ -175,6 +175,14 @@ h3 {
   line-height: 1.05;
 }
 
+/* Téléphone : la grande déclaration reste lisible sans écraser le texte
+   qui l'entoure. L'ordinateur n'est pas concerné. */
+@media (max-width: 599px) {
+  .declaration {
+    font-size: clamp(1.35rem, 6.2vw, 1.7rem);
+  }
+}
+
 /* Texte courant d'un bloc éditorial */
 .texte {
   max-width: 58ch;
