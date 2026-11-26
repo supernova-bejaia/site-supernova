@@ -35,7 +35,8 @@ export async function listerEvenements(supabase) {
   }));
 }
 
-// Un événement, avec son suivi et ses photos, ou null s'il n'existe pas.
+// Un événement, avec son suivi, ses photos et son nombre d'inscrits, ou
+// null s'il n'existe pas.
 export async function lireEvenement(supabase, idEvenement) {
   const data = verifier(
     await supabase
@@ -43,16 +44,23 @@ export async function lireEvenement(supabase, idEvenement) {
       .select(
         `${COLONNES},
          suivi_evenement ( responsable, ce_qui_a_marche, difficultes, a_ameliorer, ressources ),
-         photo_evenement ( id_photo, chemin, texte_alternatif, legende, credit, ordre, est_couverture, validee )`
+         photo_evenement ( id_photo, chemin, texte_alternatif, legende, credit, ordre, est_couverture, validee ),
+         inscription_evenement ( count )`
       )
       .eq("id_evenement", idEvenement)
       .maybeSingle()
   );
   if (!data) return null;
 
-  const { suivi_evenement: suivi, photo_evenement: photos, ...evenement } = data;
+  const {
+    suivi_evenement: suivi,
+    photo_evenement: photos,
+    inscription_evenement: compte,
+    ...evenement
+  } = data;
   return {
     ...evenement,
+    nombreInscrits: compte?.[0]?.count ?? 0,
     // Lien un-à-un : selon les versions, un objet ou une liste d'un élément.
     suivi: (Array.isArray(suivi) ? suivi[0] : suivi) ?? null,
     photos: [...(photos ?? [])].sort((a, b) => a.ordre - b.ordre),

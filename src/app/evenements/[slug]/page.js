@@ -10,7 +10,6 @@ import { donneesEvenement } from "@/lib/donnees-structurees";
 import { prixLisible } from "@/lib/evenements";
 import { getEvenementPublie } from "@/services/evenements";
 import lecture from "@/components/articles/Articles.module.css";
-import cartes from "@/components/evenements/Evenements.module.css";
 import styles from "./page.module.css";
 
 // Page d'un événement : /evenements/<slug>.
@@ -19,8 +18,11 @@ import styles from "./page.module.css";
 // lisibles : le service ne renvoie rien pour un brouillon ou une adresse
 // inconnue, et la page affiche alors « Événement introuvable ».
 //
-// L'inscription : le formulaire du site si l'événement en demande une et
-// n'a pas commencé, ou un lien vers le formulaire externe s'il y en a un.
+// Mise en page :
+//   téléphone  : titre, carte d'infos (avec un bouton vers l'inscription),
+//                description, intervenants, puis le formulaire ;
+//   ordinateur : le contenu à gauche ; à droite, la carte d'infos et
+//                l'inscription, toujours visibles.
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
@@ -67,119 +69,162 @@ async function Evenement({ slug }) {
   const evenement = await getEvenementPublie(slug);
   if (!evenement) return <EvenementIntrouvable />;
 
+  // Ce que propose la carte d'inscription, selon la situation.
+  const inscription = evenement.annule
+    ? "annule"
+    : evenement.passe || !evenement.inscriptionRequise
+      ? null
+      : evenement.lienInscription
+        ? "externe"
+        : evenement.inscriptionsOuvertes
+          ? "formulaire"
+          : "close";
+
+  // Les photos de la galerie, sans répéter la couverture déjà affichée.
+  const galerie = evenement.photos.filter((photo) => photo !== evenement.couverture);
+
+  return (
+    <article className={`conteneur ${styles.page}`}>
+      <DonneesStructurees donnees={donneesEvenement(evenement)} />
+
+      <header className={styles.entete}>
+        <Link href="/evenements" className={lecture.retour}>
+          <span aria-hidden="true">←</span> Tous les événements
+        </Link>
+        <EtiquettesEvenement evenement={evenement} />
+        <h1 className={`titre-ouverture ${styles.titre}`}>{evenement.titre}</h1>
+        {evenement.resume && <p className={lecture.chapeauArticle}>{evenement.resume}</p>}
+      </header>
+
+      <div className={styles.grille}>
+        {/* ---------- L'essentiel : quand, où, combien ---------- */}
+        <aside className={styles.carteInfos} aria-label="Informations pratiques">
+          <Infos evenement={evenement} />
+          {(inscription === "formulaire" || inscription === "externe") && (
+            <a href="#inscription" className={`bouton ${styles.raccourciInscription}`}>
+              S&apos;inscrire
+              <span className="fleche" aria-hidden="true">
+                ↓
+              </span>
+            </a>
+          )}
+          {inscription === "annule" && (
+            <p className={styles.avisAnnule} role="status">
+              Cet événement est annulé.
+            </p>
+          )}
+        </aside>
+
+        {/* ---------- Le contenu ---------- */}
+        <div className={styles.contenu}>
+          {evenement.couverture && (
+            <Visuel
+              image={evenement.couverture}
+              sizes="(min-width: 960px) 60vw, 100vw"
+              priority
+              className={styles.couverture}
+            />
+          )}
+
+          {evenement.description && <div className={styles.texte}>{evenement.description}</div>}
+
+          {evenement.invites.length > 0 && (
+            <section className={styles.bloc} aria-labelledby="titre-intervenants">
+              <h2 id="titre-intervenants" className="annotation annotation-section">
+                Intervenants
+              </h2>
+              <ul className={styles.intervenants}>
+                {evenement.invites.map((invite, index) => (
+                  <li key={index}>{invite}</li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {galerie.length > 0 && (
+            <section className={styles.bloc} aria-labelledby="titre-photos">
+              <h2 id="titre-photos" className="annotation annotation-section">
+                En images
+              </h2>
+              <Galerie photos={galerie} />
+            </section>
+          )}
+        </div>
+
+        {/* ---------- L'inscription ---------- */}
+        {inscription && inscription !== "annule" && (
+          <section
+            id="inscription"
+            className={styles.inscription}
+            aria-labelledby="titre-inscription"
+          >
+            <h2 id="titre-inscription" className={styles.titreInscription}>
+              S&apos;inscrire
+            </h2>
+            <p className={styles.precisionInscription}>
+              {prixLisible(evenement.prix)} · sans création de compte
+            </p>
+
+            {inscription === "externe" && (
+              <a
+                href={evenement.lienInscription}
+                className={`bouton ${styles.boutonPlein}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Accéder au formulaire d&apos;inscription
+                <span className="fleche" aria-hidden="true">
+                  ↗
+                </span>
+                <span className="lecteur-ecran"> (s&apos;ouvre dans un nouvel onglet)</span>
+              </a>
+            )}
+            {inscription === "formulaire" && (
+              <FormulaireInscription idEvenement={evenement.id} titre={evenement.titre} />
+            )}
+            {inscription === "close" && (
+              <p className={styles.avis}>Les inscriptions sont closes.</p>
+            )}
+          </section>
+        )}
+      </div>
+    </article>
+  );
+}
+
+// Date, horaire, lieu et entrée, en liste de définitions.
+function Infos({ evenement }) {
   const heures = horaire(evenement.heure, evenement.heureFin);
   const quand = evenement.dateFin
     ? `Du ${dateLongue(evenement.date)} au ${dateLongue(evenement.dateFin)}`
     : dateLongue(evenement.date);
 
   return (
-    <article className="conteneur">
-      <DonneesStructurees donnees={donneesEvenement(evenement)} />
-
-      <header className={`${lecture.colonne} ${lecture.entete}`}>
-        <RetourAuxEvenements />
-        <EtiquettesEvenement evenement={evenement} />
-        <h1 className={`titre-ouverture ${lecture.titreArticle}`}>{evenement.titre}</h1>
-        {evenement.resume && <p className={lecture.chapeauArticle}>{evenement.resume}</p>}
-
-        <dl className={cartes.infos}>
-          <div>
-            <dt>Date</dt>
-            <dd>
-              {quand}
-              {heures && <>, {heures}</>}
-            </dd>
-          </div>
-          <div>
-            <dt>Lieu</dt>
-            <dd>
-              {evenement.lieu.nom}, {evenement.lieu.ville}
-            </dd>
-          </div>
-          <div>
-            <dt>Entrée</dt>
-            <dd>{prixLisible(evenement.prix)}</dd>
-          </div>
-          {evenement.invites.length > 0 && (
-            <div>
-              <dt>Invités</dt>
-              <dd>
-                <ul className={styles.invites}>
-                  {evenement.invites.map((invite, index) => (
-                    <li key={index}>{invite}</li>
-                  ))}
-                </ul>
-              </dd>
-            </div>
-          )}
-        </dl>
-      </header>
-
-      <div className={`${lecture.colonne} ${styles.bloc}`}>
-        <Visuel
-          image={evenement.couverture}
-          texte={evenement.categorie}
-          sizes="(min-width: 760px) 720px, 100vw"
-          priority
-          className={styles.visuel}
-        />
-
-        {evenement.description && <div className={styles.texte}>{evenement.description}</div>}
-
-        <Inscription evenement={evenement} />
+    <dl className={styles.infos}>
+      <div>
+        <dt>Date</dt>
+        <dd>
+          <time dateTime={evenement.debut}>{quand}</time>
+        </dd>
       </div>
-
-      {evenement.photos.length > 0 && (
-        <section className={styles.bloc} aria-labelledby="titre-photos">
-          <h2 id="titre-photos" className="annotation annotation-section">
-            En images
-          </h2>
-          <Galerie photos={evenement.photos} />
-        </section>
+      {heures && (
+        <div>
+          <dt>Horaire</dt>
+          <dd>{heures}</dd>
+        </div>
       )}
-    </article>
-  );
-}
-
-// L'encadré d'inscription, selon la situation de l'événement.
-function Inscription({ evenement }) {
-  if (evenement.annule) {
-    return (
-      <p className={`${styles.inscription} ${styles.avisAnnule}`} role="status">
-        Cet événement est annulé.
-      </p>
-    );
-  }
-  if (evenement.passe || !evenement.inscriptionRequise) return null;
-
-  return (
-    <section id="inscription" className={styles.inscription} aria-labelledby="titre-inscription">
-      <h2 id="titre-inscription" className="titre-element">
-        S&apos;inscrire
-      </h2>
-
-      {evenement.lienInscription ? (
-        <a href={evenement.lienInscription} className="bouton" target="_blank" rel="noopener noreferrer">
-          Accéder au formulaire d&apos;inscription
-          <span className="fleche" aria-hidden="true">
-            ↗
-          </span>
-          <span className="lecteur-ecran"> (s&apos;ouvre dans un nouvel onglet)</span>
-        </a>
-      ) : evenement.inscriptionsOuvertes ? (
-        <FormulaireInscription idEvenement={evenement.id} titre={evenement.titre} />
-      ) : (
-        <p className={styles.avis}>Les inscriptions sont closes.</p>
-      )}
-    </section>
-  );
-}
-
-function RetourAuxEvenements() {
-  return (
-    <Link href="/evenements" className={lecture.retour}>
-      <span aria-hidden="true">←</span> Tous les événements
-    </Link>
+      <div>
+        <dt>Lieu</dt>
+        <dd>
+          {evenement.lieu.nom}
+          <span className={styles.ville}>{evenement.lieu.ville}</span>
+        </dd>
+      </div>
+      <div>
+        <dt>Entrée</dt>
+        <dd>{prixLisible(evenement.prix)}</dd>
+      </div>
+    </dl>
   );
 }
 

@@ -30,85 +30,162 @@
   box-shadow: 0 0 0 3px rgba(231, 14, 23, 0.25);
 }
 
+.champFichier {
+  padding: 12px 0;
+  color: var(--texte-doux);
+  font: inherit;
+}
+
+.champFichier::file-selector-button {
+  min-height: 44px;
+  margin-right: 14px;
+  padding: 0 18px;
+  border: 1px solid var(--trait);
+  border-radius: 999px;
+  background: none;
+  color: var(--blanc);
+  font: inherit;
+  cursor: pointer;
+}
+
 .deuxColonnes {
   display: grid;
   gap: 20px;
 }
 
-/* ---------- Sections de la page d'un événement ---------- */
+.choix {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+  border: 0;
+}
 
-.section {
+.choix legend {
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* Une zone à part (ajout d'une photo, d'une personne) : encadrée, pour se
+   distinguer de la liste qui la précède. */
+.carte {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  margin-top: 40px;
-  padding-top: 28px;
-  border-top: 1px solid var(--trait);
+  gap: 18px;
+  margin-top: 32px;
+  padding: 22px 18px;
+  border: 1px solid var(--trait);
+  border-radius: 18px;
+  background: var(--surface);
   scroll-margin-top: 80px;
+}
+
+.vide {
+  padding: 24px 0;
+  color: var(--texte-doux);
+}
+
+/* ---------- En-tête d'un événement et onglets ---------- */
+
+.enteteEvenement {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding-bottom: 20px;
+}
+
+.lienSite {
+  color: var(--blanc);
+  text-decoration: underline;
+  text-decoration-color: var(--rouge);
+  text-underline-offset: 3px;
+}
+
+/* Onglets : sur une ligne, qui défile au doigt si elle déborde. */
+.onglets {
+  display: flex;
+  gap: 4px;
+  margin: 0 calc(var(--marge) * -1) 24px;
+  padding: 0 var(--marge);
+  overflow-x: auto;
+  border-bottom: 1px solid var(--trait);
+  scrollbar-width: none;
+}
+
+.onglets::-webkit-scrollbar {
+  display: none;
+}
+
+.onglet {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 10px;
+  border-bottom: 2px solid transparent;
+  color: var(--texte-doux);
+  font-weight: 600;
+  white-space: nowrap;
+  transition: color var(--duree-courte) ease, border-color var(--duree-courte) ease;
+}
+
+.onglet:hover {
+  color: var(--blanc);
+}
+
+.onglet[aria-current="page"] {
+  border-bottom-color: var(--rouge);
+  color: var(--blanc);
+}
+
+.pastilleNombre {
+  min-width: 22px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--blanc);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+/* ---------- Carte de publication ---------- */
+
+.carteStatut {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-bottom: 32px;
+  padding: 20px 18px;
+  border: 1px solid var(--trait);
+  border-radius: 18px;
+  background: var(--surface);
+}
+
+.texteStatut {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--texte-doux);
 }
 
 .groupeBoutons {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  align-items: center;
+  gap: 10px 16px;
 }
 
-.groupeBoutons form {
-  display: contents;
-}
-
-.boutonDanger {
-  border-color: var(--erreur) !important;
-  color: var(--erreur) !important;
-}
-
-/* ---------- Photos ---------- */
-
-.photos {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 20px;
-  list-style: none;
-}
-
-.photo {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.photo img {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-  border-radius: 12px;
-}
-
-.photo[data-validee="false"] img {
-  opacity: 0.55;
-}
-
-.texteAlternatif {
-  color: var(--texte-doux);
-  font-size: 0.9rem;
-}
-
-.puces {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.actionsPhoto {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 14px;
+.boutonCompact {
+  min-height: 44px;
+  padding: 0 20px;
+  font-size: 0.78rem;
 }
 
 .lienBouton {
-  min-height: 40px;
+  min-height: 44px;
   padding: 0;
   border: 0;
   background: none;
@@ -126,23 +203,142 @@
   text-decoration-color: var(--erreur);
 }
 
-/* ---------- Inscrits ---------- */
+/* ---------- Photos ---------- */
 
-.compteurs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 20px;
-  color: var(--texte-doux);
+.rappel {
+  color: var(--blanc);
 }
 
-.compteurs strong {
+.photos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 24px;
+  margin-top: 20px;
+  list-style: none;
+}
+
+.photo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cadrePhoto {
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--surface);
+  aspect-ratio: 4 / 3;
+}
+
+.cadrePhoto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Une photo non validée est affichée en retrait. */
+.photo[data-validee="false"] .cadrePhoto img {
+  opacity: 0.5;
+}
+
+.puces {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.puce {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(8, 2, 3, 0.85);
   color: var(--blanc);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.puce[data-ton="valide"] {
+  background: #1f6f43;
+}
+
+.puce[data-ton="attente"] {
+  background: #8a5a00;
+}
+
+.texteAlternatif {
+  color: var(--texte-doux);
+  font-size: 0.92rem;
+}
+
+.credit {
+  color: var(--texte-discret);
+}
+
+.actionsPhoto {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 16px;
+}
+
+/* ---------- Inscrits ---------- */
+
+.sectionInscrits {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.listeInscrits {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.recherche input {
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 16px;
+  border: 1px solid var(--trait);
+  border-radius: 999px;
+  background: var(--surface-champ);
+  color: var(--blanc);
+  font: inherit;
+  font-size: 1rem;
+}
+
+.recherche input:focus {
+  outline: none;
+  border-color: var(--rouge);
+  box-shadow: 0 0 0 3px rgba(231, 14, 23, 0.25);
+}
+
+.resultat {
+  min-height: 1.4em;
+  color: var(--texte-discret);
+  font-size: 0.9rem;
+}
+
+.ligneInscrit {
+  scroll-margin-top: 90px;
+}
+
+.identite {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
 }
 
 .contact {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 14px;
+  gap: 2px 14px;
   color: var(--texte-doux);
   font-size: 0.92rem;
   overflow-wrap: anywhere;
@@ -150,19 +346,27 @@
 
 .contact a {
   text-decoration: underline;
+  text-decoration-color: var(--trait);
   text-underline-offset: 3px;
 }
 
-/* Pointage : un bouton par statut, assez grand pour le pouce. */
-.pointage {
+.origine {
+  color: var(--texte-discret);
+  font-size: 0.85rem;
+}
+
+/* Pointage : quatre boutons de même largeur, assez grands pour le pouce.
+   Le statut actuel est rempli, dans une couleur propre à chaque statut. */
+.pointage fieldset {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 6px;
+  border: 0;
 }
 
 .pointage button {
-  min-height: 44px;
-  padding: 0 6px;
+  min-height: 46px;
+  padding: 0 4px;
   border: 1px solid var(--trait);
   border-radius: 10px;
   background: none;
@@ -172,24 +376,67 @@
   cursor: pointer;
 }
 
+.pointage button:hover:not(:disabled) {
+  border-color: var(--texte-doux);
+  color: var(--blanc);
+}
+
 .pointage button[aria-pressed="true"] {
-  border-color: var(--rouge);
-  background: rgba(231, 14, 23, 0.18);
   color: var(--blanc);
   font-weight: 700;
   cursor: default;
 }
 
-.ligneInscrit {
-  scroll-margin-top: 90px;
+.pointage button[aria-pressed="true"][data-statut="INSCRIT"] {
+  border-color: var(--texte-doux);
+  background: rgba(255, 255, 255, 0.08);
 }
+
+.pointage button[aria-pressed="true"][data-statut="PRESENT"] {
+  border-color: #2e9c5e;
+  background: rgba(46, 156, 94, 0.22);
+}
+
+.pointage button[aria-pressed="true"][data-statut="ABSENT"],
+.pointage button[aria-pressed="true"][data-statut="DESISTE"] {
+  border-color: var(--erreur);
+  background: rgba(255, 107, 112, 0.14);
+}
+
+/* ---------- Ordinateur ---------- */
 
 @media (min-width: 700px) {
   .deuxColonnes {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
 
-  .pointage {
-    max-width: 480px;
+  .carte,
+  .carteStatut {
+    padding: 26px 28px;
   }
+
+  .carteStatut {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .groupeBoutons {
+    flex-shrink: 0;
+    justify-content: flex-end;
+  }
+
+  /* Le nom à gauche, le pointage à droite. */
+  .ligneInscrit {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 420px;
+    align-items: center;
+    gap: 24px;
+  }
+}
+
+/* Dans un encadré, le titre n'a pas besoin du filet des sections de page. */
+.carte :global(.annotation-section) {
+  padding-top: 0;
+  border-top: 0;
 }

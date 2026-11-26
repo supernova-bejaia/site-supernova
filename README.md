@@ -24,8 +24,10 @@ Il présente le collectif, publie ses articles et ses événements, et permet à
 | `/admin/articles/[id]/apercu` | Aperçu d'un article, tel qu'il apparaîtra sur le site |
 | `/admin/evenements` | Tous les événements, brouillons compris |
 | `/admin/evenements/nouveau` | Créer un événement |
-| `/admin/evenements/[id]` | Modifier, publier, annuler un événement ; ses photos ; son responsable et son bilan |
-| `/admin/evenements/[id]/inscrits` | Les inscrits, le pointage le jour J, l'ajout d'un présent |
+| `/admin/evenements/[id]` | Onglet « Informations » : publier, annuler, terminer ; modifier l'événement |
+| `/admin/evenements/[id]/photos` | Onglet « Photos » : envoyer, valider, choisir la couverture |
+| `/admin/evenements/[id]/inscrits` | Onglet « Inscrits » : chiffres, recherche, pointage le jour J, ajout d'un présent |
+| `/admin/evenements/[id]/bilan` | Onglet « Bilan » : responsable et retour d'expérience |
 | `/sitemap.xml`, `/robots.txt` | Plan du site et consignes pour les moteurs de recherche (générés) |
 
 ## Espace équipe (`/admin`)

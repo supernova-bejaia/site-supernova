@@ -28,9 +28,11 @@ Il faut un compte autorisé (voir le README, « Espace équipe »).
 
 **Créer le brouillon** : l'événement existe, mais personne ne le voit encore.
 
+Chaque événement a ensuite quatre onglets : **Informations**, **Photos**, **Inscrits** et **Bilan**.
+
 ### 2. Ajouter les photos
 
-Sur la page de l'événement, rubrique **Photos** : une photo par envoi, JPEG, PNG ou WebP, 2 Mo au plus, avec une **description** obligatoire (ce que montre la photo, pour les personnes qui ne la voient pas). Légende et photographe sont facultatifs.
+Onglet **Photos** : une photo par envoi, JPEG, PNG ou WebP, 2 Mo au plus, avec une **description** obligatoire (ce que montre la photo, pour les personnes qui ne la voient pas). Légende et photographe sont facultatifs.
 
 - Une photo ajoutée est **à valider** : invisible du public. **Valider** la rend visible ; **Masquer** la retire du site sans la supprimer.
 - La première photo devient la **couverture** ; **Mettre en couverture** en choisit une autre.
@@ -39,7 +41,7 @@ Sur la page de l'événement, rubrique **Photos** : une photo par envoi, JPEG, P
 
 ### 3. Publier
 
-Rubrique **Statut** :
+Onglet **Informations**, encadré **Publication** (chaque action demande une confirmation) :
 
 | Bouton | Effet sur le site |
 |---|---|
@@ -52,17 +54,18 @@ Le lendemain d'un événement, il passe aussi tout seul dans les archives (dans 
 
 ### 4. Suivre les inscrits, puis pointer le jour J
 
-**Inscrits et pointage** (depuis la liste ou la page de l'événement) :
+Onglet **Inscrits** :
 
-- la liste des personnes, avec leur email et leur téléphone, et les totaux par statut ;
-- sur chaque ligne, quatre boutons : **Inscrit**, **Présent**, **Absent**, **Désisté**. Pensé pour le téléphone, à l'entrée de la salle ;
+- les chiffres clés : présents (sur le nombre attendu), inscrits pas encore pointés, absents, désistés ;
+- une **recherche** instantanée par nom, email ou téléphone, sans se soucier des accents : à l'entrée, trois lettres suffisent ;
+- sur chaque ligne, quatre boutons : **Inscrit**, **Présent**, **Absent**, **Désisté**. Le statut actuel est coloré (vert pour présent) ;
 - **Ajouter une personne** : pour quelqu'un de présent sans s'être inscrit (ou inscrit par téléphone). Si son email est déjà connu, sa fiche est reprise telle quelle.
 
 Les inscriptions en ligne ferment à la fin de l'événement (à son début s'il n'a pas d'heure de fin). Une personne qui s'inscrit peut cocher une case pour rejoindre aussi l'Orbite ; la case est décochée par défaut.
 
 ### 5. Remplir le bilan
 
-Rubrique **Responsable et bilan** : le responsable, ce qui a marché, les difficultés, ce qui est à améliorer, et les liens vers les ressources (photos, documents…), un par ligne. Rien de cette rubrique n'apparaît sur le site.
+Onglet **Bilan** : le responsable, ce qui a marché, les difficultés, ce qui est à améliorer, et les liens vers les ressources (photos, documents…), un par ligne. Rien de cette rubrique n'apparaît sur le site.
 
 ## Ce qui se fait tout seul
 

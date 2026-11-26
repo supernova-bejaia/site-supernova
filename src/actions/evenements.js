@@ -131,7 +131,7 @@ export async function enregistrerSuivi(formData) {
   }
 
   revalidatePath("/admin", "layout");
-  redirect(`/admin/evenements/${id}?etat=${etat}#suivi`);
+  redirect(`/admin/evenements/${id}/bilan?etat=${etat}`);
 }
 
 // Envoi d'une photo, avec sa description (obligatoire).
@@ -158,7 +158,7 @@ export async function ajouterPhoto(formData) {
     }
   }
 
-  redirect(`/admin/evenements/${id}?etat=${etat}#photos`);
+  redirect(`/admin/evenements/${id}/photos?etat=${etat}`);
 }
 
 // Valider, masquer, choisir comme couverture ou supprimer une photo.
@@ -183,7 +183,7 @@ export async function agirSurPhoto(formData) {
     etat = "echec";
   }
 
-  redirect(`/admin/evenements/${id}?etat=${etat}#photos`);
+  redirect(`/admin/evenements/${id}/photos?etat=${etat}`);
 }
 
 // Pointage d'une inscription (INSCRIT, PRESENT, ABSENT, DESISTE).

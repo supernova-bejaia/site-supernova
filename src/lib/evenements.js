@@ -35,6 +35,16 @@ export function prixLisible(prix) {
   return prix ? `${Number(prix).toLocaleString("fr-FR")} DA` : "Gratuit";
 }
 
+// Typographie française : espace insécable avant « : ; ! ? » et à
+// l'intérieur des guillemets, pour qu'un signe ne se retrouve jamais seul
+// en début de ligne. "Atelier : pitch" → "Atelier : pitch".
+export function insecables(texte) {
+  if (!texte) return texte;
+  return texte
+    .replace(/ ([:;!?»])/g, " $1")
+    .replace(/« /g, "« ");
+}
+
 // Texte saisi « un élément par ligne » → liste sans lignes vides.
 export function lignes(texte) {
   return String(texte ?? "")

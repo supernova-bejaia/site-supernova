@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { verifierAccesAdmin } from "@/lib/acces-admin";
 import { dateCourte } from "@/lib/dates";
-import { STATUTS_EVENEMENT } from "@/lib/evenements";
+import { STATUTS_EVENEMENT, insecables } from "@/lib/evenements";
 import { listerEvenements } from "@/services/evenements-admin";
 import pageStyles from "../admin.module.css";
 import styles from "@/components/admin/Articles.module.css";
@@ -51,7 +51,7 @@ async function ListeEvenements() {
         <ul className={styles.liste}>
           {evenements.map((evenement) => (
             <li key={evenement.id_evenement} className={styles.ligne}>
-              <h2 className={styles.titreLigne}>{evenement.titre}</h2>
+              <h2 className={styles.titreLigne}>{insecables(evenement.titre)}</h2>
               <p className={styles.infosLigne}>
                 <span className={styles.statut} data-statut={evenement.statut}>
                   {STATUTS_EVENEMENT[evenement.statut]}

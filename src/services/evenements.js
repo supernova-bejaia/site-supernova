@@ -2,7 +2,7 @@ import { cacheLife, cacheTag } from "next/cache";
 import { creerClientSupabase } from "@/lib/supabase/server";
 import { estSlugValide } from "@/lib/articles";
 import { aujourdhui, partiesDate } from "@/lib/dates";
-import { ETIQUETTE_CACHE_EVENEMENTS, adressePhoto, lignes } from "@/lib/evenements";
+import { ETIQUETTE_CACHE_EVENEMENTS, adressePhoto, insecables, lignes } from "@/lib/evenements";
 
 // Service « événements » du site public : lecture des événements publiés.
 //
@@ -42,9 +42,9 @@ function versEvenement(ligne) {
   return {
     id: ligne.id_evenement,
     slug: ligne.slug,
-    titre: ligne.titre,
-    resume: ligne.resume,
-    description: ligne.description ?? undefined,
+    titre: insecables(ligne.titre),
+    resume: insecables(ligne.resume),
+    description: insecables(ligne.description) ?? undefined,
     categorie: ligne.categorie ?? undefined,
     date: debut.date,
     heure: debut.heure,
