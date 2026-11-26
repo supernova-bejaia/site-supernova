@@ -57,6 +57,13 @@ export default function MenuNavigation() {
 
   return (
     <>
+      {/* Ordinateur : les pages directement dans la barre du haut. */}
+      <nav aria-label="Navigation principale" className={styles.barre}>
+        <Suspense fallback={null}>
+          <LiensBarre />
+        </Suspense>
+      </nav>
+
       <button
         ref={bouton}
         type="button"
@@ -124,6 +131,34 @@ export default function MenuNavigation() {
   );
 }
 
+// Une page est « en cours » aussi pour ses sous-pages : on reste dans
+// « Articles » en lisant un article.
+function estActuelle(href, chemin) {
+  return href === "/" ? chemin === "/" : chemin === href || chemin.startsWith(`${href}/`);
+}
+
+// Les liens de la barre du haut (ordinateur). « Rejoindre » y prend la
+// forme d'un bouton.
+function LiensBarre() {
+  const cheminActuel = usePathname();
+
+  return (
+    <ul className={styles.listeBarre}>
+      {NAVIGATION.filter((page) => !page.horsBarre).map((page) => (
+        <li key={page.href}>
+          <Link
+            href={page.href}
+            className={page.href === "/rejoindre" ? styles.lienBarreAction : styles.lienBarre}
+            aria-current={estActuelle(page.href, cheminActuel) ? "page" : undefined}
+          >
+            {page.libelle}
+          </Link>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 // La liste des pages, avec la page en cours signalée.
 function ListePages({ premierLien, fermer }) {
   const cheminActuel = usePathname();
@@ -131,12 +166,7 @@ function ListePages({ premierLien, fermer }) {
   return (
     <ol className={styles.liste}>
       {NAVIGATION.map((page, index) => {
-        // Une page est « en cours » aussi pour ses sous-pages : on reste
-        // dans « Articles » en lisant un article.
-        const actuelle =
-          page.href === "/"
-            ? cheminActuel === "/"
-            : cheminActuel === page.href || cheminActuel.startsWith(`${page.href}/`);
+        const actuelle = estActuelle(page.href, cheminActuel);
 
         return (
           <li key={page.href} style={{ "--rang": index }}>

@@ -16,11 +16,13 @@ export const RESEAUX = [
 
 // Pages du site, dans l'ordre d'affichage. Utilisée par le menu de
 // navigation et par le pied de page : ajouter une page ici l'ajoute aux deux.
+// « horsBarre » : la page n'apparaît pas dans la barre du haut sur
+// ordinateur (elle reste dans le menu du téléphone et le pied de page).
 export const NAVIGATION = [
   { href: "/", libelle: "Accueil" },
   { href: "/notre-histoire", libelle: "Notre histoire" },
-  { href: "/rejoindre", libelle: "Rejoindre" },
   { href: "/evenements", libelle: "Événements" },
   { href: "/articles", libelle: "Articles" },
-  { href: "/vos-donnees", libelle: "Vos données" },
+  { href: "/rejoindre", libelle: "Rejoindre" },
+  { href: "/vos-donnees", libelle: "Vos données", horsBarre: true },
 ];

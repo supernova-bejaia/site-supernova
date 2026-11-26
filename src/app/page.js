@@ -65,21 +65,23 @@ const PROJETS = [
   },
 ];
 
-// Les trois niveaux d'engagement (documentation Supernova : Noyau / Orbite).
+// Les trois niveaux d'engagement (documentation Supernova : Noyau / Orbite),
+// du plus léger au plus engagé : ils s'affichent dans cet ordre.
 const NIVEAUX = [
   {
-    id: "noyau",
-    nom: "Noyau",
-    role: "Construire Supernova",
-    reperes: "Le plus engagé",
+    id: "spectateur",
+    nom: "Spectateur",
+    role: "Suivre Supernova",
+    reperes: "Sans adhésion",
     points: [
-      "Tu organises les projets et les événements",
-      "Tu as un rôle et des responsabilités dans l'équipe",
-      "Tu es aux premières loges des opportunités internes",
+      "Nos contenus, en accès libre",
+      "Les événements ouverts au public",
     ],
-    condition: "Environ 3 h par semaine et ta présence aux événements, sur une saison de 6 mois.",
-    acces: "Sur candidature, puis 20 minutes pour faire connaissance.",
-    cta: { libelle: "Candidater au Noyau", href: "/rejoindre#titre-noyau" },
+    condition: "Pas d'accès aux avantages réservés à la communauté.",
+    acces: "Rien à remplir.",
+    cta: INSTAGRAM
+      ? { libelle: "Suivre sur Instagram", href: INSTAGRAM.url, externe: true }
+      : { libelle: "Voir les événements", href: "/evenements" },
   },
   {
     id: "orbite",
@@ -97,19 +99,18 @@ const NIVEAUX = [
     cta: { libelle: "Rejoindre l'Orbite", href: "/rejoindre#formulaire-orbite" },
   },
   {
-    id: "spectateur",
-    nom: "Spectateur",
-    role: "Suivre Supernova",
-    reperes: "Sans adhésion",
+    id: "noyau",
+    nom: "Noyau",
+    role: "Construire Supernova",
+    reperes: "Le plus engagé",
     points: [
-      "Nos contenus, en accès libre",
-      "Les événements ouverts au public",
+      "Tu organises les projets et les événements",
+      "Tu as un rôle et des responsabilités dans l'équipe",
+      "Tu es aux premières loges des opportunités internes",
     ],
-    condition: "Pas d'accès aux avantages réservés à la communauté.",
-    acces: "Rien à remplir.",
-    cta: INSTAGRAM
-      ? { libelle: "Suivre sur Instagram", href: INSTAGRAM.url, externe: true }
-      : { libelle: "Voir les événements", href: "/evenements" },
+    condition: "Environ 3 h par semaine et ta présence aux événements, sur une saison de 6 mois.",
+    acces: "Sur candidature, puis 20 minutes pour faire connaissance.",
+    cta: { libelle: "Candidater au Noyau", href: "/rejoindre#titre-noyau" },
   },
 ];
 
@@ -203,7 +204,6 @@ export default function PageAccueil() {
       {/* ---------- 02 — Deux étudiants ---------- */}
       <section className={`conteneur ${styles.recit}`} aria-labelledby="titre-recit">
         <Apparition className={styles.texteRecit}>
-          <p className="annotation">Une histoire en deux lignes</p>
           <h2 id="titre-recit" className={styles.titreRecit}>
             Deux étudiants entrent à l&apos;université la même année.
           </h2>
@@ -256,15 +256,9 @@ export default function PageAccueil() {
         className={`conteneur ${styles.piliers} ${styles.ancre}`}
         aria-labelledby="titre-piliers"
       >
-        <Apparition>
-          <p className="annotation annotation-section">
-            <span className="numero">01</span> Concrètement
-          </p>
-          <h2 id="titre-piliers" className="titre-section">
-            C&apos;est quoi, <span className="accent">Supernova</span> ?
-          </h2>
-          <p className="chapeau">Un collectif d&apos;étudiants qui fait trois choses, ensemble.</p>
-        </Apparition>
+        <Entete id="titre-piliers" chapeau="Un collectif d'étudiants qui fait trois choses, ensemble.">
+          C&apos;est quoi, <span className={styles.lueur}>Supernova</span> ?
+        </Entete>
 
         <ol className={styles.listePiliers}>
           <Apparition as="li" className={styles.pilier}>
@@ -294,15 +288,9 @@ export default function PageAccueil() {
       {/* ---------- 04 — Des actions ---------- */}
       <section className={styles.actionsSaison} aria-labelledby="titre-actions">
         <div className="conteneur">
-          <Apparition className={styles.enteteActions}>
-            <p className="annotation annotation-section">
-              <span className="numero">02</span> Sur le terrain
-            </p>
-            <h2 id="titre-actions" className="titre-section">
-              Des idées, mais surtout <span className="accent">des actions</span>
-            </h2>
-            <p className="chapeau">Ce qu&apos;on a déjà fait sur le terrain, et ce qui arrive.</p>
-          </Apparition>
+          <Entete id="titre-actions" chapeau="Ce qu'on a déjà fait sur le terrain, et ce qui arrive.">
+            Des idées, mais surtout <span className={styles.lueur}>des actions</span>
+          </Entete>
 
           <ul className={styles.listeProjets}>
             {PROJETS.map((projet, index) => (
@@ -361,15 +349,12 @@ export default function PageAccueil() {
 
       {/* ---------- 05 — La communauté ---------- */}
       <section className={`conteneur ${styles.communaute}`} aria-labelledby="titre-communaute">
-        <Apparition>
-          <p className="annotation annotation-section">
-            <span className="numero">03</span> Une communauté avant tout
-          </p>
-          <h2 id="titre-communaute" className="declaration">
-            Les événements, c&apos;est ce qu&apos;on voit. Ce qui reste, ce sont{" "}
-            <span className="accent">les gens</span>.
-          </h2>
-        </Apparition>
+        <Entete
+          id="titre-communaute"
+          chapeau="Les événements, c'est ce qu'on voit. Ce qui reste, ce sont les gens."
+        >
+          Une communauté <span className={styles.lueur}>avant tout</span>
+        </Entete>
 
         <Apparition delai={100} className={styles.profils}>
           <p className="chapeau">Dans Supernova, tu croises celles et ceux qui…</p>
@@ -403,19 +388,16 @@ export default function PageAccueil() {
 
       {/* ---------- 06 — Pas le temps ? ---------- */}
       <section className={styles.objection} aria-labelledby="titre-objection">
+        <div className="conteneur">
+          <Entete
+            id="titre-objection"
+            chapeau="Beaucoup d'étudiants aimeraient s'impliquer, mais n'ont pas des heures à donner chaque semaine. C'est pour eux qu'on a créé l'Orbite."
+          >
+            Et si j&apos;ai <span className={styles.lueur}>pas le temps</span> ?
+          </Entete>
+        </div>
         <div className={`conteneur ${styles.grilleObjection}`}>
           <Apparition className={styles.texteObjection}>
-            <p className="annotation annotation-section">
-              <span className="numero">04</span> Et si j&apos;ai pas le temps ?
-            </p>
-            <h2 id="titre-objection" className="titre-section">
-              Les cours, les examens, un job, la famille…
-            </h2>
-            <p className="chapeau">
-              On connaît. Beaucoup d&apos;étudiants aimeraient s&apos;impliquer, mais
-              n&apos;ont pas des heures à donner chaque semaine. C&apos;est pour eux qu&apos;on a
-              créé l&apos;Orbite.
-            </p>
             <p className={styles.phraseCle}>
               Tu n&apos;as pas besoin d&apos;organiser les événements pour pouvoir{" "}
               <span className="accent">les vivre</span>.
@@ -441,18 +423,12 @@ export default function PageAccueil() {
         className={`conteneur ${styles.places} ${styles.ancre}`}
         aria-labelledby="titre-places"
       >
-        <Apparition className={styles.entetePlaces}>
-          <p className="annotation annotation-section">
-            <span className="numero">05</span> Rejoindre
-          </p>
-          <h2 id="titre-places" className="titre-section">
-            À chacun sa place dans <span className="accent">Supernova</span>
-          </h2>
-          <p className="chapeau">
-            Trois façons d&apos;en faire partie, selon le temps que tu as et ce que tu veux en
-            tirer.
-          </p>
-        </Apparition>
+        <Entete
+          id="titre-places"
+          chapeau="Trois façons d'en faire partie, selon le temps que tu as et ce que tu veux en tirer."
+        >
+          À chacun sa place dans <span className={styles.lueur}>Supernova</span>
+        </Entete>
 
         <div className={styles.grillePlaces}>
           {NIVEAUX.map((niveau, index) => (
@@ -515,14 +491,9 @@ export default function PageAccueil() {
 
       {/* ---------- 08 — FAQ ---------- */}
       <section className={`conteneur ${styles.faq}`} aria-labelledby="titre-faq">
-        <Apparition className={styles.enteteFaq}>
-          <p className="annotation annotation-section">
-            <span className="numero">06</span> Questions fréquentes
-          </p>
-          <h2 id="titre-faq" className="titre-section">
-            Tu te demandes sûrement…
-          </h2>
-        </Apparition>
+        <Entete id="titre-faq">
+          Questions <span className={styles.lueur}>fréquentes</span>
+        </Entete>
         <div className={styles.listeFaq}>
           {FAQ.map((item) => (
             <details key={item.question} className={styles.question}>
@@ -561,5 +532,18 @@ export default function PageAccueil() {
         </div>
       </section>
     </>
+  );
+}
+
+// Titre de section : grand, centré, sans numéro ni surtitre. Les mots
+// importants passent dans <span className={styles.lueur}> (rouge lumineux).
+function Entete({ id, chapeau, children }) {
+  return (
+    <Apparition className={styles.entete}>
+      <h2 id={id} className={styles.titreMajeur}>
+        {children}
+      </h2>
+      {chapeau && <p className="chapeau">{chapeau}</p>}
+    </Apparition>
   );
 }
