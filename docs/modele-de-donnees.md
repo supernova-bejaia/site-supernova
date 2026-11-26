@@ -56,7 +56,7 @@ ARTICLE(
     contenu           texte               -- au format Markdown
     image_couverture  texte [nullable]    -- chemin du fichier dans le stockage « articles »
     statut            BROUILLON | PUBLIE
-    id_auteur         → compte de connexion [nullable]   -- non affiché sur le site
+    id_auteur         → compte de connexion [nullable]   -- illisible depuis le site (migration du 26/11)
     published_at      date et heure [nullable]           -- obligatoire si PUBLIE
     created_at, updated_at
 )
@@ -70,6 +70,7 @@ Sécurité :
 
 - Tout le monde lit les articles `PUBLIE`, et seulement ceux-là : un brouillon reste invisible, même si l'on devine son adresse.
 - Les comptes autorisés (`est_admin()`) lisent tout, créent, modifient et suppriment. C'est la seule écriture ouverte à l'espace équipe.
+- La colonne `id_auteur` n'est lisible ni par les visiteurs ni par les comptes connectés : le droit de lecture est accordé colonne par colonne, sans elle. Une colonne ajoutée plus tard à `article` doit être ajoutée à cette liste pour être lisible par le site.
 - Seuls les comptes autorisés envoient, remplacent ou suppriment une image. Le stockage étant public, l'image d'un brouillon est lisible par qui connaît son adresse exacte ; les noms de fichiers sont aléatoires.
 
 Par rapport au modèle proposé au départ : noms en `snake_case`, ajout de `created_at` et de `id_auteur`.
