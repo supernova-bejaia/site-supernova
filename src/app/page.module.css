@@ -396,35 +396,63 @@
     url("/marque/fond-texture-rouge.jpg") center / cover no-repeat;
 }
 
-/* Photos d'un projet réalisé : la couverture en grand, puis les vignettes. */
+/* Photos d'un projet : la couverture en grand, puis les vignettes, trois
+   par ligne. Légende facultative posée en bas de la photo. */
 .photosProjet {
   grid-column: 1 / -1;
   grid-row: 1;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
   margin: -6px -2px 4px;
 }
 
-.photosProjet img {
-  display: block;
-  height: auto;
-  object-fit: cover;
-  object-position: center 35%;
+.couverture,
+.vignette {
+  position: relative;
+  overflow: hidden;
   border-radius: 10px;
   border: 1px solid var(--trait);
 }
 
 .couverture {
-  flex: 1 1 100%;
-  width: 100%;
+  grid-column: 1 / -1;
   aspect-ratio: 16 / 9;
 }
 
 .vignette {
-  flex: 1 1 0;
-  min-width: 0;
   aspect-ratio: 1;
+}
+
+.couverture img,
+.vignette img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 35%;
+}
+
+.photosProjet figcaption {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(13, 11, 11, 0.82);
+  font-family: var(--police-titre), system-ui, sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.partenaires {
+  padding-left: 12px;
+  border-left: 2px solid var(--rouge);
+  color: var(--blanc);
+  font-size: 0.92rem;
 }
 
 .statutProjet.statutPasse {
@@ -489,32 +517,25 @@
   }
 
   .listeProjets {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    gap: 24px;
     margin-top: 56px;
   }
 
-  /* Mise en avant : le premier projet occupe toute la ligne. */
-  .projet:first-child {
-    grid-column: 1 / -1;
-    padding: 48px 48px 52px;
-  }
-
-  .projet:first-child .couverture {
-    aspect-ratio: 21 / 9;
-  }
-
-  .projet:first-child .vignette {
-    aspect-ratio: 16 / 10;
-  }
-
-  .projet:first-child h3 {
-    font-size: clamp(2rem, 3.6vw, 3.2rem);
-  }
-
+  /* Ordinateur : les photos à gauche, le texte à droite. */
   .projet {
-    padding: 32px 30px 34px;
+    grid-template-columns: minmax(0, 1.5fr) auto minmax(0, 1fr);
+    column-gap: 28px;
+    align-items: start;
+    padding: 36px;
+  }
+
+  .photosProjet {
+    grid-column: 1;
+    margin: 0;
+  }
+
+  .projet h3 {
+    font-size: clamp(2rem, 3.4vw, 3rem);
   }
 
   .suiteActions {

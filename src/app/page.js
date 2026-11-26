@@ -22,43 +22,46 @@ import styles from "./page.module.css";
 
 const INSTAGRAM = RESEAUX.find((reseau) => reseau.nom === "Instagram");
 
-// Projets de la saison. Pour en ajouter un, ajouter une ligne ; quand un
-// projet a eu lieu, passer « passe » à true et ajouter ses photos (rangées
-// dans public/evenements/<identifiant>/, la première sert de couverture).
+// Projets de la saison. Pour en ajouter un, ajouter une ligne. Les photos
+// sont rangées dans public/evenements/<identifiant>/ ; la première sert de
+// couverture. « legende » (facultatif) s'affiche sur la photo, « cadrage »
+// (facultatif) choisit la partie gardée quand la vignette est recadrée.
+// « etat » : "passe" (réalisé) ou "en-cours".
 const PROJETS = [
   {
     titre: "Green Quest",
     statut: "Réalisé · 20 novembre",
-    passe: true,
-    etiquettes: ["Impact local", "Jeu par équipes", "Gouraya"],
+    etat: "passe",
+    etiquettes: ["Parc national de Gouraya", "Jeu par équipes", "Impact local"],
     texte:
-      "Avec l'association Perle d'Afrique, on a cartographié Gouraya et ses alentours sur Google Maps, tout en nettoyant. Un jeu par équipes, avec des points et des récompenses.",
+      "Une journée pour nettoyer le parc national de Gouraya et le cartographier sur Google Maps, en équipes, avec des points à la clé. Les gagnants sont repartis avec un compte Netflix, et chaque participant avec un prix de participation.",
+    partenaires:
+      "En collaboration avec le Parc national de Gouraya, l'EPIC Bougie Provert et la direction des transports.",
     photos: [
-      { src: "/evenements/green-quest-2026/01.jpg", largeur: 1600, hauteur: 901, alt: "L'équipe de Green Quest réunie au parc de Gouraya, la ville de Béjaïa en contrebas." },
-      { src: "/evenements/green-quest-2026/02.jpg", largeur: 1600, hauteur: 1200, alt: "Des participants ramassent des déchets dans une ancienne bâtisse de Gouraya." },
-      { src: "/evenements/green-quest-2026/03.jpg", largeur: 1600, hauteur: 1200, alt: "Les grandes lettres BEJAIA sur le flanc de la montagne de Gouraya." },
-      { src: "/evenements/green-quest-2026/04.jpg", largeur: 1600, hauteur: 901, alt: "Quatre participants de Green Quest posent ensemble à la fin de la journée." },
+      { src: "/evenements/green-quest-2026/01-groupe-gardes.jpg", largeur: 1600, hauteur: 901, alt: "Les participants de Green Quest réunis avec les gardes du parc national de Gouraya." },
+      { src: "/evenements/green-quest-2026/02-prix-netflix.jpg", largeur: 1080, hauteur: 1350, cadrage: "center 62%", legende: "Prix Netflix", alt: "Une enveloppe Supernova marquée Netflix, devant l'entrée du parc national de Gouraya." },
+      { src: "/evenements/green-quest-2026/03-avant.jpg", largeur: 1200, hauteur: 1600, legende: "Avant", alt: "Un local du parc rempli de bouteilles et de déchets, avant le nettoyage." },
+      { src: "/evenements/green-quest-2026/04-apres.jpg", largeur: 1200, hauteur: 1600, legende: "Après", alt: "Le même local, vidé de ses déchets après le passage des équipes." },
+      { src: "/evenements/green-quest-2026/05-sacs-collectes.jpg", largeur: 1080, hauteur: 810, alt: "Les sacs de déchets collectés, alignés devant le panneau du parc." },
+      { src: "/evenements/green-quest-2026/06-ramassage-baie.jpg", largeur: 1080, hauteur: 810, alt: "Des participants ramassent des déchets, avec la baie de Béjaïa en fond." },
+      { src: "/evenements/green-quest-2026/07-lettres-bejaia.jpg", largeur: 1600, hauteur: 901, alt: "Les grandes lettres BEJAIA sur la montagne de Gouraya, avec l'équipe au pied." },
     ],
   },
   {
     titre: "Caravane ORS",
-    statut: "Réalisé · 7 novembre",
-    passe: true,
+    statut: "En cours · Prochaine masterclass le 5 décembre",
+    etat: "en-cours",
     etiquettes: ["Entreprises", "Défis réels", "Masterclass"],
     texte:
-      "Des entreprises arrivent avec leurs vraies problématiques, des jeunes talents proposent des solutions. Un événement soutenu par le ministère de l'Économie de la connaissance et des Startups, en collaboration avec DELTALOG.",
+      "Des entreprises arrivent avec leurs vraies problématiques, des jeunes talents proposent des solutions. La Caravane passe par plusieurs masterclass : celle du 7 novembre a eu lieu, la prochaine se tient le 5 décembre.",
+    partenaires:
+      "Soutenue par le ministère de l'Économie de la connaissance et des Startups, en collaboration avec DELTALOG.",
     photos: [
       { src: "/evenements/masterclass-7-novembre-2026/01.jpg", largeur: 1600, hauteur: 901, alt: "Une salle pleine d'étudiants pendant la masterclass du 7 novembre." },
       { src: "/evenements/masterclass-7-novembre-2026/02.jpg", largeur: 901, hauteur: 1600, alt: "L'intervenant de la masterclass explique un point, le bras levé." },
+      { src: "/evenements/masterclass-7-novembre-2026/04.jpg", largeur: 901, hauteur: 1600, alt: "L'intervenant présente devant l'écran, face aux étudiants." },
       { src: "/evenements/masterclass-7-novembre-2026/03.jpg", largeur: 901, hauteur: 1600, alt: "Des étudiants attentifs autour des tables de la salle." },
     ],
-  },
-  {
-    titre: "Conférence de Saïd Djellab",
-    statut: "À venir · Décembre",
-    etiquettes: ["Conférence", "Export"],
-    texte:
-      "Ancien ministre du Commerce, il a participé aux négociations des accords de libre-échange africains et accompagne aujourd'hui les entreprises algériennes à l'export.",
   },
 ];
 
@@ -310,24 +313,30 @@ export default function PageAccueil() {
                 {projet.photos && (
                   <div className={styles.photosProjet}>
                     {projet.photos.map((photo, rang) => (
-                      <Image
+                      <figure
                         key={photo.src}
-                        src={photo.src}
-                        alt={photo.alt}
-                        width={photo.largeur}
-                        height={photo.hauteur}
-                        sizes={rang === 0 ? "(min-width: 900px) 60vw, 100vw" : "(min-width: 900px) 20vw, 33vw"}
                         className={rang === 0 ? styles.couverture : styles.vignette}
-                      />
+                      >
+                        <Image
+                          src={photo.src}
+                          alt={photo.alt}
+                          width={photo.largeur}
+                          height={photo.hauteur}
+                          sizes={rang === 0 ? "(min-width: 900px) 1200px, 100vw" : "(min-width: 900px) 220px, 33vw"}
+                          style={photo.cadrage ? { objectPosition: photo.cadrage } : undefined}
+                        />
+                        {photo.legende && <figcaption>{photo.legende}</figcaption>}
+                      </figure>
                     ))}
                   </div>
                 )}
                 <div className={styles.corpsProjet}>
-                  <p className={`${styles.statutProjet} ${projet.passe ? styles.statutPasse : ""}`}>
+                  <p className={`${styles.statutProjet} ${projet.etat === "passe" ? styles.statutPasse : ""}`}>
                     {projet.statut}
                   </p>
                   <h3 className="titre-element">{projet.titre}</h3>
                   <p className="texte">{projet.texte}</p>
+                  {projet.partenaires && <p className={styles.partenaires}>{projet.partenaires}</p>}
                   <ul className={styles.etiquettes}>
                     {projet.etiquettes.map((etiquette) => (
                       <li key={etiquette}>{etiquette}</li>
