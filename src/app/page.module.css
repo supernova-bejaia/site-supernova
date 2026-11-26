@@ -41,9 +41,35 @@
     0 0 90px rgba(225, 6, 0, 0.25);
 }
 
+/* Variante éditoriale : titre à gauche, chapeau à sa droite sur ordinateur,
+   séparés par un filet. */
+.enteteGauche {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 16px 0 44px;
+}
+
+.enteteGauche .titreMajeur {
+  max-width: 14ch;
+}
+
 @media (min-width: 900px) {
   .entete {
     padding: 40px 0 72px;
+  }
+
+  .enteteGauche {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    align-items: end;
+    column-gap: 56px;
+    padding: 24px 0 64px;
+  }
+
+  .enteteGauche .chapeau {
+    padding-left: 24px;
+    border-left: 1px solid var(--trait);
   }
 }
 
@@ -376,12 +402,8 @@
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: var(--rouge);
+  color: var(--texte-discret);
   transform: translateY(-1.6em);
-}
-
-.pilier:hover .motPilier {
-  color: var(--rouge);
 }
 
 .motPilier {
@@ -497,20 +519,22 @@
 
 .partenaires {
   padding-left: 12px;
-  border-left: 2px solid var(--rouge);
+  border-left: 2px solid var(--trait);
   color: var(--blanc);
   font-size: 0.92rem;
 }
 
+/* Réalisé : pastille claire (neutre). En cours : rouge sombre. */
 .statutProjet.statutPasse {
-  background: var(--rouge);
+  background: var(--blanc);
+  color: var(--fond);
 }
 
 .indexProjet {
   font-family: var(--police-titre), system-ui, sans-serif;
   font-weight: 800;
   font-size: 0.85rem;
-  color: var(--rouge);
+  color: var(--texte-discret);
   letter-spacing: 0.08em;
   padding-top: 4px;
 }
@@ -629,14 +653,11 @@
   font-size: 0.95rem;
 }
 
-.nuageProfils li:nth-child(3n + 1) {
-  border-color: var(--trait-rouge);
-}
-
+/* Une seule pastille mise en avant : la raison d'être du collectif. */
 .nuageProfils li:last-child {
-  background: var(--rouge);
-  border-color: var(--rouge);
-  color: #fff;
+  background: var(--blanc);
+  border-color: var(--blanc);
+  color: var(--fond);
 }
 
 .lienInstagram {
@@ -772,7 +793,7 @@
 .roleCarte {
   font-family: var(--police-titre), system-ui, sans-serif;
   font-weight: 600;
-  color: var(--rouge);
+  color: var(--texte-doux);
 }
 
 .pointsCarte {
@@ -798,7 +819,16 @@
   width: 9px;
   height: 9px;
   border-radius: 50%;
-  border: 2px solid var(--rouge);
+  border: 2px solid var(--texte-discret);
+}
+
+/* Seul le Noyau garde l'accent rouge : c'est la carte mise en avant. */
+.carte_noyau .roleCarte {
+  color: var(--rouge);
+}
+
+.carte_noyau .pointsCarte li::before {
+  border-color: var(--rouge);
 }
 
 .conditions {
@@ -847,17 +877,12 @@
 
 /* Orbite : ouverte, chaleureuse. */
 .carte_orbite .repereCarte {
-  border-color: var(--trait-rouge);
   color: var(--blanc);
 }
 
 /* Spectateur : le plus léger, volontairement plus sobre. */
 .carte_spectateur {
   background: transparent;
-}
-
-.carte_spectateur .roleCarte {
-  color: var(--texte-doux);
 }
 
 .notePlaces {
@@ -897,8 +922,6 @@
 }
 
 .listeFaq {
-  max-width: 820px;
-  margin-inline: auto;
   border-top: 1px solid var(--trait);
 }
 
@@ -925,7 +948,7 @@
 }
 
 .question summary:hover {
-  color: var(--rouge);
+  color: var(--texte-doux);
 }
 
 /* Signe « + » qui devient « − » à l'ouverture */
@@ -942,7 +965,7 @@
   position: absolute;
   inset: 6px 0 auto;
   height: 2px;
-  background: var(--rouge);
+  background: var(--blanc);
   transition: transform var(--duree-courte) var(--courbe);
 }
 
@@ -959,8 +982,24 @@
 }
 
 @media (min-width: 900px) {
+  /* FAQ : le titre reste à gauche pendant qu'on parcourt les questions. */
   .faq {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+    column-gap: 72px;
+    align-items: start;
     padding-bottom: 128px;
+  }
+
+  .faq > .enteteGauche {
+    display: flex;
+    position: sticky;
+    top: 110px;
+  }
+
+  /* Colonne étroite : titre un cran plus petit pour que « fréquentes » tienne. */
+  .faq .titreMajeur {
+    font-size: clamp(2.3rem, 4vw, 3.6rem);
   }
 
   .question summary {

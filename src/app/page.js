@@ -288,8 +288,12 @@ export default function PageAccueil() {
       {/* ---------- 04 — Des actions ---------- */}
       <section className={styles.actionsSaison} aria-labelledby="titre-actions">
         <div className="conteneur">
-          <Entete id="titre-actions" chapeau="Ce qu'on a déjà fait sur le terrain, et ce qui arrive.">
-            Des idées, mais surtout <span className={styles.lueur}>des actions</span>
+          <Entete
+            id="titre-actions"
+            alignement="gauche"
+            chapeau="Ce qu'on a déjà fait sur le terrain, et ce qui arrive."
+          >
+            Des idées, mais surtout des actions
           </Entete>
 
           <ul className={styles.listeProjets}>
@@ -353,7 +357,7 @@ export default function PageAccueil() {
           id="titre-communaute"
           chapeau="Les événements, c'est ce qu'on voit. Ce qui reste, ce sont les gens."
         >
-          Une communauté <span className={styles.lueur}>avant tout</span>
+          Une communauté avant tout
         </Entete>
 
         <Apparition delai={100} className={styles.profils}>
@@ -391,16 +395,17 @@ export default function PageAccueil() {
         <div className="conteneur">
           <Entete
             id="titre-objection"
+            alignement="gauche"
             chapeau="Beaucoup d'étudiants aimeraient s'impliquer, mais n'ont pas des heures à donner chaque semaine. C'est pour eux qu'on a créé l'Orbite."
           >
-            Et si j&apos;ai <span className={styles.lueur}>pas le temps</span> ?
+            Et si j&apos;ai pas le temps ?
           </Entete>
         </div>
         <div className={`conteneur ${styles.grilleObjection}`}>
           <Apparition className={styles.texteObjection}>
             <p className={styles.phraseCle}>
               Tu n&apos;as pas besoin d&apos;organiser les événements pour pouvoir{" "}
-              <span className="accent">les vivre</span>.
+              les vivre.
             </p>
             <p className="texte">
               L&apos;Orbite, c&apos;est faire partie de Supernova sans engagement fixe. Tu profites
@@ -427,7 +432,7 @@ export default function PageAccueil() {
           id="titre-places"
           chapeau="Trois façons d'en faire partie, selon le temps que tu as et ce que tu veux en tirer."
         >
-          À chacun sa place dans <span className={styles.lueur}>Supernova</span>
+          À chacun sa place dans Supernova
         </Entete>
 
         <div className={styles.grillePlaces}>
@@ -491,8 +496,8 @@ export default function PageAccueil() {
 
       {/* ---------- 08 — FAQ ---------- */}
       <section className={`conteneur ${styles.faq}`} aria-labelledby="titre-faq">
-        <Entete id="titre-faq">
-          Questions <span className={styles.lueur}>fréquentes</span>
+        <Entete id="titre-faq" alignement="gauche">
+          Questions fréquentes
         </Entete>
         <div className={styles.listeFaq}>
           {FAQ.map((item) => (
@@ -512,7 +517,7 @@ export default function PageAccueil() {
         <div className={`conteneur ${styles.contenuFinal}`}>
           <Apparition>
             <h2 id="titre-final" className={styles.titreFinal}>
-              Dans trois ans, tu repars avec quoi ?
+              Dans trois ans, tu repars <span className={styles.lueur}>avec quoi</span> ?
             </h2>
             <p className="chapeau">
               Un diplôme, c&apos;est certain. Pour tout le reste, ta place t&apos;attend.
@@ -535,11 +540,16 @@ export default function PageAccueil() {
   );
 }
 
-// Titre de section : grand, centré, sans numéro ni surtitre. Les mots
-// importants passent dans <span className={styles.lueur}> (rouge lumineux).
-function Entete({ id, chapeau, children }) {
+// Titre de section : grand, sans numéro ni surtitre.
+//   alignement « centre » (défaut) : titre et chapeau centrés ;
+//   alignement « gauche »          : titre à gauche, chapeau à sa droite
+//                                    sur ordinateur (mise en page éditoriale).
+// On alterne les deux d'une section à l'autre pour casser la répétition.
+// La lueur rouge (styles.lueur) est réservée à deux moments de la page :
+// « C'est quoi, Supernova ? » et l'appel final.
+function Entete({ id, chapeau, alignement = "centre", children }) {
   return (
-    <Apparition className={styles.entete}>
+    <Apparition className={alignement === "gauche" ? styles.enteteGauche : styles.entete}>
       <h2 id={id} className={styles.titreMajeur}>
         {children}
       </h2>
