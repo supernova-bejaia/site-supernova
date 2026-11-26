@@ -40,7 +40,7 @@ Seule porte d'entrée du formulaire public. En une transaction, elle vérifie le
 
 | Élément | Rôle |
 |---|---|
-| `acces_admin` | La liste des comptes de connexion autorisés à l'espace équipe. RLS activée et aucune règle : la table n'est lisible par personne depuis le site, elle se gère dans Supabase. |
+| `acces_admin` | La liste des comptes de connexion autorisés à l'espace équipe, chacun relié à sa personne (`id_personne`, ajouté le 26/11). RLS activée et aucune règle : la table n'est lisible par personne depuis le site, elle se gère dans Supabase. |
 | `est_admin()` | Fonction qui répond si le compte connecté figure dans `acces_admin`. Elle ne renvoie qu'un oui ou un non. |
 
 Les comptes autorisés peuvent **lire** `personne`, `adhesion`, `interet_adhesion` et `saison`. Ils n'y écrivent rien.
@@ -74,6 +74,70 @@ Sécurité :
 - Seuls les comptes autorisés envoient, remplacent ou suppriment une image. Le stockage étant public, l'image d'un brouillon est lisible par qui connaît son adresse exacte ; les noms de fichiers sont aléatoires.
 
 Par rapport au modèle proposé au départ : noms en `snake_case`, ajout de `created_at` et de `id_auteur`.
+
+## Carnet de contacts (migration du 26 novembre 2026)
+
+Le carnet centralise toutes les personnes rencontrées par l'équipe, avec où et pourquoi, pour ne plus les perdre. Il est réservé aux **membres** : une personne qui a une adhésion `NOYAU` active et dont le compte figure dans `acces_admin`, relié par la nouvelle colonne `acces_admin.id_personne`.
+
+```
+personne ──(id_personne)── acces_admin
+    │
+    ├── ajoute_par / referent ──┐
+    │                           ▼
+    │   contact_organisation n ── 1 contact 1 ── n coordonnee_contact
+    │                               │
+    │                               n
+    └───────────────────── acces_contact (membres autorisés)
+```
+
+```
+CONTACT
+    id_contact        uuid, clé primaire
+    nom               texte
+    lieu_rencontre    texte
+    date_rencontre    date, aujourd'hui par défaut
+    raison_rencontre  texte [nullable]
+    ajoute_par        → PERSONNE [nullable]   -- rempli par la base
+    referent          → PERSONNE              -- celui qui suit la relation aujourd'hui
+    visibilite        EQUIPE | RESTREINT | PRIVE   (RESTREINT par défaut)
+    partenaire        booléen
+    conditions        texte [nullable]        -- ex. « ne pas appeler sans accord »
+    notes             texte [nullable]
+    created_at, updated_at
+
+CONTACT_ORGANISATION                          -- 0, 1 ou plusieurs par contact
+    id_lien, #id_contact, organisation (texte libre), poste [nullable],
+    principale (une seule par contact), actuel, created_at
+
+COORDONNEE_CONTACT                            -- plusieurs téléphones et emails
+    id_coordonnee, #id_contact, type (TELEPHONE | EMAIL), valeur, libelle [nullable],
+    principal (un seul par type et par contact), created_at
+
+ACCES_CONTACT
+    #id_contact, #id_membre → PERSONNE, #accorde_par → PERSONNE, created_at
+```
+
+Qui voit quoi :
+
+| | Fiche et organisations | Coordonnées |
+|---|---|---|
+| `EQUIPE` | tous les membres | tous les membres |
+| `RESTREINT` | tous les membres | le référent et les membres qu'il autorise |
+| `PRIVE` | le référent | le référent |
+
+Règles :
+
+- Tout membre ajoute un contact et en devient le référent. Seul le référent modifie la fiche, ses organisations, ses coordonnées et ses accès.
+- `ajoute_par`, `referent` et `accorde_par` sont remplis par la base, jamais par le formulaire.
+- Un accès ne s'accorde qu'à un membre, et seulement pour un contact `RESTREINT`.
+- `transferer_contact(contact, nouveau_referent)` : réservée au référent actuel, vers un autre membre. La visibilité et les conditions sont conservées ; la liste des accès est vidée, le nouveau référent la redonne lui-même.
+- `ajouter_contact(…)` enregistre la fiche, son organisation et ses coordonnées en une seule opération : si une étape échoue, rien n'est enregistré.
+- `liste_membres()` donne le prénom et le nom des membres, aux seuls membres.
+- Les notes et les conditions ne doivent contenir aucune coordonnée : la base refuse un email ou une suite de 9 chiffres ou plus.
+- Une personne encore référente ne peut pas être supprimée : ses contacts doivent d'abord être transférés.
+- Les visiteurs n'ont aucun droit sur ces tables. Les contacts ne sont jamais publiés.
+
+L'organisation est un texte libre, avec des suggestions tirées des contacts visibles : un formulaire ne crée jamais d'organisation, pour éviter les doublons. Une table `organisation` viendra plus tard, en regroupant les variantes à la main.
 
 ## Décisions prises par rapport au MLD d'origine
 
@@ -144,4 +208,4 @@ Décisions associées :
 - Sécurité prévue : un visiteur ne lit que les événements `PUBLIE` et les photos `validee`, et n'écrit rien.
 - Reportées après le MVP : `INSCRIPTION` (une personne, membre ou non, inscrite à un événement : lien vers `PERSONNE`) et `PARTICIPATION` (l'implication d'un membre, avec un rôle : lien vers `ADHESION`).
 
-**Autres entités à proposer le moment venu** : contacts du carnet.
+**Carnet de contacts, plus tard** : une table `organisation` (regroupant les noms saisis librement) et `collaboration_evenement` (le lien entre partenaires et événements, une fois les tables d'événements créées). Le suivi des relations (étapes, relances, collaborations hors événement) est prévu en V2.
