@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { dateLongue, horaire } from "@/lib/dates";
+import { prixLisible } from "@/lib/evenements";
 import BlocDate from "./BlocDate";
 import EtiquettesEvenement from "./EtiquettesEvenement";
 import Visuel from "./Visuel";
@@ -26,7 +27,9 @@ export default function EvenementALaUne({ evenement }) {
         </div>
 
         <h3 id={`titre-${evenement.id}`} className={styles.titreUne}>
-          {evenement.titre}
+          <Link href={`/evenements/${evenement.slug}`} className={styles.lienTitre}>
+            {evenement.titre}
+          </Link>
         </h3>
 
         <dl className={styles.infos}>
@@ -43,12 +46,16 @@ export default function EvenementALaUne({ evenement }) {
               {evenement.lieu.nom}, {evenement.lieu.ville}
             </dd>
           </div>
+          <div>
+            <dt>Entrée</dt>
+            <dd>{prixLisible(evenement.prix)}</dd>
+          </div>
         </dl>
 
         <p className={styles.description}>{evenement.description ?? evenement.resume}</p>
 
-        <Link href="/rejoindre" className={styles.lienEvenement}>
-          Être informé : rejoindre l&apos;Orbite
+        <Link href={`/evenements/${evenement.slug}`} className={styles.lienEvenement}>
+          {evenement.inscriptionRequise ? "Voir le programme et s'inscrire" : "Voir l'événement"}
           <span aria-hidden="true">→</span>
         </Link>
       </div>

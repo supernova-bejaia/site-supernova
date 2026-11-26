@@ -1,0 +1,62 @@
+/* =====================================================================
+   Page d'un événement — pensée d'abord pour le téléphone.
+   Une colonne de lecture (comme un article), puis l'inscription et les
+   photos.
+   ===================================================================== */
+
+.bloc {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-bottom: 40px;
+}
+
+.visuel {
+  aspect-ratio: 16 / 9;
+}
+
+.texte {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  color: var(--texte-doux);
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  white-space: pre-line;
+}
+
+.invites {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* L'encadré d'inscription : bien visible, sans être une publicité. */
+.inscription {
+  scroll-margin-top: 80px;
+  padding: 26px 18px 22px;
+  border: 1px solid var(--trait);
+  border-radius: 20px;
+  background:
+    radial-gradient(90% 40% at 50% 0%, rgba(183, 1, 11, 0.22), transparent 70%),
+    var(--surface);
+}
+
+.inscription h2 {
+  margin-bottom: 18px;
+}
+
+.avis {
+  color: var(--texte-doux);
+}
+
+.avisAnnule {
+  color: var(--erreur);
+}
+
+@media (min-width: 700px) {
+  .inscription {
+    padding: 36px 32px 32px;
+  }
+}

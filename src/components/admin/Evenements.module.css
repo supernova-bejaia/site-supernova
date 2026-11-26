@@ -1,0 +1,195 @@
+/* =====================================================================
+   Espace équipe — événements. Complète Articles.module.css (champs,
+   messages, barre d'actions), dont il reprend l'apparence.
+   Pensé d'abord pour le téléphone : on pointe les présents à l'entrée.
+   ===================================================================== */
+
+/* ---------- Champs absents de Articles.module.css ---------- */
+
+.formulaire input[type="datetime-local"],
+.formulaire input[type="url"],
+.formulaire input[type="email"],
+.formulaire input[type="tel"],
+.formulaire select {
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 14px;
+  border: 1px solid var(--trait);
+  border-radius: 12px;
+  background: var(--surface-champ);
+  color: var(--blanc);
+  font: inherit;
+  font-size: 1rem;
+  color-scheme: dark;
+}
+
+.formulaire input:focus,
+.formulaire select:focus {
+  outline: none;
+  border-color: var(--rouge);
+  box-shadow: 0 0 0 3px rgba(231, 14, 23, 0.25);
+}
+
+.deuxColonnes {
+  display: grid;
+  gap: 20px;
+}
+
+/* ---------- Sections de la page d'un événement ---------- */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 40px;
+  padding-top: 28px;
+  border-top: 1px solid var(--trait);
+  scroll-margin-top: 80px;
+}
+
+.groupeBoutons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.groupeBoutons form {
+  display: contents;
+}
+
+.boutonDanger {
+  border-color: var(--erreur) !important;
+  color: var(--erreur) !important;
+}
+
+/* ---------- Photos ---------- */
+
+.photos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  list-style: none;
+}
+
+.photo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.photo[data-validee="false"] img {
+  opacity: 0.55;
+}
+
+.texteAlternatif {
+  color: var(--texte-doux);
+  font-size: 0.9rem;
+}
+
+.puces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.actionsPhoto {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+}
+
+.lienBouton {
+  min-height: 40px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--blanc);
+  font: inherit;
+  font-size: 0.92rem;
+  text-decoration: underline;
+  text-decoration-color: var(--rouge);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.lienBoutonDanger {
+  color: var(--erreur);
+  text-decoration-color: var(--erreur);
+}
+
+/* ---------- Inscrits ---------- */
+
+.compteurs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  color: var(--texte-doux);
+}
+
+.compteurs strong {
+  color: var(--blanc);
+}
+
+.contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  color: var(--texte-doux);
+  font-size: 0.92rem;
+  overflow-wrap: anywhere;
+}
+
+.contact a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Pointage : un bouton par statut, assez grand pour le pouce. */
+.pointage {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.pointage button {
+  min-height: 44px;
+  padding: 0 6px;
+  border: 1px solid var(--trait);
+  border-radius: 10px;
+  background: none;
+  color: var(--texte-doux);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.pointage button[aria-pressed="true"] {
+  border-color: var(--rouge);
+  background: rgba(231, 14, 23, 0.18);
+  color: var(--blanc);
+  font-weight: 700;
+  cursor: default;
+}
+
+.ligneInscrit {
+  scroll-margin-top: 90px;
+}
+
+@media (min-width: 700px) {
+  .deuxColonnes {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .pointage {
+    max-width: 480px;
+  }
+}

@@ -24,3 +24,11 @@ export const NAVIGATION = [
   { href: "/articles", libelle: "Articles" },
   { href: "/vos-donnees", libelle: "Vos données" },
 ];
+
+// Adresse du site en ligne, pour le plan du site, les aperçus de partage et
+// les données structurées. Sur Vercel, elle est fournie automatiquement
+// (domaine de production du projet) ; en local, c'est l'adresse du serveur
+// de développement. Lue côté serveur uniquement.
+export const URL_SITE = process.env.VERCEL_PROJECT_PRODUCTION_URL
+  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  : "http://localhost:3000";

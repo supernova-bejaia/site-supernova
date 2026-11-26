@@ -2,7 +2,9 @@ import PageEnPreparation from "@/components/layout/PageEnPreparation";
 
 export const metadata = {
   title: "Notre histoire",
-  description: "L'histoire de Supernova, collectif étudiant indépendant de Béjaïa.",
+  description:
+    "L'histoire de Supernova, collectif étudiant indépendant né à Béjaïa, et de celles et ceux qui le font vivre.",
+  alternates: { canonical: "/notre-histoire" },
 };
 
 // Page « Notre histoire » : vierge pour le moment.

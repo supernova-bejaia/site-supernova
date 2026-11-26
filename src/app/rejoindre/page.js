@@ -9,6 +9,7 @@ export const metadata = {
   title: "Rejoindre Supernova",
   description:
     "Rejoignez l'Orbite, le réseau ouvert de Supernova, ou découvrez le Noyau, son groupe central.",
+  alternates: { canonical: "/rejoindre" },
 };
 
 // Page « Rejoindre ».

@@ -66,6 +66,44 @@ export function dateEnLettres(horodatage) {
   }).format(new Date(horodatage));
 }
 
+// Date et heure enregistrées par la base → { date: "2026-12-05", heure: "17:30" },
+// à l'heure de Béjaïa.
+export function partiesDate(horodatage) {
+  const parties = Object.fromEntries(
+    new Intl.DateTimeFormat("en-CA", {
+      timeZone: FUSEAU,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23",
+    })
+      .formatToParts(new Date(horodatage))
+      .map(({ type, value }) => [type, value])
+  );
+  return {
+    date: `${parties.year}-${parties.month}-${parties.day}`,
+    heure: `${parties.hour}:${parties.minute}`,
+  };
+}
+
+// Valeur d'un champ « date et heure » (heure de Béjaïa) → horodatage pour
+// la base. "2026-12-05T17:30" → "2026-12-05T17:30:00+01:00".
+// ponytail: l'Algérie reste à UTC+1 toute l'année (pas d'heure d'été) ;
+// à revoir seulement si cela change un jour.
+export function versHorodatage(valeurChamp) {
+  return `${valeurChamp}:00+01:00`;
+}
+
+// L'inverse, pour préremplir un champ « date et heure » : horodatage de la
+// base → "2026-12-05T17:30".
+export function versChampDate(horodatage) {
+  if (!horodatage) return "";
+  const { date, heure } = partiesDate(horodatage);
+  return `${date}T${heure}`;
+}
+
 // Date et heure enregistrées par la base (ex. "2026-11-13T10:45:03+00:00")
 // → "13/11/2026", à l'heure de Béjaïa.
 export function dateCourte(horodatage) {

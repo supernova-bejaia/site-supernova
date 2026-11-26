@@ -330,7 +330,8 @@ export default function OrbiteForm({ centresInteret }) {
 
 // Un champ du formulaire : son libellé, le champ lui-même, et son éventuel
 // message d'erreur. Le « name » et l'« id » sont ajoutés automatiquement.
-function Champ({ nom, libelle, facultatif = false, erreur, children }) {
+// Également utilisé par le formulaire d'inscription à un événement.
+export function Champ({ nom, libelle, facultatif = false, erreur, children }) {
   const idErreur = `${nom}-erreur`;
 
   return (

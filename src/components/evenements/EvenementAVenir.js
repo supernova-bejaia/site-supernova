@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { horaire } from "@/lib/dates";
 import BlocDate from "./BlocDate";
 import Visuel from "./Visuel";
@@ -16,7 +17,9 @@ export default function EvenementAVenir({ evenement }) {
       <div className={styles.texteAgenda}>
         <EtiquettesEvenement evenement={evenement} />
         <h3 id={`titre-${evenement.id}`} className={styles.titreAgenda}>
-          {evenement.titre}
+          <Link href={`/evenements/${evenement.slug}`} className={styles.lienTitre}>
+            {evenement.titre}
+          </Link>
         </h3>
         <p className={styles.lieuAgenda}>
           {evenement.lieu.nom}, {evenement.lieu.ville}

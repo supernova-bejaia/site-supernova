@@ -543,7 +543,8 @@ export default function FormulaireArticle({ article = null }) {
 }
 
 // Un champ : libellé (avec compteur éventuel), champ, aide et erreur.
-function Champ({ nom, libelle, facultatif = false, compteur, aide, erreur, children }) {
+// Également utilisé par le formulaire des événements.
+export function Champ({ nom, libelle, facultatif = false, compteur, aide, erreur, children }) {
   return (
     <div className={styles.champ} data-invalide={erreur ? "true" : undefined}>
       <div className={styles.enteteChamp}>

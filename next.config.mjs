@@ -1,15 +1,14 @@
-// Images de couverture des articles : elles sont hébergées dans le
-// stockage Supabase du projet. On n'autorise que ce dossier-là, sur ce
-// serveur-là (lu dans la variable d'environnement, jamais écrit en dur).
+// Images des articles et des photos d'événements : elles sont hébergées
+// dans le stockage Supabase du projet. On n'autorise que ces deux
+// dossiers-là, sur ce serveur-là (lu dans la variable d'environnement,
+// jamais écrit en dur).
 const adresseSupabase = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const imagesAutorisees = adresseSupabase
-  ? [
-      {
-        protocol: "https",
-        hostname: new URL(adresseSupabase).hostname,
-        pathname: "/storage/v1/object/public/articles/**",
-      },
-    ]
+  ? ["articles", "evenements"].map((dossier) => ({
+      protocol: "https",
+      hostname: new URL(adresseSupabase).hostname,
+      pathname: `/storage/v1/object/public/${dossier}/**`,
+    }))
   : [];
 
 // En-têtes de sécurité envoyés avec toutes les pages.
