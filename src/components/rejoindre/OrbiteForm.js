@@ -135,8 +135,9 @@ export default function OrbiteForm({ centresInteret }) {
         <h3>Bienvenue dans l&apos;Orbite{etat.prenom ? `, ${etat.prenom}` : ""} !</h3>
         <p>Votre inscription est bien enregistrée. Vous n&apos;avez rien d&apos;autre à faire.</p>
         <p className={styles.precision}>
-          Pour modifier vos informations, il suffit de vous réinscrire avec le même email : votre
-          fiche est mise à jour, sans doublon.
+          Vos études ont changé ? Renvoyez le formulaire avec le même email : elles seront mises à
+          jour, sans doublon. Pour corriger votre nom ou votre téléphone, écrivez-nous (voir{" "}
+          <Link href="/vos-donnees">Vos données</Link>).
         </p>
       </div>
     );
@@ -152,15 +153,16 @@ export default function OrbiteForm({ centresInteret }) {
         <h3>Vous êtes déjà dans l&apos;Orbite</h3>
         <p>Une inscription a été enregistrée depuis cet appareil. Vous n&apos;avez rien à refaire.</p>
         <p className={styles.precision}>
-          Ce rappel n&apos;est mémorisé que sur cet appareil. Pour corriger vos informations,
-          renvoyez le formulaire avec le même email : votre fiche sera mise à jour.
+          Ce rappel n&apos;est mémorisé que sur cet appareil. Pour mettre à jour vos études,
+          renvoyez le formulaire avec le même email. Pour corriger votre nom ou votre téléphone,
+          écrivez-nous (voir <Link href="/vos-donnees">Vos données</Link>).
         </p>
         <button
           type="button"
           className={`bouton bouton-secondaire ${styles.boutonModifier}`}
           onClick={() => setModification(true)}
         >
-          Modifier mes informations
+          Mettre à jour mes études
         </button>
       </div>
     );

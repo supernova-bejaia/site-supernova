@@ -28,7 +28,7 @@ personne 1 ── n adhesion n ── 1 saison
 
 ### Fonction `inscrire_orbite`
 
-Seule porte d'entrée du formulaire public. En une transaction, elle vérifie les champs, trouve la saison active, crée ou met à jour la personne, crée ou met à jour son adhésion (sans jamais changer son type) et remplace ses centres d'intérêt.
+Seule porte d'entrée du formulaire public. En une transaction, elle vérifie les champs, trouve la saison active, crée la personne (ou, si son email est déjà connu, met à jour ses seules informations d'études), crée ou met à jour son adhésion (sans jamais changer son type) et remplace ses centres d'intérêt.
 
 ### Sécurité
 
@@ -151,7 +151,7 @@ L'organisation est un texte libre, avec des suggestions tirées des contacts vis
 | Consentement newsletter | absent | colonnes `consentement_newsletter` et `date_consentement_newsletter` sur `adhesion` |
 | Statut d'une adhésion | non défini | `ACTIVE` / `CLOTUREE` |
 | Statut d'une saison | `ACTIVE` mentionné | `A_VENIR` / `ACTIVE` / `CLOTUREE` |
-| Email déjà inscrit | non défini | les informations sont mises à jour, la même confirmation est affichée |
+| Email déjà inscrit | non défini | seules les informations d'études (établissement, filière, niveau) sont mises à jour ; le nom, le prénom et le téléphone d'une fiche existante se corrigent par l'équipe (migration du 26/11). La même confirmation est affichée |
 
 Données de départ : la « Saison 1 » (début le 1er novembre 2026, active) et un premier jet de neuf centres d'intérêt, modifiables dans Supabase.
 
