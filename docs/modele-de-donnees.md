@@ -75,6 +75,45 @@ Sécurité :
 
 Par rapport au modèle proposé au départ : noms en `snake_case`, ajout de `created_at` et de `id_auteur`.
 
+## Fonctions, départements et niveaux (migration du 26 novembre 2026)
+
+Les droits suivent les fonctions, et les fonctions ont une date de début et une date de fin. La base enregistre qui occupe quoi et depuis quand ; les règles d'organisation restent dans le Code Supernova.
+
+```
+DEPARTEMENT   id_departement, nom (unique), description, actif, created_at, updated_at
+FONCTION      code (PRESIDENT | CHIEF_SUPERVISOR | HEAD_OF), libelle, niveau, par_departement
+OCCUPATION    id_occupation, #id_personne, #code_fonction, #id_departement [Head of seulement],
+              debut, fin [vide = en cours], #nomme_par [nullable], motif_fin
+
++ adhesion.id_departement   département d'un membre du Noyau pour cette saison
++ personne.fondateur        statut de reconnaissance, sans aucun droit
++ acces_admin.proprietaire  le compte propriétaire (un seul)
+```
+
+Départements de départ, provisoires : Events, Marketing, Membres, Tech.
+
+`mon_niveau()` donne le niveau du compte connecté ; en cas de cumul, le plus élevé l'emporte :
+
+| Niveau | Qui |
+|---|---|
+| 0 | compte sans adhésion NOYAU active ou non relié à une personne |
+| 1 | membre du Noyau |
+| 2 | Head of en cours |
+| 3 | Président ou Chief Supervisor en cours |
+| 4 | compte propriétaire |
+
+Règles :
+
+- Un seul titulaire en cours par fonction, et par département pour un Head of. Une personne peut cumuler des fonctions différentes.
+- Seul un membre du Noyau occupe une fonction. Un département est obligatoire pour un Head of et interdit sinon.
+- `nommer(personne, fonction, département)` : le titulaire en cours termine son mandat le même jour (passation). Les Head of sont nommés par la direction (niveau 3) ; le Président et le Chief Supervisor, par le compte propriétaire seulement. Tant qu'il n'existe pas, ces nominations se font dans Supabase.
+- `terminer_fonction(occupation, motif)` : motif obligatoire, mêmes conditions que `nommer`.
+- `affecter_departement(adhesion, département)` : direction uniquement, pour une adhésion NOYAU.
+- Personne ne modifie ses propres fonctions ni sa propre affectation : la base le refuse.
+- Les membres lisent les départements, les fonctions et leurs titulaires. Les départements se gèrent par la direction ; les fonctions, dans Supabase ; les occupations, seulement par les fonctions ci-dessus.
+
+Les droits existants (articles, carnet, inscrits) ne dépendent pas encore de ces niveaux : ils y seront rattachés dans une prochaine migration.
+
 ## Carnet de contacts (migration du 26 novembre 2026)
 
 Le carnet centralise toutes les personnes rencontrées par l'équipe, avec où et pourquoi, pour ne plus les perdre. Il est réservé aux **membres** : une personne qui a une adhésion `NOYAU` active et dont le compte figure dans `acces_admin`, relié par la nouvelle colonne `acces_admin.id_personne`.
@@ -157,7 +196,7 @@ Données de départ : la « Saison 1 » (début le 1er novembre 2026, active) et
 
 ## Ce qui reste à créer
 
-**Bloc recrutement du MLD** (migration ultérieure) : `candidature`, `entretien`, `evaluation`, `historique`, `fonction`, `occuper`, et la colonne `adhesion.id_candidature`.
+**Bloc recrutement du MLD** (migration ultérieure) : `candidature`, `entretien`, `evaluation`, `historique`, et la colonne `adhesion.id_candidature`. (`fonction` et `occuper` existent depuis le 26/11 : tables `fonction` et `occupation`.)
 
 Statuts déjà décidés :
 - entretien : planifié, achevé ;
