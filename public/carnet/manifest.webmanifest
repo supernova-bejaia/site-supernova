@@ -1,0 +1,17 @@
+{
+  "id": "/admin/contacts",
+  "name": "Contacts Supernova",
+  "short_name": "Contacts",
+  "description": "Le carnet de contacts de l'équipe Supernova.",
+  "lang": "fr",
+  "start_url": "/admin/contacts",
+  "scope": "/admin/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d0b0b",
+  "theme_color": "#0d0b0b",
+  "icons": [
+    { "src": "/carnet/icone-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/carnet/icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
