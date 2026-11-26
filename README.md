@@ -2,7 +2,7 @@
 
 Site de Supernova, collectif étudiant indépendant basé à Béjaïa.
 
-Il présente le collectif, publie ses articles et permet à tout étudiant de rejoindre l'**Orbite**, son réseau ouvert, grâce à un formulaire d'inscription. C'est la première brique d'un écosystème plus large (espace équipe, application mobile) qui partagera la même base de données.
+Il présente le collectif, publie ses articles et ses événements, et permet à tout étudiant de rejoindre l'**Orbite**, son réseau ouvert, ou de s'inscrire à un événement. C'est la première brique d'un écosystème plus large (espace équipe, application mobile) qui partagera la même base de données.
 
 ## Pages
 
@@ -12,6 +12,7 @@ Il présente le collectif, publie ses articles et permet à tout étudiant de re
 | `/notre-histoire` | Notre histoire (page en préparation) |
 | `/rejoindre` | Présentation de l'Orbite et du Noyau, formulaire d'inscription à l'Orbite |
 | `/evenements` | Événements : à la une, agenda, archives et galeries photos |
+| `/evenements/[slug]` | Page d'un événement, avec son formulaire d'inscription |
 | `/articles` | Liste des articles publiés |
 | `/articles/[slug]` | Lecture d'un article |
 | `/vos-donnees` | Informations collectées, usage, accès, suppression, contact |
@@ -21,10 +22,15 @@ Il présente le collectif, publie ses articles et permet à tout étudiant de re
 | `/admin/articles/nouveau` | Écrire un article |
 | `/admin/articles/[id]` | Modifier, publier, dépublier ou supprimer un article |
 | `/admin/articles/[id]/apercu` | Aperçu d'un article, tel qu'il apparaîtra sur le site |
+| `/admin/evenements` | Tous les événements, brouillons compris |
+| `/admin/evenements/nouveau` | Créer un événement |
+| `/admin/evenements/[id]` | Modifier, publier, annuler un événement ; ses photos ; son responsable et son bilan |
+| `/admin/evenements/[id]/inscrits` | Les inscrits, le pointage le jour J, l'ajout d'un présent |
+| `/sitemap.xml`, `/robots.txt` | Plan du site et consignes pour les moteurs de recherche (générés) |
 
 ## Espace équipe (`/admin`)
 
-L'outil des membres autorisés du Noyau : un tableau de bord des inscriptions, **en lecture seule**, et la rédaction des articles. Il n'apparaît pas dans le menu (un lien discret figure dans le pied de page) et n'est pas indexé par les moteurs de recherche.
+L'outil des membres autorisés du Noyau : un tableau de bord des inscriptions à l'Orbite, **en lecture seule**, la rédaction des articles et la gestion des événements. Il n'apparaît pas dans le menu (un lien discret figure dans le pied de page) et n'est pas indexé par les moteurs de recherche.
 
 Le tableau de bord affiche, pour la saison en cours :
 
@@ -51,7 +57,25 @@ Les articles s'écrivent depuis l'espace équipe et se lisent sur `/articles`.
 - **Aperçu** : la page d'aperçu montre la dernière version enregistrée, avec la mise en page du site public.
 - **Mise à jour du site** : les pages publiques gardent les articles en mémoire ; cette mémoire est vidée à chaque enregistrement, le site est donc à jour aussitôt.
 
-C'est la seule écriture ouverte à l'espace équipe : les inscriptions restent en lecture seule. Comme pour le reste, c'est la base qui autorise ou refuse chaque opération.
+Les inscriptions à l'Orbite restent en lecture seule. Comme pour le reste, c'est la base qui autorise ou refuse chaque opération.
+
+## Événements
+
+Les événements sont enregistrés dans Supabase et gérés depuis `/admin/evenements`. Mode d'emploi pas à pas : [docs/evenements.md](docs/evenements.md).
+
+- **Un événement** : titre, résumé, catégorie, début et fin (heure de Béjaïa), lieu, description, invités et intervenants, prix (vide = gratuit), inscription requise ou non, lien d'inscription externe facultatif, mise à la une.
+- **Statuts** : *brouillon* (invisible), *publié*, *annulé* (reste visible avec la mention « Annulé », inscriptions fermées), *terminé* (passe dans les archives). Un événement passe aussi tout seul dans les archives le lendemain de sa date.
+- **Photos** : envoyées une par une (JPEG, PNG ou WebP, 2 Mo au plus) avec une description obligatoire, dans le stockage Supabase `evenements`. Une photo n'est montrée au public qu'une fois **validée** ; la première devient la couverture, modifiable.
+- **Inscription** : quand « inscription requise » est coché, la page de l'événement affiche un formulaire (prénom, nom, email, téléphone facultatif) jusqu'à la fin de l'événement. Une case, **décochée par défaut**, permet de rejoindre aussi l'Orbite. Une personne déjà connue (même email) est reprise telle quelle : sa fiche n'est jamais modifiée.
+- **Pointage** : chaque inscription a un statut *inscrit*, *présent*, *absent* ou *désisté*, modifiable d'un geste sur téléphone. L'équipe peut ajouter une personne présente sans inscription préalable.
+- **Responsable et bilan** : ce qui a marché, les difficultés, ce qui est à améliorer, les liens vers les ressources. Réservés à l'équipe, jamais affichés sur le site.
+- **Mise à jour du site** : comme pour les articles, la mémoire des pages publiques est vidée à chaque modification.
+
+## Référencement
+
+- `/sitemap.xml` liste les pages du menu, les articles et les événements publiés ; `/robots.txt` ouvre tout le site sauf `/admin` et indique le plan du site.
+- Chaque page a son titre, sa description et son adresse canonique. L'adresse du site est celle du domaine de production Vercel (variable `VERCEL_PROJECT_PRODUCTION_URL`, fournie automatiquement par Vercel) ; en local, `http://localhost:3000`.
+- Données structurées (schema.org, JSON-LD) : **Organization** sur toutes les pages (dans le pied de page), **Event** sur la page d'un événement, **Article** sur la page d'un article. Vérifiables avec le [Schema Markup Validator](https://validator.schema.org/).
 
 ## Technologies
 
@@ -92,7 +116,7 @@ Sous Windows PowerShell, si l'exécution de `npm` est bloquée, utiliser `npm.cm
 | Commande | Rôle |
 |---|---|
 | `npm run lint` | Vérifie le code avec ESLint |
-| `npm run build` | Construit la version de production |
+| `npm run build` | Construit la version de production (Supabase doit être joignable : les pages publiques sont préparées à partir de la base) |
 | `npm run start` | Sert la version de production construite |
 
 ## Variables d'environnement
@@ -106,6 +130,8 @@ Les valeurs se trouvent dans Supabase, sous *Project Settings > API*. Elles sont
 
 La clé secrète de Supabase (`service_role`) n'est pas utilisée par ce projet et ne doit jamais y être ajoutée.
 
+L'adresse publique du site (plan du site, données structurées) n'est pas une variable à définir : Vercel fournit `VERCEL_PROJECT_PRODUCTION_URL` automatiquement.
+
 `.env.local` n'est jamais versionné. En production, les mêmes variables sont à définir dans les réglages du projet Vercel.
 
 ## Organisation du code
@@ -113,20 +139,21 @@ La clé secrète de Supabase (`service_role`) n'est pas utilisée par ce projet 
 ```
 src/
   app/                 pages (un dossier par page, dont admin/)
-  actions/             Server Actions : inscription, connexion de l'équipe, articles
+  actions/             Server Actions : inscriptions, connexion de l'équipe, articles, événements
   components/
     layout/            présent sur toutes les pages : en-tête, menu, pied de page, logo
-    rejoindre/         le formulaire d'inscription
-    evenements/        cartes et galeries d'événements
+    rejoindre/         le formulaire d'inscription à l'Orbite
+    evenements/        cartes, galeries et formulaire d'inscription d'un événement
     articles/          carte d'un article, page de lecture, rendu du Markdown
-    admin/             tableau de bord, formulaire de connexion, formulaire d'article
+    admin/             tableau de bord, connexion, formulaires d'article et d'événement
     emblemes/          illustrations animées de l'Orbite et du Noyau
     mouvement/         apparition progressive des blocs au défilement
   services/            accès aux données, un fichier par domaine
-  content/             contenus statiques (événements)
-  lib/                 outils : clients Supabase, accès à l'espace équipe, validation, dates, réglages
+  lib/                 outils : clients Supabase, accès à l'espace équipe, validation, dates,
+                       données structurées, réglages
   proxy.js             rafraîchissement de la session sur /admin
 supabase/migrations/   schéma de la base, en fichiers SQL versionnés
+supabase/tests/        vérification locale des migrations (voir « Base de données »)
 docs/                  documentation du projet
 ```
 
@@ -142,11 +169,19 @@ En résumé :
 
 - cinq tables pour les inscriptions : `personne`, `saison`, `adhesion`, `centre_interet`, `interet_adhesion` ;
 - une table `article`, et un espace de stockage `articles` pour les images de couverture ;
+- quatre tables pour les événements : `evenement`, `photo_evenement`, `suivi_evenement` (responsable et bilan) et `inscription_evenement`, et un espace de stockage `evenements` pour les photos ;
 - une table `acces_admin`, la liste des comptes autorisés à l'espace équipe, fermée à toute lecture directe ;
-- la sécurité au niveau des lignes (RLS) est activée partout : un visiteur ne peut lire que la liste des centres d'intérêt et les articles publiés ; seuls les comptes autorisés lisent les inscriptions et écrivent les articles ;
-- les inscriptions passent uniquement par la fonction `inscrire_orbite`, l'autorisation par la fonction `est_admin`.
+- la sécurité au niveau des lignes (RLS) est activée partout : un visiteur ne peut lire que la liste des centres d'intérêt, les articles publiés, les événements publiés et leurs photos validées ; seuls les comptes autorisés lisent les inscriptions, écrivent les articles et gèrent les événements ;
+- les inscriptions passent uniquement par les fonctions `inscrire_orbite` et `inscrire_evenement` (et `ajouter_participant` pour l'équipe), l'autorisation par la fonction `est_admin`.
 
 Toute évolution du schéma s'écrit dans un nouveau fichier de migration.
+
+Pour vérifier les migrations sans toucher à la base en ligne, un script les rejoue toutes dans un Postgres embarqué (PGlite), avec de faux schémas `auth` et `storage`, puis contrôle les droits et les fonctions des événements :
+
+```
+npm install --no-save @electric-sql/pglite
+node supabase/tests/evenements.mjs
+```
 
 ## Déploiement
 
@@ -157,4 +192,4 @@ Le code et la base doivent rester alignés : une migration s'applique à Supabas
 ## Documentation
 
 - [docs/modele-de-donnees.md](docs/modele-de-donnees.md) — tables, fonctions, sécurité, décisions.
-- [docs/evenements.md](docs/evenements.md) — ajouter un événement et ses photos.
+- [docs/evenements.md](docs/evenements.md) — gérer un événement depuis l'espace équipe : création, publication, photos, inscrits, bilan.

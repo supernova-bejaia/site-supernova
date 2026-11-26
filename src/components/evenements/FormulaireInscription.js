@@ -66,8 +66,10 @@ export default function FormulaireInscription({ idEvenement, titre }) {
     );
   }
 
+  // method="post" : si la page n'a pas fini de charger, l'envoi ne met
+  // jamais les données personnelles dans l'adresse de la page.
   return (
-    <form ref={formulaire} className={styles.formulaire} onSubmit={soumettre}>
+    <form ref={formulaire} method="post" className={styles.formulaire} onSubmit={soumettre}>
       <input type="hidden" name="id_evenement" value={idEvenement} />
 
       <div className={styles.rangee}>
