@@ -396,6 +396,41 @@
     url("/marque/fond-texture-rouge.jpg") center / cover no-repeat;
 }
 
+/* Photos d'un projet réalisé : la couverture en grand, puis les vignettes. */
+.photosProjet {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: -6px -2px 4px;
+}
+
+.photosProjet img {
+  display: block;
+  height: auto;
+  object-fit: cover;
+  object-position: center 35%;
+  border-radius: 10px;
+  border: 1px solid var(--trait);
+}
+
+.couverture {
+  flex: 1 1 100%;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+.vignette {
+  flex: 1 1 0;
+  min-width: 0;
+  aspect-ratio: 1;
+}
+
+.statutProjet.statutPasse {
+  background: var(--rouge);
+}
+
 .indexProjet {
   font-family: var(--police-titre), system-ui, sans-serif;
   font-weight: 800;
@@ -464,6 +499,14 @@
   .projet:first-child {
     grid-column: 1 / -1;
     padding: 48px 48px 52px;
+  }
+
+  .projet:first-child .couverture {
+    aspect-ratio: 21 / 9;
+  }
+
+  .projet:first-child .vignette {
+    aspect-ratio: 16 / 10;
   }
 
   .projet:first-child h3 {

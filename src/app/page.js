@@ -23,25 +23,39 @@ import styles from "./page.module.css";
 const INSTAGRAM = RESEAUX.find((reseau) => reseau.nom === "Instagram");
 
 // Projets de la saison. Pour en ajouter un, ajouter une ligne ; quand un
-// projet a eu lieu, passer « statut » à « Réalisé » et ajouter ses résultats.
+// projet a eu lieu, passer « passe » à true et ajouter ses photos (rangées
+// dans public/evenements/<identifiant>/, la première sert de couverture).
 const PROJETS = [
   {
     titre: "Green Quest",
-    statut: "Au programme",
-    etiquettes: ["Impact local", "Jeu par équipes"],
+    statut: "Réalisé · 20 novembre",
+    passe: true,
+    etiquettes: ["Impact local", "Jeu par équipes", "Gouraya"],
     texte:
-      "Avec l'association Perle d'Afrique, on cartographie Gouraya et ses alentours sur Google Maps, tout en nettoyant. Un jeu par équipes, avec des points et des récompenses.",
+      "Avec l'association Perle d'Afrique, on a cartographié Gouraya et ses alentours sur Google Maps, tout en nettoyant. Un jeu par équipes, avec des points et des récompenses.",
+    photos: [
+      { src: "/evenements/green-quest-2026/01.jpg", largeur: 1600, hauteur: 901, alt: "L'équipe de Green Quest réunie au parc de Gouraya, la ville de Béjaïa en contrebas." },
+      { src: "/evenements/green-quest-2026/02.jpg", largeur: 1600, hauteur: 1200, alt: "Des participants ramassent des déchets dans une ancienne bâtisse de Gouraya." },
+      { src: "/evenements/green-quest-2026/03.jpg", largeur: 1600, hauteur: 1200, alt: "Les grandes lettres BEJAIA sur le flanc de la montagne de Gouraya." },
+      { src: "/evenements/green-quest-2026/04.jpg", largeur: 1600, hauteur: 901, alt: "Quatre participants de Green Quest posent ensemble à la fin de la journée." },
+    ],
   },
   {
     titre: "Caravane ORS",
-    statut: "Au programme",
-    etiquettes: ["Entreprises", "Défis réels"],
+    statut: "Réalisé · 7 novembre",
+    passe: true,
+    etiquettes: ["Entreprises", "Défis réels", "Masterclass"],
     texte:
       "Des entreprises arrivent avec leurs vraies problématiques, des jeunes talents proposent des solutions. Un événement soutenu par le ministère de l'Économie de la connaissance et des Startups, en collaboration avec DELTALOG.",
+    photos: [
+      { src: "/evenements/masterclass-7-novembre-2026/01.jpg", largeur: 1600, hauteur: 901, alt: "Une salle pleine d'étudiants pendant la masterclass du 7 novembre." },
+      { src: "/evenements/masterclass-7-novembre-2026/02.jpg", largeur: 901, hauteur: 1600, alt: "L'intervenant de la masterclass explique un point, le bras levé." },
+      { src: "/evenements/masterclass-7-novembre-2026/03.jpg", largeur: 901, hauteur: 1600, alt: "Des étudiants attentifs autour des tables de la salle." },
+    ],
   },
   {
     titre: "Conférence de Saïd Djellab",
-    statut: "Décembre",
+    statut: "À venir · Décembre",
     etiquettes: ["Conférence", "Export"],
     texte:
       "Ancien ministre du Commerce, il a participé aux négociations des accords de libre-échange africains et accompagne aujourd'hui les entreprises algériennes à l'export.",
@@ -284,7 +298,7 @@ export default function PageAccueil() {
             <h2 id="titre-actions" className="titre-section">
               Des idées, mais surtout <span className="accent">des actions</span>
             </h2>
-            <p className="chapeau">Voilà ce qu&apos;on prépare cette saison.</p>
+            <p className="chapeau">Ce qu&apos;on a déjà fait sur le terrain, et ce qui arrive.</p>
           </Apparition>
 
           <ul className={styles.listeProjets}>
@@ -293,8 +307,25 @@ export default function PageAccueil() {
                 <span className={styles.indexProjet} aria-hidden="true">
                   {String(index + 1).padStart(2, "0")}
                 </span>
+                {projet.photos && (
+                  <div className={styles.photosProjet}>
+                    {projet.photos.map((photo, rang) => (
+                      <Image
+                        key={photo.src}
+                        src={photo.src}
+                        alt={photo.alt}
+                        width={photo.largeur}
+                        height={photo.hauteur}
+                        sizes={rang === 0 ? "(min-width: 900px) 60vw, 100vw" : "(min-width: 900px) 20vw, 33vw"}
+                        className={rang === 0 ? styles.couverture : styles.vignette}
+                      />
+                    ))}
+                  </div>
+                )}
                 <div className={styles.corpsProjet}>
-                  <p className={styles.statutProjet}>{projet.statut}</p>
+                  <p className={`${styles.statutProjet} ${projet.passe ? styles.statutPasse : ""}`}>
+                    {projet.statut}
+                  </p>
                   <h3 className="titre-element">{projet.titre}</h3>
                   <p className="texte">{projet.texte}</p>
                   <ul className={styles.etiquettes}>
