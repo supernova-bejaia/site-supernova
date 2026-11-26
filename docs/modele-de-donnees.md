@@ -41,9 +41,9 @@ Seule porte d'entrée du formulaire public. En une transaction, elle vérifie le
 | Élément | Rôle |
 |---|---|
 | `acces_admin` | La liste des comptes de connexion autorisés à l'espace équipe, chacun relié à sa personne (`id_personne`, ajouté le 26/11). RLS activée et aucune règle : la table n'est lisible par personne depuis le site, elle se gère dans Supabase. |
-| `est_admin()` | Fonction qui répond si le compte connecté figure dans `acces_admin`. Elle ne renvoie qu'un oui ou un non. |
+| `est_admin()` | Fonction qui répond si le compte connecté a accès à l'espace équipe : depuis le 26/11, « niveau 1 ou plus » (voir plus bas). Elle ne renvoie qu'un oui ou un non. |
 
-Les comptes autorisés peuvent **lire** `personne`, `adhesion`, `interet_adhesion` et `saison`. Ils n'y écrivent rien.
+Les comptes autorisés peuvent **lire** `personne`, `adhesion`, `interet_adhesion` et `saison`. Ils n'y écrivent rien. Depuis le 26/11, le téléphone et l'email d'une personne ne sont plus lisibles que par la direction, avec `coordonnees_personne()`.
 
 ## Articles (migration du 15 novembre 2026)
 
@@ -69,7 +69,7 @@ ARTICLE(
 Sécurité :
 
 - Tout le monde lit les articles `PUBLIE`, et seulement ceux-là : un brouillon reste invisible, même si l'on devine son adresse.
-- Les comptes autorisés (`est_admin()`) lisent tout, créent, modifient et suppriment. C'est la seule écriture ouverte à l'espace équipe.
+- L'équipe lit tout. Depuis le 26/11, l'écriture dépend du niveau (voir « Droits par niveau »), et un statut `ARCHIVE` s'ajoute : l'article est retiré du site mais reste récupérable.
 - La colonne `id_auteur` n'est lisible ni par les visiteurs ni par les comptes connectés : le droit de lecture est accordé colonne par colonne, sans elle. Une colonne ajoutée plus tard à `article` doit être ajoutée à cette liste pour être lisible par le site.
 - Seuls les comptes autorisés envoient, remplacent ou suppriment une image. Le stockage étant public, l'image d'un brouillon est lisible par qui connaît son adresse exacte ; les noms de fichiers sont aléatoires.
 
@@ -112,7 +112,29 @@ Règles :
 - Personne ne modifie ses propres fonctions ni sa propre affectation : la base le refuse.
 - Les membres lisent les départements, les fonctions et leurs titulaires. Les départements se gèrent par la direction ; les fonctions, dans Supabase ; les occupations, seulement par les fonctions ci-dessus.
 
-Les droits existants (articles, carnet, inscrits) ne dépendent pas encore de ces niveaux : ils y seront rattachés dans une prochaine migration.
+### Droits par niveau (migration du 26 novembre 2026)
+
+L'entrée de l'espace équipe (`est_admin()`) demande le niveau 1. Ensuite :
+
+| | Membre (1) | Head of (2) | Direction (3) |
+|---|---|---|---|
+| Articles : lire, brouillons et archives compris | ✓ | ✓ | ✓ |
+| Articles : créer un brouillon | ✓ | ✓ | ✓ |
+| Articles : modifier | ses brouillons | tous | tous |
+| Articles : publier, dépublier, archiver | — | ✓ | ✓ |
+| Articles : supprimer définitivement | ses brouillons jamais publiés | — | ✓ |
+| Images de couverture : envoyer | ✓ | ✓ | ✓ |
+| Images : remplacer, supprimer | les siennes | toutes | toutes |
+| Personnes : nom, études | ✓ | ✓ | ✓ |
+| Personnes : téléphone, email (`coordonnees_personne()`) | — | — | ✓ |
+| Carnet : modifier une fiche Équipe ou Restreint d'un autre | — | ✓ | ✓ |
+| Carnet : coordonnées d'un contact Équipe d'un autre | — | ✓ | ✓ |
+| Carnet : supprimer le contact d'un autre (hors privé) | — | — | ✓ |
+| Carnet : transférer les contacts d'un membre parti (`transferer_contacts_de()`) | — | — | ✓ |
+
+- `mes_articles()` donne les articles écrits par le compte connecté (`id_auteur` reste illisible).
+- Le référent garde seul la main sur la visibilité, les conditions, les coordonnées d'un contact Restreint et les accès. Un contact privé n'est visible que de lui, direction comprise ; le transfert d'un membre parti le déplace sans le lire.
+- Une fiche de contact peut être archivée (`archive_le`) : elle disparaît des listes mais reste récupérable.
 
 ## Carnet de contacts (migration du 26 novembre 2026)
 
@@ -166,11 +188,12 @@ Qui voit quoi :
 
 Règles :
 
-- Tout membre ajoute un contact et en devient le référent. Seul le référent modifie la fiche, ses organisations, ses coordonnées et ses accès.
+- Tout membre ajoute un contact et en devient le référent. Le référent modifie la fiche, ses organisations, ses coordonnées et ses accès ; depuis le 26/11, les Head of et la direction peuvent aussi modifier certaines fiches (voir « Droits par niveau »).
 - `ajoute_par`, `referent` et `accorde_par` sont remplis par la base, jamais par le formulaire.
 - Un accès ne s'accorde qu'à un membre, et seulement pour un contact `RESTREINT`.
 - `transferer_contact(contact, nouveau_referent)` : réservée au référent actuel, vers un autre membre. La visibilité et les conditions sont conservées ; la liste des accès est vidée, le nouveau référent la redonne lui-même.
 - `ajouter_contact(…)` enregistre la fiche, son organisation et ses coordonnées en une seule opération : si une étape échoue, rien n'est enregistré.
+- `modifier_contact(…)` (migration du 26/11) fait de même pour une modification : la fiche, la liste de ses organisations et, si demandé, ses coordonnées. Elle s'exécute avec les droits du compte connecté.
 - `liste_membres()` donne le prénom et le nom des membres, aux seuls membres.
 - Les notes et les conditions ne doivent contenir aucune coordonnée : la base refuse un email ou une suite de 9 chiffres ou plus.
 - Une personne encore référente ne peut pas être supprimée : ses contacts doivent d'abord être transférés.

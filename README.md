@@ -35,17 +35,28 @@ Le tableau de bord affiche, pour la saison en cours :
 Fonctionnement :
 
 - **Connexion** : par email et mot de passe, avec Supabase Auth. Le site ne propose aucune création de compte : les comptes sont créés par l'équipe dans Supabase.
-- **Autorisation** : avoir un compte ne suffit pas. Le compte doit aussi figurer dans la table `acces_admin`, ce que vérifie la fonction `est_admin()`. Un compte connecté mais non autorisé est déconnecté.
+- **Autorisation** : avoir un compte ne suffit pas. Les droits suivent les fonctions : la fonction `mon_niveau()` donne le niveau du compte (1 membre du Noyau, 2 Head of, 3 Président ou Chief Supervisor). Il faut au moins être membre du Noyau ; un compte connecté mais sans niveau est déconnecté.
+- **Ce que permet chaque niveau** : un membre écrit des brouillons et modifie les siens ; un Head of modifie, publie et archive tous les articles ; la direction supprime définitivement et seule voit les téléphones et emails des inscrits. Les boutons affichés suivent ces droits, et la base les vérifie elle-même.
 - **Contrôle côté serveur** : `src/proxy.js` rafraîchit la session sur les adresses `/admin`, et chaque page de l'espace vérifie la session et l'autorisation avant de lire la moindre donnée (`src/lib/acces-admin.js`). Les données sont filtrées par les règles RLS de la base, pas par l'interface.
 - **Session** : stockée dans des cookies `HttpOnly`, inaccessibles au JavaScript de la page.
 
-Donner l'accès à un membre se fait dans Supabase, en deux temps : créer son compte (*Authentication > Users*), puis ajouter son identifiant à la table `acces_admin`.
+Donner l'accès à un membre se fait dans Supabase : créer son compte (*Authentication > Users*), l'ajouter à la table `acces_admin` en le reliant à sa fiche `personne` (`id_personne`), et lui donner une adhésion NOYAU pour la saison active. Les fonctions (Head of…) se donnent ensuite avec `nommer()`.
+
+## Carnet de contacts
+
+Réservé aux membres du Noyau, dans l'espace équipe (`/admin/contacts`), et pensé d'abord pour le téléphone : ajouter une personne rencontrée prend moins d'une minute.
+
+- **Ajouter** : nom, organisation et poste (ou « sans organisation »), lieu et date de la rencontre, visibilité. Le reste (téléphones, emails, pourquoi, conditions, notes, partenaire) est facultatif. Les organisations déjà saisies sont proposées, et un contact du même nom est signalé.
+- **Visibilité** : *Équipe* (tout le monde voit tout), *Restreint* (tout le monde voit la fiche, les coordonnées restent au référent et aux membres qu'il autorise), *Privé* (le référent seul). La base applique ces règles elle-même.
+- **Fiche** : boutons « Appeler » et « Écrire » ; sinon, « contact détenu par [référent] ».
+- **Modifier** : le référent modifie tout ; un Head of ou la direction modifie un contact non privé, sans changer sa visibilité ni ses conditions.
+- Aucune coordonnée dans les notes : la base refuse un email ou un numéro.
 
 ## Articles
 
 Les articles s'écrivent depuis l'espace équipe et se lisent sur `/articles`.
 
-- **Écriture** : titre, adresse (déduite du titre si elle est laissée vide), résumé, texte et image de couverture facultative. Un article est un **brouillon**, invisible du public, tant qu'il n'est pas **publié**. Il peut être dépublié ou supprimé.
+- **Écriture** : titre, adresse (déduite du titre si elle est laissée vide), résumé, texte et image de couverture facultative. Un article est un **brouillon**, invisible du public, tant qu'il n'est pas **publié**. Il peut être dépublié, **archivé** (retiré du site, récupérable) ou supprimé.
 - **Texte en Markdown** : intertitres, gras, italique, liens, listes, citations. Un aide-mémoire figure sous le champ de saisie. Le texte n'est jamais interprété comme du HTML, et les images dans le texte sont désactivées.
 - **Image de couverture** : JPEG, PNG ou WebP, 2 Mo au plus, enregistrée dans le stockage Supabase `articles`. Elle est recadrée en 16/9 dans la liste et affichée entière sur la page de l'article.
 - **Aperçu** : la page d'aperçu montre la dernière version enregistrée, avec la mise en page du site public.
@@ -144,7 +155,7 @@ En résumé :
 - une table `article`, et un espace de stockage `articles` pour les images de couverture ;
 - une table `acces_admin`, la liste des comptes autorisés à l'espace équipe, fermée à toute lecture directe ;
 - la sécurité au niveau des lignes (RLS) est activée partout : un visiteur ne peut lire que la liste des centres d'intérêt et les articles publiés ; seuls les comptes autorisés lisent les inscriptions et écrivent les articles ;
-- les inscriptions passent uniquement par la fonction `inscrire_orbite`, l'autorisation par la fonction `est_admin`.
+- les inscriptions passent uniquement par la fonction `inscrire_orbite`, l'autorisation par la fonction `mon_niveau`.
 
 Toute évolution du schéma s'écrit dans un nouveau fichier de migration.
 

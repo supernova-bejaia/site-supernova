@@ -1,0 +1,571 @@
+/* Carnet de contacts — pensé d'abord pour le téléphone : grandes zones
+   à toucher (44 px au moins), texte de 16 px dans les champs (en dessous,
+   iOS zoome), une seule colonne. */
+
+/* ---------- Boutons d'accès (tableau de bord, en-têtes) ---------- */
+
+/* Téléphone : « Ajouter un contact » sur toute la largeur, les deux
+   autres côte à côte en dessous. */
+.acces {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+}
+
+.acces :global(.bouton) {
+  min-height: 52px;
+  padding: 0 14px;
+  font-size: 0.78rem;
+}
+
+.acces :global(.bouton):first-child {
+  grid-column: 1 / -1;
+}
+
+/* ---------- Liste ---------- */
+
+.liste {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.recherche input {
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 16px;
+  border: 1px solid var(--trait);
+  border-radius: 12px;
+  background: var(--surface-champ);
+  color: var(--blanc);
+  font: inherit;
+  font-size: 1rem;
+}
+
+.recherche input:focus {
+  outline: none;
+  border-color: var(--rouge);
+  box-shadow: 0 0 0 3px rgba(231, 14, 23, 0.25);
+}
+
+.compte {
+  color: var(--texte-discret);
+  font-family: var(--police-annotation), system-ui, sans-serif;
+  font-size: 0.74rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.vide {
+  padding: 24px 0;
+  color: var(--texte-doux);
+}
+
+.lignes {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  border-top: 1px solid var(--trait);
+}
+
+.ligne {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 4px;
+  border-bottom: 1px solid var(--trait);
+  color: inherit;
+  transition: background var(--duree-courte) ease;
+}
+
+.ligne:hover,
+.ligne:focus-visible {
+  background: var(--surface);
+}
+
+.nomLigne {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.sousTitre {
+  color: var(--texte-doux);
+  font-size: 0.92rem;
+}
+
+.infosLigne {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  color: var(--texte-discret);
+  font-size: 0.82rem;
+}
+
+.visibilite,
+.badgePartenaire {
+  padding: 2px 9px;
+  border: 1px solid var(--trait);
+  border-radius: 999px;
+  font-family: var(--police-annotation), system-ui, sans-serif;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.visibilite[data-visibilite="EQUIPE"] {
+  color: var(--blanc);
+}
+
+.visibilite[data-visibilite="PRIVE"] {
+  border-style: dashed;
+}
+
+.badgePartenaire {
+  border-color: var(--rouge);
+  color: var(--blanc);
+  background: rgba(231, 14, 23, 0.18);
+}
+
+/* ---------- Formulaire ---------- */
+
+.formulaire {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 640px;
+}
+
+.rangee {
+  display: grid;
+  gap: 18px;
+}
+
+@media (min-width: 640px) {
+  .rangee {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.champ {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.libelle {
+  padding: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--blanc);
+}
+
+.champ input,
+.champ textarea {
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 14px;
+  border: 1px solid var(--trait);
+  border-radius: 12px;
+  background: var(--surface-champ);
+  color: var(--blanc);
+  font: inherit;
+  font-size: 1rem;
+  color-scheme: dark;
+}
+
+.champ textarea {
+  resize: vertical;
+  line-height: 1.55;
+}
+
+.champ input:focus,
+.champ textarea:focus {
+  outline: none;
+  border-color: var(--rouge);
+  box-shadow: 0 0 0 3px rgba(231, 14, 23, 0.25);
+}
+
+.champ[data-invalide="true"] input,
+.champ[data-invalide="true"] textarea {
+  border-color: var(--erreur);
+}
+
+.aide {
+  color: var(--texte-discret);
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.erreur {
+  color: var(--erreur);
+  font-size: 0.88rem;
+}
+
+.avertissement {
+  margin-top: -8px;
+  padding: 10px 14px;
+  border: 1px solid var(--trait-rouge);
+  border-radius: 12px;
+  color: var(--texte-doux);
+  font-size: 0.9rem;
+}
+
+.avertissement a {
+  color: var(--blanc);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.caseACocher {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  color: var(--texte-doux);
+  cursor: pointer;
+}
+
+.caseACocher input,
+.champ .caseACocher input {
+  width: 20px;
+  height: 20px;
+  min-height: 0;
+  padding: 0;
+  flex-shrink: 0;
+  accent-color: var(--rouge);
+}
+
+/* Une organisation dans le formulaire de modification. */
+.blocOrganisation {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--trait);
+}
+
+.ligneSaisie .caseACocher {
+  flex: 1;
+}
+
+.champ textarea:disabled,
+.visibilites:disabled .choix {
+  opacity: 0.55;
+}
+
+.annuler {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  color: var(--texte-doux);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Visibilité : trois boutons côte à côte, faciles à toucher. */
+.visibilites {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.choix {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--trait);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.option {
+  position: relative;
+  display: flex;
+}
+
+.option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.option span {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border-radius: 10px;
+  color: var(--texte-doux);
+  font-family: var(--police-annotation), system-ui, sans-serif;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.option input:checked + span {
+  background: var(--rouge);
+  color: #ffffff;
+}
+
+.option input:focus-visible + span {
+  outline: 2px solid var(--blanc);
+  outline-offset: 2px;
+}
+
+.visibilites[data-invalide="true"] .choix {
+  border-color: var(--erreur);
+}
+
+/* Plus de détails */
+.details {
+  border: 1px solid var(--trait);
+  border-radius: 14px;
+}
+
+.details summary {
+  display: flex;
+  align-items: center;
+  min-height: 52px;
+  padding: 0 16px;
+  color: var(--texte-doux);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.contenuDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 4px 16px 18px;
+}
+
+.ligneSaisie {
+  display: flex;
+  gap: 8px;
+}
+
+.boutonAjouter,
+.boutonRetirer {
+  min-height: 44px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: var(--texte-doux);
+  font: inherit;
+  font-size: 0.9rem;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.boutonRetirer {
+  flex-shrink: 0;
+  color: var(--texte-discret);
+}
+
+/* Enregistrer : toujours à portée de pouce. */
+.barreActions {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0 calc(var(--marge) * -1);
+  padding: 12px var(--marge);
+  border-top: 1px solid var(--trait);
+  background: rgba(8, 2, 3, 0.97);
+}
+
+.barreActions :global(.bouton) {
+  width: 100%;
+  min-height: 52px;
+}
+
+.message {
+  color: var(--erreur);
+  font-size: 0.9rem;
+}
+
+.message:empty {
+  display: none;
+}
+
+/* ---------- Fiche ---------- */
+
+.notification {
+  padding: 14px 16px;
+  border: 1px solid var(--trait-rouge);
+  border-radius: 12px;
+  color: var(--texte-doux);
+}
+
+.fiche {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 640px;
+}
+
+.enteteFiche {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nomFiche {
+  font-size: clamp(1.6rem, 6vw, 2.2rem);
+}
+
+.organisations {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  list-style: none;
+  color: var(--texte-doux);
+}
+
+.ancienne {
+  color: var(--texte-discret);
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.boutonModifier {
+  align-self: flex-start;
+  min-height: 44px;
+  margin-top: 6px;
+  padding: 0 20px;
+  font-size: 0.78rem;
+}
+
+/* Coordonnées : de gros boutons pour appeler ou écrire. */
+.coordonnees {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: none;
+}
+
+.coordonnee {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 56px;
+  padding: 8px 16px;
+  border: 1px solid var(--trait);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--blanc);
+  transition: border-color var(--duree-courte) ease;
+}
+
+.coordonnee:hover,
+.coordonnee:focus-visible {
+  border-color: var(--rouge);
+}
+
+.valeurCoordonnee {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.libelleCoordonnee {
+  color: var(--texte-discret);
+  font-size: 0.78rem;
+}
+
+.actionCoordonnee {
+  flex-shrink: 0;
+  color: var(--rouge);
+  font-family: var(--police-annotation), system-ui, sans-serif;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.coordonneesMasquees {
+  padding: 14px 16px;
+  border: 1px dashed var(--trait);
+  border-radius: 14px;
+  color: var(--texte-doux);
+}
+
+.conditions {
+  padding: 12px 16px;
+  border-left: 3px solid var(--rouge);
+  background: var(--surface);
+  color: var(--texte-doux);
+}
+
+.blocFiche {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.titreBloc {
+  color: var(--texte-discret);
+  font-family: var(--police-annotation), system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.details dl,
+.infos {
+  display: grid;
+  gap: 10px;
+}
+
+.infos div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.infos dt {
+  color: var(--texte-discret);
+  font-size: 0.82rem;
+}
+
+.texteLibre {
+  white-space: pre-line;
+  color: var(--texte-doux);
+}
+
+@media (min-width: 760px) {
+  .acces {
+    display: flex;
+    width: auto;
+  }
+}

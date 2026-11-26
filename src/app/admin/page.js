@@ -7,6 +7,7 @@ import Indicateur from "@/components/admin/Indicateur";
 import TableauInscriptions from "@/components/admin/TableauInscriptions";
 import Repartition from "@/components/admin/Repartition";
 import styles from "./admin.module.css";
+import contactsStyles from "@/components/contacts/Contacts.module.css";
 
 export const metadata = {
   title: "Tableau de bord — Espace équipe",
@@ -131,9 +132,19 @@ function Entete({ email, saison }) {
       </div>
       <div className={styles.compte}>
         <span className={styles.email}>{email}</span>
-        <Link href="/admin/articles/nouveau" prefetch={false} className="bouton">
-          Écrire un article
-        </Link>
+        {/* Le carnet d'abord : c'est l'outil qu'on ouvre sur téléphone,
+            juste après une rencontre. */}
+        <nav className={contactsStyles.acces} aria-label="Raccourcis">
+          <Link href="/admin/contacts/nouveau" prefetch={false} className="bouton">
+            Ajouter un contact
+          </Link>
+          <Link href="/admin/contacts" prefetch={false} className="bouton bouton-secondaire">
+            Contacts
+          </Link>
+          <Link href="/admin/articles/nouveau" prefetch={false} className="bouton bouton-secondaire">
+            Écrire un article
+          </Link>
+        </nav>
       </div>
     </header>
   );

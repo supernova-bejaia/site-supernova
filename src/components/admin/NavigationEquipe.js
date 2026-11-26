@@ -7,7 +7,7 @@ import styles from "./NavigationEquipe.module.css";
 
 // Barre de navigation de l'espace équipe, affichée en haut de toutes ses
 // pages (sauf la connexion) : on sait toujours où l'on est, et on peut
-// toujours revenir au tableau de bord ou aux articles.
+// toujours revenir au tableau de bord, aux contacts ou aux articles.
 //
 // Deux précautions, parce que ces pages dépendent de la session :
 //   - prefetch={false} : le navigateur ne charge pas ces pages à l'avance,
@@ -16,6 +16,7 @@ import styles from "./NavigationEquipe.module.css";
 //     l'espace équipe sans le vouloir.
 const PAGES = [
   { href: "/admin", libelle: "Tableau de bord" },
+  { href: "/admin/contacts", libelle: "Contacts" },
   { href: "/admin/articles", libelle: "Articles" },
 ];
 
