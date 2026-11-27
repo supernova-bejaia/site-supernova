@@ -25,8 +25,9 @@ const PAGES = [
 export default function NavigationEquipe() {
   const chemin = usePathname();
 
-  // La page de connexion n'a pas de navigation : on n'est pas encore entré.
-  if (chemin === "/admin/connexion") return null;
+  // Les pages de connexion et de nouveau mot de passe n'ont pas de
+  // navigation : on n'est pas encore entré.
+  if (chemin === "/admin/connexion" || chemin === "/admin/reset-password") return null;
 
   return (
     <nav className={styles.barre} aria-label="Espace équipe">
