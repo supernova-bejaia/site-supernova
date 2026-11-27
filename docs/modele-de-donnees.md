@@ -201,6 +201,120 @@ Règles :
 
 L'organisation est un texte libre, avec des suggestions tirées des contacts visibles : un formulaire ne crée jamais d'organisation, pour éviter les doublons. Une table `organisation` viendra plus tard, en regroupant les variantes à la main.
 
+## Événements (migration du 27 novembre 2026)
+
+Les événements ne sont plus dans un fichier (`src/content/evenements.js`, retiré : il ne contenait aucun événement) : ils sont dans la base et se gèrent depuis l'espace équipe.
+
+```
+EVENEMENT(
+    id_evenement        uuid, clé primaire
+    slug                texte unique        -- adresse : /evenements/<slug>
+    titre               texte, 200 caractères au plus
+    resume              texte, 500 caractères au plus
+    description         texte [nullable]
+    lieu_nom, lieu_ville texte
+    debut               date et heure
+    fin                 date et heure [nullable], >= debut
+    prix                nombre [nullable]   -- en dinars ; vide = gratuit (0 refusé)
+    invites             texte [nullable]    -- invités et intervenants, un par ligne
+    inscription_requise booléen
+    lien_inscription    texte [nullable]    -- formulaire externe (http ou https)
+    statut              BROUILLON | PUBLIE | ANNULE | TERMINE
+    mise_en_avant       booléen
+    #id_saison          → SAISON [nullable] -- saison active à la création
+    id_auteur           → compte [nullable] -- rempli par la base, illisible depuis le site
+    published_at        date et heure [nullable] -- fixée à la première publication
+    created_at, updated_at
+)
+
+PHOTO_EVENEMENT(
+    id_photo            uuid, clé primaire
+    #id_evenement       → EVENEMENT, supprimée avec l'événement
+    chemin              texte unique        -- fichier dans le stockage « evenements »
+    texte_alternatif    texte, obligatoire
+    legende, credit     texte [nullable]
+    ordre               entier, unique par événement
+    est_couverture      booléen, une seule couverture par événement
+    validee             booléen             -- montrée au public seulement si validée
+    created_at
+)
+
+SUIVI_EVENEMENT(                            -- interne à l'équipe
+    #id_evenement       → EVENEMENT, clé primaire, supprimé avec l'événement
+    #id_responsable     → PERSONNE [nullable] -- un membre du Noyau, facultatif
+    ce_qui_a_marche, difficultes, a_ameliorer   texte [nullable]
+    ressources          texte [nullable]    -- liens, un par ligne
+    updated_at
+)
+
+PARTENAIRE_EVENEMENT(                       -- interne à l'équipe, jamais publié
+    id_lien             uuid, clé primaire
+    #id_evenement       → EVENEMENT, supprimé avec l'événement
+    #id_contact         → CONTACT [nullable] -- vidé si le contact est supprimé
+    organisation        texte [nullable]    -- si aucun contact
+    role                PARTENAIRE | SPONSOR | INTERVENANT | LIEU | AUTRE
+    note                texte [nullable]    -- aucune coordonnée (refusées par la base)
+    created_at
+)
+
+INSCRIPTION_EVENEMENT(
+    id_inscription      uuid, clé primaire
+    #id_evenement       → EVENEMENT, supprimée avec l'événement
+    #id_personne        → PERSONNE, supprimée avec la personne
+    statut              INSCRIT | PRESENT | ABSENT | DESISTE
+    origine             FORMULAIRE | EQUIPE
+    created_at, updated_at
+    unique (id_evenement, id_personne)
+)
+```
+
+```
+evenement 1 ── n photo_evenement
+evenement 1 ── 0..1 suivi_evenement n ── 0..1 personne (responsable)
+evenement 1 ── n partenaire_evenement n ── 0..1 contact
+evenement 1 ── n inscription_evenement n ── 1 personne
+```
+
+Pas de catégorie : le cadrage ne distingue pas de types d'événements. Un seul responsable pour l'instant ; s'il en faut plusieurs plus tard, ce sera une table à part.
+
+### Qui fait quoi
+
+| | Membre (1) | Head of (2) | Direction (3) |
+|---|---|---|---|
+| Lire tous les événements, brouillons compris | ✓ | ✓ | ✓ |
+| Créer un événement (brouillon) | ✓ | ✓ | ✓ |
+| Modifier informations, bilan, responsable, partenaires | ses brouillons | tous | tous |
+| Publier, repasser en brouillon, annuler, terminer | — | ✓ | ✓ |
+| Envoyer une photo | ✓ | ✓ | ✓ |
+| Valider, masquer, choisir la couverture, supprimer une photo | — | ✓ | ✓ |
+| Voir la liste des inscrits (noms) et pointer les présences | ✓ | ✓ | ✓ |
+| Retirer un inscrit de la liste | — | ✓ | ✓ |
+| Voir l'email et le téléphone des inscrits (`coordonnees_inscrits()`) | — | — | ✓ |
+| Supprimer définitivement | ses brouillons jamais publiés | — | ✓ |
+
+Un visiteur lit les événements **publiés** (publiés au moins une fois et pas repassés en brouillon, donc aussi annulés ou terminés) et leurs photos **validées**. Il ne lit ni le suivi, ni les partenaires, ni les inscriptions, n'écrit nulle part, et peut seulement exécuter `inscrire_evenement`.
+
+Un lien vers un contact du carnet n'est visible que de ceux qui voient ce contact : un contact privé ne se devine pas par l'événement.
+
+### Fonctions
+
+| Fonction | Qui | Rôle |
+|---|---|---|
+| `inscrire_evenement` | visiteur | Inscrit une personne à un événement publié qui demande une inscription et n'est pas terminé. Crée la personne si son email est inconnu ; **ne modifie jamais une fiche existante**. Une personne désistée qui se réinscrit redevient inscrite. Si la case a été cochée, ajoute une adhésion ORBITE à la saison active (sans toucher à une adhésion existante). |
+| `ajouter_participant` | membre du Noyau | Ajoute une personne, nouvelle ou connue, comme présente (sans inscription préalable) ou inscrite. L'email reste obligatoire. Même prudence sur les fiches existantes. |
+| `coordonnees_inscrits` | direction | Email et téléphone des inscrits d'un événement. |
+| `peut_modifier_evenement`, `mes_evenements` | équipe | Droits sur un événement ; événements créés par le compte connecté. |
+| `trouver_ou_creer_personne` | personne | Interne aux fonctions d'inscription ; personne ne peut l'appeler directement. |
+
+Le stockage `evenements` est public en lecture par adresse (2 Mo, JPEG, PNG ou WebP, noms de fichiers aléatoires) : tout membre envoie, un Head of ou l'auteur du fichier remplace ou supprime.
+
+### Décisions
+
+- « À venir » ou « passé » se déduit toujours des dates ; `TERMINE` classe en plus un événement dans les archives, à la main.
+- La présence se vérifie à la main, après l'événement. Pas de capacité maximale ni de liste d'attente.
+- Le téléphone est facultatif pour s'inscrire à un événement (obligatoire pour l'Orbite).
+- Partenaires et sponsors liés : visibles de l'équipe seulement ; aucun nom ni logo n'est affiché sur le site sans l'accord du partenaire.
+
 ## Décisions prises par rapport au MLD d'origine
 
 | Sujet | MLD d'origine | Décision |
@@ -227,47 +341,6 @@ Statuts déjà décidés :
 
 Reste à définir : les statuts d'une candidature et son système de priorité.
 
-**Bloc événements** — schéma cible validé le 13 novembre 2026, à créer avec l'espace équipe (niveau 3).
+**Bloc participation** : `PARTICIPATION` (l'implication d'un membre dans un événement, avec un rôle : lien vers `ADHESION`), reportée après le MVP. L'inscription à un événement, elle, existe (voir « Événements »).
 
-En attendant, les événements sont des données statiques dans `src/content/evenements.js` (mode d'emploi : [evenements.md](evenements.md)). Ce fichier suit déjà la structure ci-dessous : le jour de la migration, seule la fonction `getPageEvenements` de `src/services/evenements.js` changera de source.
-
-Pourquoi attendre : sans espace équipe ni envoi de photos, ajouter un événement dans Supabase (saisie dans l'éditeur de tables, chemins de photos à recopier) serait plus compliqué que de modifier le fichier.
-
-```
-EVENEMENT(
-    id_evenement      uuid, clé primaire
-    slug              texte unique        -- ex. atelier-decouverte-2026
-    titre             texte
-    resume            texte               -- une ou deux phrases pour les listes
-    description       texte [nullable]
-    categorie         texte [nullable]    -- Masterclass, Rencontre, Atelier…
-    lieu_nom          texte
-    lieu_ville        texte
-    debut             date et heure
-    fin               date et heure [nullable], >= debut
-    statut            BROUILLON | PUBLIE | ANNULE
-    mise_en_avant     booléen
-    #id_saison        → SAISON
-    created_at, updated_at
-)
-
-PHOTO_EVENEMENT(
-    id_photo          uuid, clé primaire
-    #id_evenement     → EVENEMENT, supprimée avec l'événement
-    chemin            texte               -- emplacement du fichier (Supabase Storage)
-    texte_alternatif  texte               -- obligatoire
-    legende           texte [nullable]
-    credit            texte [nullable]    -- photographe
-    ordre             entier, unique par événement
-    est_couverture    booléen, une seule couverture par événement
-    validee           booléen             -- validation avant publication
-)
-```
-
-Décisions associées :
-
-- « À venir » ou « passé » se déduit des dates : ce n'est pas stocké. `statut` ne sert qu'à la publication.
-- Sécurité prévue : un visiteur ne lit que les événements `PUBLIE` et les photos `validee`, et n'écrit rien.
-- Reportées après le MVP : `INSCRIPTION` (une personne, membre ou non, inscrite à un événement : lien vers `PERSONNE`) et `PARTICIPATION` (l'implication d'un membre, avec un rôle : lien vers `ADHESION`).
-
-**Carnet de contacts, plus tard** : une table `organisation` (regroupant les noms saisis librement) et `collaboration_evenement` (le lien entre partenaires et événements, une fois les tables d'événements créées). Le suivi des relations (étapes, relances, collaborations hors événement) est prévu en V2.
+**Carnet de contacts, plus tard** : une table `organisation` (regroupant les noms saisis librement) (le lien entre partenaires et événements existe : `partenaire_evenement`). Le suivi des relations (étapes, relances, collaborations hors événement) est prévu en V2.

@@ -9,12 +9,14 @@ import styles from "./page.module.css";
 export const metadata = {
   title: "Nos événements",
   description:
-    "La vie de Supernova : rencontres, masterclass et moments d'échange, à venir et passés.",
+    "Les rendez-vous de Supernova à Béjaïa : rencontres, masterclass et ateliers à venir, et les archives en photos.",
+  alternates: { canonical: "/evenements" },
 };
 
 // Page « Événements ».
 // Elle ne contient aucun événement en dur : tout vient du service
-// services/evenements.js, qui lit content/evenements.js.
+// services/evenements.js, qui lit les événements publiés dans Supabase.
+// Chaque événement a sa propre page : /evenements/<slug>.
 //
 //   Ouverture
 //   À la une     : l'événement mis en avant (s'il y en a un)

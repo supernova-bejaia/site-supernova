@@ -4,12 +4,12 @@ import { AUTRE, ETABLISSEMENTS, NIVEAUX_VALIDES } from "./formulaire-orbite";
 // Les mêmes règles existent dans la fonction SQL inscrire_orbite :
 // le site donne des messages clairs, la base sert de dernier rempart.
 
-const FORMAT_EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
-const FORMAT_TEL = /^[0-9+ ().-]{6,30}$/;
-const FORMAT_UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+export const FORMAT_EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+export const FORMAT_TEL = /^[0-9+ ().-]{6,30}$/;
+export const FORMAT_UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 // Lit un champ texte du formulaire et retire les espaces autour.
-function texte(formData, nom) {
+export function texte(formData, nom) {
   const valeur = formData.get(nom);
   return typeof valeur === "string" ? valeur.trim() : "";
 }

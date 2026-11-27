@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { moisEtAnnee } from "@/lib/dates";
 import Galerie from "./Galerie";
 import EtiquettesEvenement from "./EtiquettesEvenement";
@@ -28,7 +29,9 @@ export default function EvenementPasse({ evenement }) {
 
         <div className={styles.recitArchive}>
           <h3 id={`titre-${evenement.id}`} className={styles.titreArchive}>
-            {evenement.titre}
+            <Link href={`/evenements/${evenement.slug}`} className={styles.lienTitre}>
+              {evenement.titre}
+            </Link>
           </h3>
           <p className={styles.description}>{evenement.description ?? evenement.resume}</p>
         </div>

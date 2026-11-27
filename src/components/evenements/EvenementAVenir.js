@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { horaire } from "@/lib/dates";
+import { prixLisible } from "@/lib/evenements";
 import BlocDate from "./BlocDate";
 import Visuel from "./Visuel";
 import EtiquettesEvenement from "./EtiquettesEvenement";
@@ -10,17 +12,23 @@ export default function EvenementAVenir({ evenement }) {
   const heures = horaire(evenement.heure, evenement.heureFin);
 
   return (
-    <article className={styles.ligneAgenda} aria-labelledby={`titre-${evenement.id}`}>
+    <article
+      className={styles.ligneAgenda}
+      data-annule={evenement.annule || undefined}
+      aria-labelledby={`titre-${evenement.id}`}
+    >
       <BlocDate date={evenement.date} />
 
       <div className={styles.texteAgenda}>
         <EtiquettesEvenement evenement={evenement} />
         <h3 id={`titre-${evenement.id}`} className={styles.titreAgenda}>
-          {evenement.titre}
+          <Link href={`/evenements/${evenement.slug}`} className={styles.lienTitre}>
+            {evenement.titre}
+          </Link>
         </h3>
         <p className={styles.lieuAgenda}>
           {evenement.lieu.nom}, {evenement.lieu.ville}
-          {heures && <> · {heures}</>}
+          {heures && <> · {heures}</>} · {prixLisible(evenement.prix)}
         </p>
         <p className={styles.resume}>{evenement.resume}</p>
       </div>

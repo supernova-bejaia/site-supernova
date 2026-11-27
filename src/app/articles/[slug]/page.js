@@ -1,6 +1,8 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import LectureArticle from "@/components/articles/LectureArticle";
+import DonneesStructurees from "@/components/layout/DonneesStructurees";
+import { donneesArticle } from "@/lib/donnees-structurees";
 import { adresseCouverture } from "@/lib/articles";
 import { getArticlePublie } from "@/services/articles";
 import styles from "@/components/articles/Articles.module.css";
@@ -29,6 +31,7 @@ export async function generateMetadata({ params }) {
   return {
     title: article.titre,
     description: article.resume || undefined,
+    alternates: { canonical: `/articles/${article.slug}` },
     openGraph: {
       type: "article",
       title: article.titre,
@@ -61,6 +64,7 @@ async function Article({ slug }) {
 
   return (
     <article>
+      <DonneesStructurees donnees={donneesArticle(article)} />
       <LectureArticle article={article} avant={<RetourAuxArticles />} />
 
       {/* Fin d'article : rejoindre l'Orbite, puis retour à la liste. */}

@@ -6,6 +6,7 @@ export const metadata = {
   title: "Vos données",
   description:
     "Quelles informations Supernova collecte, pourquoi, qui y accède et comment demander leur suppression.",
+  alternates: { canonical: "/vos-donnees" },
 };
 
 // Affiche l'adresse de contact, ou un emplacement bien visible tant
@@ -37,7 +38,7 @@ export default function PageVosDonnees() {
       </header>
 
       <Rubrique numero="01" id="titre-collecte" titre="Ce que nous collectons">
-        <p>Uniquement ce que vous saisissez dans le formulaire d&apos;inscription à l&apos;Orbite :</p>
+        <p>Uniquement ce que vous saisissez dans nos formulaires. Pour rejoindre l&apos;Orbite :</p>
         <ul>
           <li>votre nom et votre prénom ;</li>
           <li>votre adresse email et votre numéro de téléphone ;</li>
@@ -48,6 +49,11 @@ export default function PageVosDonnees() {
           </li>
           <li>votre choix de recevoir ou non la newsletter, avec la date de ce choix.</li>
         </ul>
+        <p>
+          Pour vous inscrire à un événement : votre nom, votre prénom, votre adresse email et, si
+          vous le donnez, votre numéro de téléphone. Le jour de l&apos;événement, l&apos;équipe note
+          votre présence. Si vous êtes déjà connu de Supernova, votre fiche n&apos;est pas modifiée.
+        </p>
         <p>
           Le site n&apos;utilise ni cookie de suivi ni outil de mesure d&apos;audience, et ne
           demande pas de créer un compte.
@@ -61,7 +67,7 @@ export default function PageVosDonnees() {
 
       <Rubrique numero="02" id="titre-usage" titre="Pourquoi nous les collectons">
         <ul>
-          <li>Enregistrer votre inscription à l&apos;Orbite.</li>
+          <li>Enregistrer votre inscription à l&apos;Orbite ou à un événement.</li>
           <li>
             Vous contacter au sujet des activités de Supernova : événements, rencontres, appels
             à renfort, missions relayées.

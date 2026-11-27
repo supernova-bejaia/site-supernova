@@ -168,8 +168,10 @@ export default function OrbiteForm({ centresInteret }) {
     );
   }
 
+  // method="post" : si la page n'a pas fini de charger, l'envoi ne met
+  // jamais les données personnelles dans l'adresse de la page.
   return (
-    <form ref={formulaire} className={styles.formulaire} onSubmit={soumettre}>
+    <form ref={formulaire} method="post" className={styles.formulaire} onSubmit={soumettre}>
       {/* ---------- 1/3 — Identité ---------- */}
       <fieldset className={styles.etape}>
         <legend className={styles.legende}>
@@ -332,7 +334,8 @@ export default function OrbiteForm({ centresInteret }) {
 
 // Un champ du formulaire : son libellé, le champ lui-même, et son éventuel
 // message d'erreur. Le « name » et l'« id » sont ajoutés automatiquement.
-function Champ({ nom, libelle, facultatif = false, erreur, children }) {
+// Également utilisé par le formulaire d'inscription à un événement.
+export function Champ({ nom, libelle, facultatif = false, erreur, children }) {
   const idErreur = `${nom}-erreur`;
 
   return (

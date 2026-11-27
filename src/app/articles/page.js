@@ -6,7 +6,9 @@ import styles from "./page.module.css";
 
 export const metadata = {
   title: "Articles",
-  description: "Les articles de Supernova, collectif étudiant indépendant de Béjaïa.",
+  description:
+    "Les articles de Supernova, collectif étudiant indépendant de Béjaïa : retours d'événements, portraits et conseils pour les étudiants.",
+  alternates: { canonical: "/articles" },
 };
 
 // Page « Articles » : la liste des articles publiés, du plus récent au

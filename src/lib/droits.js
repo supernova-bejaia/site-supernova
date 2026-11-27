@@ -48,3 +48,31 @@ export const LIBELLES_STATUT_ARTICLE = {
   PUBLIE: "Publié",
   ARCHIVE: "Archivé",
 };
+
+// Ce que le compte connecté peut faire d'un événement.
+//   evenement : l'événement (statut, published_at), ou null pour un nouveau
+//   niveau    : niveau du compte connecté
+//   estAuteur : vrai si le compte connecté a créé cet événement
+// Mêmes règles que la migration « evenements ».
+export function droitsEvenement(evenement, niveau, estAuteur) {
+  const headOf = niveau >= NIVEAUX.HEAD_OF;
+  const brouillon = !evenement || evenement.statut === "BROUILLON";
+
+  return {
+    // Un membre modifie ses brouillons ; un Head of, tout. Le bilan, le
+    // responsable et les partenaires suivent la même règle.
+    modifier: headOf || (niveau >= NIVEAUX.MEMBRE && (!evenement || (estAuteur && brouillon))),
+    // Publier, repasser en brouillon, annuler, marquer comme terminé.
+    changerStatut: headOf,
+    // La direction supprime tout ; un membre, ses brouillons jamais publiés.
+    supprimer:
+      Boolean(evenement) &&
+      (niveau >= NIVEAUX.DIRECTION || (estAuteur && brouillon && !evenement.published_at)),
+    envoyerPhotos: niveau >= NIVEAUX.MEMBRE,
+    // Valider, masquer, choisir la couverture, supprimer une photo.
+    gererPhotos: headOf,
+    pointer: niveau >= NIVEAUX.MEMBRE,
+    retirerInscrit: headOf,
+    voirCoordonnees: niveau >= NIVEAUX.DIRECTION,
+  };
+}
