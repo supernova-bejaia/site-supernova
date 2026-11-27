@@ -2,7 +2,11 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { changerMotDePasse, verifierLienRecuperation } from "@/actions/reinitialisation";
+import {
+  changerMotDePasse,
+  ouvrirSessionRecuperation,
+  verifierLienRecuperation,
+} from "@/actions/reinitialisation";
 import styles from "./Admin.module.css";
 
 // Pas d'import depuis lib/acces-admin.js : il ne tourne que sur le serveur.
@@ -10,9 +14,15 @@ const PAGE_CONNEXION = "/admin/connexion";
 
 const MESSAGE_LIEN_INVALIDE =
   "Ce lien de réinitialisation est invalide. Demandez un nouvel email de réinitialisation.";
+const MESSAGE_LIEN_EXPIRE =
+  "Ce lien a expiré ou a déjà été utilisé. Demandez un nouvel email de réinitialisation.";
+const MESSAGE_PANNE = "Impossible pour le moment. Réessayez dans un instant.";
 
-// Formulaire de nouveau mot de passe, ouvert depuis l'email « Reset Password »
-// (/admin/reset-password?token_hash=…&type=recovery).
+// Formulaire de nouveau mot de passe, ouvert depuis l'email « Reset Password ».
+// Le lien arrive sous l'une de ces deux formes (voir actions/reinitialisation.js) :
+//   - lien personnalisé : ?token_hash=…&type=recovery
+//   - lien par défaut de Supabase : #access_token=…&refresh_token=…&type=recovery
+//     (ou #error=… si le lien a expiré)
 //
 //   1. au chargement, le lien est vérifié sur le serveur ;
 //   2. s'il est valide, la personne choisit son nouveau mot de passe ;
@@ -20,10 +30,10 @@ const MESSAGE_LIEN_INVALIDE =
 export default function FormulaireNouveauMotDePasse() {
   const parametres = useSearchParams();
   const tokenHash = parametres.get("token_hash");
-  const lienComplet = Boolean(tokenHash) && parametres.get("type") === "recovery";
+  const lienPersonnalise = Boolean(tokenHash) && parametres.get("type") === "recovery";
 
   // « verification » : en cours, « pret » : lien valide, sinon le message d'erreur.
-  const [lien, setLien] = useState(lienComplet ? "verification" : MESSAGE_LIEN_INVALIDE);
+  const [lien, setLien] = useState("verification");
   const [etat, envoyer, enCours] = useActionState(changerMotDePasse, { message: "" });
   const dejaVerifie = useRef(false);
   const termine = etat?.ok === true;
@@ -31,13 +41,37 @@ export default function FormulaireNouveauMotDePasse() {
   // Le lien ne sert qu'une fois : on ne le vérifie qu'une fois (React
   // peut lancer cet effet deux fois en développement).
   useEffect(() => {
-    if (!lienComplet || dejaVerifie.current) return;
+    if (dejaVerifie.current) return;
     dejaVerifie.current = true;
-    verifierLienRecuperation(tokenHash).then(
-      (resultat) => setLien(resultat.ok ? "pret" : resultat.message),
-      () => setLien("Impossible pour le moment. Réessayez dans un instant.")
-    );
-  }, [lienComplet, tokenHash]);
+
+    async function verifier() {
+      if (lienPersonnalise) {
+        const resultat = await verifierLienRecuperation(tokenHash);
+        return resultat.ok ? "pret" : resultat.message;
+      }
+
+      // Lien par défaut : la session est après le « # », que seul le
+      // navigateur voit. On l'efface aussitôt de la barre d'adresse (et
+      // donc de l'historique), puis on la confie au serveur.
+      const fragment = new URLSearchParams(window.location.hash.slice(1));
+      if (window.location.hash) {
+        window.history.replaceState(null, "", window.location.pathname + window.location.search);
+      }
+
+      if (fragment.get("error") || fragment.get("error_code")) return MESSAGE_LIEN_EXPIRE;
+
+      const jetonAcces = fragment.get("access_token");
+      const jetonRenouvellement = fragment.get("refresh_token");
+      if (!jetonAcces || !jetonRenouvellement || fragment.get("type") !== "recovery") {
+        return MESSAGE_LIEN_INVALIDE;
+      }
+
+      const resultat = await ouvrirSessionRecuperation(jetonAcces, jetonRenouvellement);
+      return resultat.ok ? "pret" : resultat.message;
+    }
+
+    verifier().then(setLien, () => setLien(MESSAGE_PANNE));
+  }, [lienPersonnalise, tokenHash]);
 
   // Mot de passe changé : retour à la connexion, par un vrai rechargement.
   useEffect(() => {

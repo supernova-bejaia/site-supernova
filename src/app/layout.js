@@ -2,6 +2,7 @@ import { Inter, Sora } from "next/font/google";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import PauseEnArrierePlan from "@/components/mouvement/PauseEnArrierePlan";
+import RetourRecuperation from "@/components/layout/RetourRecuperation";
 import { URL_SITE } from "@/lib/site";
 import "./globals.css";
 
@@ -53,6 +54,7 @@ export default function RootLayout({ children }) {
         <main>{children}</main>
         <Footer />
         <PauseEnArrierePlan />
+        <RetourRecuperation />
       </body>
     </html>
   );
