@@ -569,3 +569,59 @@
     width: auto;
   }
 }
+
+/* ---------- Bandeau « Installer l'application » (téléphone) ---------- */
+
+.bandeauInstallation {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 10px 12px;
+  padding: 14px 12px 14px 16px;
+  border: 1px solid var(--trait-rouge);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.texteInstallation {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  font-size: 0.92rem;
+}
+
+.texteInstallation span {
+  color: var(--texte-discret);
+  font-size: 0.84rem;
+}
+
+.bandeauInstallation :global(.bouton) {
+  min-height: 44px;
+  padding: 0 16px;
+  font-size: 0.74rem;
+}
+
+.fermerInstallation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  background: none;
+  color: var(--texte-discret);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.aideInstallation {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-left: 20px;
+  color: var(--texte-doux);
+  font-size: 0.9rem;
+}

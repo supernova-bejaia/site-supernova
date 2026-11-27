@@ -33,7 +33,12 @@ const nextConfig = {
   // N'annonce pas la technologie utilisée (« X-Powered-By: Next.js »).
   poweredByHeader: false,
   async headers() {
-    return [{ source: "/:path*", headers: entetesSecurite }];
+    return [
+      { source: "/:path*", headers: entetesSecurite },
+      // Service worker de l'application Contacts : toujours revérifié, pour
+      // qu'une nouvelle version soit prise en compte tout de suite.
+      { source: "/sw.js", headers: [{ key: "Cache-Control", value: "no-cache" }] },
+    ];
   },
   images: {
     remotePatterns: imagesAutorisees,

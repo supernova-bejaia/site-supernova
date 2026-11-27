@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import EnregistrementApplication from "@/components/admin/EnregistrementApplication";
 import NavigationEquipe from "@/components/admin/NavigationEquipe";
 
 // Espace équipe : jamais indexé par les moteurs de recherche.
@@ -27,6 +28,7 @@ export default function LayoutAdmin({ children }) {
         <NavigationEquipe />
       </Suspense>
       {children}
+      <EnregistrementApplication />
     </>
   );
 }

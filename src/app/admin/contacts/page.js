@@ -3,6 +3,7 @@ import Link from "next/link";
 import { verifierAccesAdmin } from "@/lib/acces-admin";
 import { normaliserNom } from "@/lib/validation-contact";
 import { listerContacts } from "@/services/contacts";
+import BandeauInstallation from "@/components/contacts/BandeauInstallation";
 import ListeContacts from "@/components/contacts/ListeContacts";
 import pageStyles from "../admin.module.css";
 import styles from "@/components/admin/Articles.module.css";
@@ -71,6 +72,7 @@ async function Contacts() {
   return (
     <>
       <Entete />
+      <BandeauInstallation />
       <ListeContacts contacts={lignes} />
     </>
   );
